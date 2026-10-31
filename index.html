@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#050915">
+<meta name="description" content="Nachthimmel v1: Interaktive Himmelskarte mit Sternbildern, NASA-Deep-Sky-Aufnahmen und live berechneten Satellitenbahnen.">
+<title>Nachthimmel v1 – Interaktive Himmelskarte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#030815;--surface:rgba(10,17,33,.9);--surface2:#111c30;--line:rgba(164,192,235,.14);--text:#edf5ff;--muted:#96a7c0;--faint:#65748b;--blue:#85d9ff;--violet:#a998ff;--gold:#f0c889;--sans:'DM Sans',system-ui,-apple-system,sans-serif;--display:'Space Grotesk',system-ui,sans-serif}
+*{box-sizing:border-box}html,body{height:100%;margin:0;overscroll-behavior:none}body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}button,input{font:inherit}button{color:inherit;cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:3px}button:disabled{cursor:not-allowed;opacity:.48}a{color:#93d5ff;text-decoration:none}a:hover{text-decoration:underline}svg{display:block;flex-shrink:0}
+.app{position:relative;width:100%;height:100%;height:100dvh;overflow:hidden;background:radial-gradient(ellipse at 44% 28%,#112341 0%,#071126 35%,#020611 77%)}
+#sky{width:100%;height:100%;position:absolute;inset:0;display:block;cursor:grab;touch-action:none;z-index:1}#sky:active{cursor:grabbing}.vignette{z-index:2;inset:0;pointer-events:none;position:absolute;background:linear-gradient(180deg,rgba(2,6,17,.61),transparent 24%,transparent 61%,rgba(2,6,17,.72) 100%),radial-gradient(ellipse at 50% 42%,transparent 21%,rgba(0,0,10,.32) 100%)}.noise{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.085;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E")}
+.topbar{position:absolute;inset:0 0 auto;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:26px clamp(23px,3.2vw,54px);pointer-events:none}.topbar>*{pointer-events:auto}.brand{display:flex;align-items:center;gap:12px;user-select:none}.brand-logo{width:41px;height:41px;display:grid;place-items:center;position:relative;background:linear-gradient(140deg,rgba(93,157,217,.21),rgba(56,75,133,.05));border:1px solid rgba(146,198,255,.23);border-radius:13px;box-shadow:0 0 30px rgba(50,114,199,.11)}.brand-logo:after{content:'';position:absolute;inset:5px;border:1px solid rgba(130,194,255,.09);border-radius:9px}.brand-name{font-family:var(--display);font-weight:700;letter-spacing:.045em;font-size:18px;line-height:1.1;white-space:nowrap}.brand-version{color:#76caff;font-size:11px;font-weight:600;letter-spacing:.02em}.brand-tagline{font-size:9px;letter-spacing:.22em;color:#92a9c6;text-transform:uppercase;margin-top:5px;font-weight:700}.top-actions{display:flex;align-items:center;gap:12px}.live-pill,.place-pill,.icon-btn{min-height:39px;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid rgba(157,190,233,.13);background:rgba(11,19,36,.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:12px}.live-pill{padding:0 14px;color:#a8bbd3;letter-spacing:.11em;font-size:10px;font-weight:700}.pulse-dot{width:7px;height:7px;border-radius:50%;background:#7cdfb6;box-shadow:0 0 13px #69e5bd;animation:pulse 2.5s infinite}@keyframes pulse{50%{opacity:.5;box-shadow:0 0 3px #6ae4b8}}.place-pill{padding:0 14px;font-size:12px;font-weight:600;max-width:230px}.place-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.place-pill:hover,.icon-btn:hover{background:rgba(26,43,72,.8);border-color:rgba(151,198,248,.34)}.icon-btn{width:40px;padding:0}.icon-btn svg,.place-pill svg{width:16px;height:16px}
+.view-info{position:absolute;left:clamp(24px,3.5vw,56px);top:clamp(124px,20vh,195px);z-index:4;pointer-events:none;max-width:min(420px,75vw)}.eyebrow{display:flex;align-items:center;gap:11px;color:var(--blue);font-size:10px;letter-spacing:.24em;font-weight:700;text-transform:uppercase;margin-bottom:16px}.eyebrow:before{content:'';height:1px;width:23px;background:var(--blue);box-shadow:0 0 12px var(--blue)}.hero-title{font-family:var(--display);font-weight:500;letter-spacing:-.055em;font-size:clamp(36px,4.4vw,70px);line-height:1.05;margin:0;text-wrap:balance;text-shadow:0 8px 55px rgba(0,0,0,.35)}.hero-title span{display:block;color:#8ccfff}.hero-subtitle{font-size:13px;line-height:1.8;color:#91a8c7;margin:18px 0 0;max-width:312px}.view-coordinate{display:flex;align-items:center;gap:13px;margin-top:27px;color:#aabbd3;font-size:11px;font-family:var(--display);letter-spacing:.09em}.coord-separator{width:3px;height:3px;border-radius:50%;background:#48617f}.view-coordinate strong{font-weight:500;color:#edf5ff}.view-info.compact .hero-title{font-size:28px}.view-info.compact .hero-subtitle{display:none}
+.right-rail{position:absolute;top:50%;transform:translateY(-50%);right:clamp(23px,3.5vw,55px);z-index:4;pointer-events:none;display:flex;align-items:center;flex-direction:column;gap:22px}.compass{position:relative;width:86px;height:86px;border-radius:50%;border:1px solid rgba(146,194,255,.16);background:rgba(8,15,31,.27);backdrop-filter:blur(10px);box-shadow:0 4px 45px rgba(0,0,0,.1)}.compass:after{content:'';position:absolute;inset:11px;border:1px dashed rgba(144,198,247,.12);border-radius:50%}.compass-label{position:absolute;font-family:var(--display);font-size:9px;color:#8da1ba}.compass-label.n{top:7px;left:50%;transform:translateX(-50%);color:#e0eefa}.compass-label.s{bottom:6px;left:50%;transform:translateX(-50%)}.compass-label.e{right:8px;top:50%;transform:translateY(-50%)}.compass-label.w{left:7px;top:50%;transform:translateY(-50%)}.compass-needle{position:absolute;inset:0;display:grid;place-items:center;transition:transform .15s linear}.compass-needle:before{content:'';width:3px;height:43px;background:linear-gradient(to bottom,#9bddff 0 44%,rgba(126,160,207,.37) 52% 100%);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);filter:drop-shadow(0 0 5px #8ed4ff)}.rail-label{font-family:var(--display);font-size:9px;letter-spacing:.18em;color:#7890b0;writing-mode:vertical-rl;transform:rotate(180deg)}
+.center-reticle{position:absolute;top:47%;left:50%;width:39px;height:39px;transform:translate(-50%,-50%);z-index:3;pointer-events:none;opacity:.5}.center-reticle:before,.center-reticle:after{content:'';position:absolute;background:#c0dafa}.center-reticle:before{height:1px;width:100%;top:50%}.center-reticle:after{width:1px;height:100%;left:50%}.center-reticle i{position:absolute;inset:12px;border:1px solid #b4cfee;border-radius:50%;background:rgba(6,16,31,.24)}.hint{position:absolute;bottom:191px;left:clamp(24px,3.5vw,56px);font-size:10px;letter-spacing:.065em;color:#7b93b4;z-index:4;display:flex;align-items:center;gap:9px;pointer-events:none}.hint svg{width:14px;height:14px}.sources{position:absolute;left:clamp(24px,3.5vw,56px);bottom:16px;z-index:4;display:flex;gap:14px;align-items:center;color:#556987;font-size:10px;letter-spacing:.035em}.sources a{color:#8498b5}.sources a:hover{color:#afdfff}.sources .sep{width:3px;height:3px;background:#50637b;border-radius:50%}
+.bottom-ui{position:absolute;bottom:43px;left:50%;transform:translateX(-50%);width:min(1110px,calc(100% - 90px));z-index:8;display:flex;flex-direction:column;gap:13px;pointer-events:none}.bottom-ui>*{pointer-events:auto}.timebar{min-height:53px;max-width:792px;width:100%;align-self:center;display:flex;align-items:center;gap:17px;border:1px solid rgba(136,173,219,.13);border-radius:15px;background:rgba(8,15,29,.72);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 12px 35px rgba(0,0,0,.16);padding:8px 15px}.time-label{min-width:142px}.time-top{color:#7186a5;font-size:9px;letter-spacing:.13em;font-weight:700;text-transform:uppercase;margin-bottom:3px}.time-value{font-family:var(--display);font-size:15px;font-weight:600;letter-spacing:.025em;white-space:nowrap}.time-value small{font-size:10px;color:#92a9c6;font-weight:500;margin-left:5px}.time-range{flex:1;min-width:70px;accent-color:#8bd4ff;height:3px;cursor:pointer}.time-control{display:flex;align-items:center;gap:5px}.small-action{width:32px;height:32px;border:1px solid transparent;border-radius:10px;background:transparent;display:grid;place-items:center;color:#a5b5cb}.small-action:hover{background:rgba(146,180,228,.1);color:white}.small-action svg{width:16px;height:16px}.now-btn{border:1px solid rgba(154,194,246,.19);background:rgba(116,163,227,.08);font-size:10px;letter-spacing:.09em;font-weight:700;color:#bfe5ff;border-radius:9px;padding:9px 11px}.now-btn:hover{background:rgba(116,163,227,.18)}.dock{display:flex;align-items:center;gap:0;width:100%;min-height:94px;background:rgba(9,16,30,.89);border:1px solid rgba(163,191,234,.19);border-radius:22px;backdrop-filter:blur(38px);-webkit-backdrop-filter:blur(38px);box-shadow:0 20px 75px rgba(0,0,0,.38),inset 0 1px 0 rgba(230,243,255,.035);padding:13px}.dock-caption{min-width:136px;max-width:136px;padding:7px 11px 7px 16px}.dock-caption-top{font-size:9px;letter-spacing:.19em;text-transform:uppercase;color:#758ba9;font-weight:700}.dock-caption-title{font-size:17px;font-family:var(--display);font-weight:600;margin-top:7px}.dock-caption-title b{font-weight:500;color:var(--blue)}.dock-divider{height:47px;width:1px;background:rgba(158,184,219,.16);margin:0 10px}.layer-buttons{display:flex;flex:1;min-width:0;gap:8px}.layer-toggle{position:relative;min-width:0;flex:1;border:1px solid transparent;border-radius:14px;padding:11px 9px;display:flex;align-items:center;gap:11px;text-align:left;background:transparent;transition:background .18s,border-color .18s}.layer-toggle:hover{background:rgba(139,169,214,.085)}.layer-toggle.active{background:rgba(34,59,96,.55);border-color:rgba(124,173,233,.17)}.layer-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(130,152,220,.12);color:#b6aaff}.layer-toggle[data-layer="deepSky"] .layer-icon{background:rgba(178,123,218,.12);color:#d1a1f5}.layer-toggle[data-layer="satellites"] .layer-icon{background:rgba(79,165,203,.13);color:#8cddf8}.layer-icon svg{width:21px;height:21px}.layer-name{font-size:12px;font-weight:700;letter-spacing:-.01em;color:#c6d5e9;white-space:nowrap}.layer-description{font-size:10px;white-space:nowrap;color:#7187a4;margin-top:4px}.layer-toggle.active .layer-name{color:white}.layer-state{position:absolute;right:9px;top:11px;width:6px;height:6px;border-radius:50%;background:#3c4d67}.layer-toggle.active .layer-state{background:#90d4ff;box-shadow:0 0 12px rgba(114,196,255,.7)}.tool-actions{display:flex;align-items:center;gap:7px;padding:0 5px}.tool-btn{border:1px solid rgba(160,187,229,.13);width:38px;height:40px;background:rgba(146,184,230,.04);border-radius:11px;display:grid;place-items:center;color:#a7bad1}.tool-btn:hover{color:white;border-color:rgba(160,187,229,.36);background:rgba(146,184,230,.12)}.tool-btn svg{width:17px;height:17px}.motion-btn{display:none;align-items:center;justify-content:center;gap:7px;padding:0 12px;height:40px;border:1px solid rgba(147,182,234,.21);background:rgba(76,121,179,.12);border-radius:11px;color:#b7c9df;white-space:nowrap;font-size:10px;font-weight:800;letter-spacing:.07em}.motion-btn.active{color:#a8eeff;background:rgba(54,140,182,.24);border-color:rgba(124,220,242,.45)}.motion-btn svg{width:17px;height:17px}.motion-btn:hover{background:rgba(91,157,210,.19)}
+.toast-stack{position:absolute;top:93px;left:50%;transform:translateX(-50%);z-index:22;display:flex;flex-direction:column;gap:9px;pointer-events:none;max-width:min(470px,calc(100vw - 30px));width:max-content}.toast{padding:12px 16px;background:rgba(17,28,47,.96);color:#d5e9fb;border:1px solid rgba(136,192,237,.23);border-radius:13px;box-shadow:0 12px 35px rgba(0,0,0,.35);font-size:12px;line-height:1.5;animation:toastIn .28s ease-out}.toast.warn{border-color:rgba(238,174,109,.4)}@keyframes toastIn{from{transform:translateY(-9px);opacity:0}to{transform:translateY(0);opacity:1}}
+.details{position:absolute;z-index:12;right:24px;top:99px;width:min(387px,calc(100% - 35px));max-height:calc(100% - 310px);overflow-y:auto;background:rgba(11,19,34,.96);border:1px solid rgba(144,184,239,.23);border-radius:21px;box-shadow:0 25px 100px rgba(0,0,0,.58);backdrop-filter:blur(35px);-webkit-backdrop-filter:blur(35px);transform:translateX(calc(100% + 45px));opacity:0;pointer-events:none;transition:transform .31s cubic-bezier(.2,.8,.2,1),opacity .25s}.details.visible{transform:translateX(0);opacity:1;pointer-events:auto}.details-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 15px}.details-kicker{display:flex;align-items:center;gap:7px;font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;color:#93cfff}.details-close{height:30px;width:30px;border:1px solid rgba(156,190,236,.16);border-radius:9px;background:rgba(122,168,231,.05);display:grid;place-items:center}.details-close:hover{background:rgba(122,168,231,.16)}.details-close svg{width:15px;height:15px}.detail-image{height:175px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 60% 30%,#294568,#0b1630 62%,#090f20)}.detail-image img{width:100%;height:100%;object-fit:cover}.detail-image:after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(10,18,34,.48))}.detail-image.no-image{display:flex;align-items:center;justify-content:center}.detail-image.no-image svg{height:100px;width:100px;opacity:.65;filter:drop-shadow(0 0 20px rgba(146,199,255,.24))}.detail-photo-credit{position:absolute;bottom:9px;left:15px;z-index:1;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:#dce9f9;background:rgba(0,0,0,.46);padding:5px 7px;border-radius:6px}.detail-body{padding:23px 23px 24px}.detail-body h2{font:600 27px/1.18 var(--display);letter-spacing:-.045em;margin:0}.detail-sub{color:#9aadd0;margin-top:6px;font-size:12px}.detail-body p{font-size:12.5px;line-height:1.8;color:#a9b9d0;margin:17px 0 19px}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-metric{border:1px solid rgba(149,182,224,.12);border-radius:12px;padding:12px 12px;background:rgba(106,150,208,.055);min-width:0}.detail-metric label{display:block;font-size:9px;color:#7188a7;letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px}.detail-metric strong{font-family:var(--display);font-size:13px;font-weight:500;color:#ecf4ff;overflow-wrap:anywhere}.detail-actions{display:flex;gap:8px;margin-top:19px;flex-wrap:wrap}.primary-btn,.secondary-btn{min-height:39px;border-radius:10px;padding:0 13px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}.primary-btn{border:1px solid #9bc9f3;background:#9dd6fc;color:#081527}.primary-btn:hover{background:#c1e7ff}.secondary-btn{background:rgba(143,192,233,.07);border:1px solid rgba(143,192,233,.19);color:#c5e6ff}.secondary-btn:hover{background:rgba(143,192,233,.16)}.primary-btn svg,.secondary-btn svg{width:15px;height:15px}.detail-footer{margin-top:16px;color:#6f89ab;font-size:10px;line-height:1.6}.detail-footer a{color:#86bfe9}
+.modal-shade{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:rgba(1,5,13,.67);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);opacity:0;pointer-events:none;transition:opacity .18s;padding:22px}.modal-shade.visible{opacity:1;pointer-events:auto}.modal-card{width:min(530px,100%);max-height:min(80vh,680px);border:1px solid rgba(149,189,240,.25);background:#0c1527;box-shadow:0 24px 85px rgba(0,0,0,.6);border-radius:21px;display:flex;flex-direction:column;overflow:hidden;transform:scale(.975) translateY(10px);transition:transform .18s}.modal-shade.visible .modal-card{transform:scale(1) translateY(0)}.modal-head{padding:22px 24px 18px;display:flex;align-items:flex-start;justify-content:space-between}.modal-head h2{font:600 22px var(--display);margin:0;letter-spacing:-.04em}.modal-head p{font-size:12px;color:#839ab8;margin:7px 0 0}.modal-head button{background:rgba(149,189,240,.06);border:1px solid rgba(149,189,240,.15);border-radius:9px;width:31px;height:31px;display:grid;place-items:center}.modal-head button svg{width:16px;height:16px}.search-field{display:flex;align-items:center;gap:11px;border:1px solid rgba(143,180,232,.25);background:rgba(92,141,198,.08);border-radius:12px;margin:0 24px 16px;padding:0 13px}.search-field svg{width:17px;height:17px;color:#8fa8c7}.search-field input{background:none;border:0;outline:0;color:white;padding:13px 0;flex:1;min-width:0;font-size:14px}.search-field input::placeholder{color:#627d9e}.search-results{overflow-y:auto;max-height:440px;padding:0 13px 17px}.result-group{padding:11px 12px 6px;font-size:10px;font-weight:700;letter-spacing:.16em;color:#708cac;text-transform:uppercase}.result-row{width:100%;display:flex;align-items:center;text-align:left;gap:12px;background:none;border:1px solid transparent;border-radius:11px;padding:10px 11px}.result-row:hover{background:rgba(109,162,222,.12);border-color:rgba(109,162,222,.12)}.result-symbol{height:37px;width:37px;border-radius:10px;background:rgba(130,158,223,.1);display:grid;place-items:center;color:#9fd7f8}.result-symbol svg{width:19px;height:19px}.result-text{flex:1;min-width:0}.result-title{font-size:12px;font-weight:700}.result-meta{font-size:10px;color:#849ab6;margin-top:4px}.result-row>.arrow{width:15px;height:15px;color:#5b7495}.empty-results{padding:25px;color:#8094af;font-size:12px;text-align:center}.settings-body{padding:0 24px 24px;overflow:auto}.form-label{font-size:10px;color:#98afc9;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:12px 0 7px;display:block}.setting-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.setting-field{border:1px solid rgba(150,184,231,.23);border-radius:10px;background:rgba(104,152,211,.06);color:#e7f3ff;padding:10px 12px;width:100%;font-size:13px}.setting-helper{font-size:11px;color:#8299b7;line-height:1.7;margin:11px 0 18px}.settings-buttons{display:flex;gap:9px}.settings-buttons button{flex:1}.setting-source{padding:13px 0 0;margin-top:20px;border-top:1px solid rgba(143,180,232,.14);color:#7790ae;font-size:10px;line-height:1.9}.setting-source a{color:#9ed6f6}.bottom-status{position:absolute;z-index:4;right:clamp(24px,3.5vw,56px);bottom:16px;font-size:10px;color:#687e9f;display:flex;align-items:center;gap:8px}.status-dot{width:5px;height:5px;background:#68ddc0;border-radius:50%}.status-dot.offline{background:#efb37e}
+@media(min-width:1120px){.details.visible~.bottom-ui{width:min(1090px,calc(100% - 100px))}}
+@media(max-width:1060px){.dock-caption{min-width:107px;max-width:107px;padding-left:8px}.dock-caption-title{font-size:14px}.dock-divider{margin:0 6px}.layer-icon{width:34px;height:36px}.layer-toggle{gap:8px;padding:10px 7px}.layer-description{font-size:9px}.bottom-ui{width:calc(100% - 48px)}.tool-actions{gap:5px}}
+@media(max-width:760px){.topbar{padding:20px 14px;gap:7px}.brand-logo{width:34px;height:34px;border-radius:11px}.brand{gap:8px}.brand-name{font-size:14px}.brand-version{font-size:9px}.brand-tagline{display:none}.top-actions{gap:8px}.live-pill{display:none}.place-pill{max-width:125px;padding:0 9px}.place-pill span{font-size:11px}.view-info{top:111px;left:22px}.eyebrow{font-size:9px;margin-bottom:10px}.hero-title{font-size:clamp(32px,7.2vw,51px)}.hero-subtitle{font-size:11px;max-width:205px;margin-top:10px;line-height:1.6}.view-coordinate{font-size:10px;margin-top:17px}.right-rail{right:18px;top:38%}.compass{width:67px;height:67px}.compass-needle:before{height:34px}.compass-label{font-size:8px}.rail-label{display:none}.center-reticle{top:41%}.hint{display:none}.bottom-ui{bottom:max(19px,env(safe-area-inset-bottom));width:calc(100% - 24px);gap:9px}.dock{flex-wrap:wrap;padding:10px;border-radius:20px;gap:9px}.dock-caption{display:none}.dock-divider{display:none}.layer-buttons{width:100%;flex:1 0 100%;gap:5px}.layer-toggle{min-width:0;justify-content:center;gap:7px;padding:9px 5px}.layer-icon{width:32px;height:34px;border-radius:10px}.layer-icon svg{width:19px;height:19px}.layer-name{font-size:10px}.layer-description{font-size:9px;margin-top:3px}.layer-state{right:5px;top:5px;width:5px;height:5px}.tool-actions{padding:0;width:100%;justify-content:space-between}.motion-btn{display:flex;flex:1;max-width:180px}.tool-btn{flex:1;max-width:48px}.timebar{max-width:unset;min-height:48px;gap:8px;padding:7px 11px}.time-label{min-width:105px}.time-top{font-size:8px}.time-value{font-size:13px}.time-value small{font-size:9px}.time-control{gap:1px}.small-action{width:28px;height:30px}.now-btn{padding:8px;font-size:9px}.sources,.bottom-status{display:none}.details{right:12px;left:12px;width:auto;top:auto;bottom:calc(max(18px,env(safe-area-inset-bottom)) + 194px);max-height:min(58vh,540px);border-radius:18px;transform:translateY(calc(100% + 245px))}.details.visible{transform:translateY(0)}.detail-image{height:142px}.detail-body{padding:17px 19px 22px}.detail-body h2{font-size:23px}.detail-body p{margin:13px 0 16px}.detail-grid{gap:8px}.detail-metric{padding:10px}.detail-actions{margin-top:13px}.details-header{padding:11px 17px}.toast-stack{top:75px}}
+@media(max-width:390px){.brand-tagline{display:none}.place-pill{max-width:105px}.layer-toggle{gap:4px}.layer-icon{width:29px;height:33px}.layer-name{font-size:9px}.layer-description{font-size:8px}.time-range{min-width:35px}.now-btn{padding:7px}.time-label{min-width:94px}.time-control .small-action:first-child{display:none}}
+@media(max-width:345px){.topbar{padding:17px 10px}.brand-logo{width:30px;height:30px}.brand{gap:5px}.brand-name{font-size:12px}.brand-version{font-size:8px}.place-pill{max-width:90px}.top-actions{gap:6px}.icon-btn{width:35px;min-height:35px}}
+@media(max-height:690px){.view-info{top:104px}.hero-title{font-size:34px}.hero-subtitle{display:none}.view-coordinate{margin-top:12px}.hint{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<canvas id="sky" aria-label="Interaktive Himmelskarte. Ziehen zum Drehen, Mausrad zum Zoomen, Objekte antippen fuer Details."></canvas>
+<div class="vignette"></div><div class="noise"></div>
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-stars" viewBox="0 0 24 24"><path d="m12 2 2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2Z" fill="none" stroke="currentColor" stroke-width="1.45"/><circle cx="19.5" cy="4.5" r="1" fill="currentColor"/><circle cx="4.5" cy="19" r="1" fill="currentColor"/></symbol>
+<symbol id="i-const" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 15 3l5 8-9 10-7-7 1-9Z"/><circle cx="5" cy="5" r="2" fill="currentColor"/><circle cx="15" cy="3" r="1.6" fill="currentColor"/><circle cx="20" cy="11" r="2" fill="currentColor"/><circle cx="11" cy="21" r="1.6" fill="currentColor"/><circle cx="4" cy="14" r="1.7" fill="currentColor"/></g></symbol>
+<symbol id="i-nebula" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M12 2c5 2 7 5 7 10 0 7-5 9-10 9-5 0-7-4-6-8 1-4 5-7 9-5 5 2 2 9-2 8-4-1-3-6 0-6"/><path d="M5 3v4M3 5h4M20 18v4M18 20h4"/></g></symbol>
+<symbol id="i-satellite" viewBox="0 0 24 24"><g stroke="currentColor" fill="none" stroke-width="1.55" stroke-linejoin="round" stroke-linecap="round"><path d="m9 9 6 6m-7-3 4-4 4 4-4 4-4-4ZM3 9l6-6 3 3-6 6-3-3Zm9 9 6-6 3 3-6 6-3-3ZM13 11l-2 2"/><path d="M18 3c2 1 3 2 3 4"/></g></symbol>
+<symbol id="i-location" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4 14 20l-3-7-7-3 16-6Z"/></g></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.3" fill="#101c32"/><circle cx="16" cy="17" r="2.3" fill="#101c32"/></g></symbol>
+<symbol id="i-motion" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M10 18h4M3 7c-1 3-1 7 0 10M21 7c1 3 1 7 0 10"/></g></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8V4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></symbol>
+<symbol id="i-crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5" stroke="currentColor" stroke-width="1.5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+</svg>
+<header class="topbar">
+ <div class="brand"><div class="brand-logo"><svg width="25" height="25" viewBox="0 0 24 24" style="color:#a7dbff"><use href="#i-stars"/></svg></div><div><div class="brand-name">Nachthimmel <span class="brand-version">v1</span></div><div class="brand-tagline">DEIN FENSTER INS UNIVERSUM</div></div></div>
+ <div class="top-actions"><div class="live-pill"><span class="pulse-dot" id="liveDot"></span><span id="liveStatus">HIMMELSKARTE</span></div><button class="place-pill" id="locationTop" title="Standort festlegen"><svg><use href="#i-location"/></svg><span id="placeLabel">Berlin, Deutschland</span></button><button class="icon-btn" id="searchBtn" title="Objekte suchen" aria-label="Suche oeffnen"><svg><use href="#i-search"/></svg></button></div>
+</header>
+<div class="view-info" id="viewInfo"><div class="eyebrow">DEIN FENSTER INS UNIVERSUM</div><h1 class="hero-title">Entdecke den <span>Nachthimmel.</span></h1><p class="hero-subtitle">Reise durch Sternbilder, ferne Galaxien und die Umlaufbahnen unserer Satelliten.</p><div class="view-coordinate"><span>BLICK <strong id="directionValue">S&Uuml;DWEST</strong></span><span class="coord-separator"></span><span>AZ <strong id="azValue">207&deg;</strong></span><span class="coord-separator"></span><span>ALT <strong id="altValue">47&deg;</strong></span></div></div>
+<div class="center-reticle" aria-hidden="true"><i></i></div>
+<div class="right-rail"><div class="compass" aria-hidden="true"><span class="compass-label n">N</span><span class="compass-label e">O</span><span class="compass-label s">S</span><span class="compass-label w">W</span><div class="compass-needle" id="compassNeedle"></div></div><div class="rail-label">BEOBACHTUNG / NACHTHIMMEL V1</div></div>
+<div class="hint"><svg><use href="#i-crosshair"/></svg> Ziehen, um dich umzusehen &middot; Scrollen zum Zoomen &middot; Objekte antippen</div>
+<div class="sources"><span>OPEN SKY DATA</span><span class="sep"></span><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener noreferrer">Sternkatalog / IAU</a><span class="sep"></span><a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Images</a><span class="sep"></span><a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer">CelesTrak</a></div>
+<div class="bottom-status"><span class="status-dot" id="sourceDot"></span><span id="sourceStatus">Kataloge werden geladen ...</span></div>
+<div class="bottom-ui">
+ <div class="timebar"><div class="time-label"><div class="time-top" id="timeMode">BEOBACHTUNGSZEIT</div><div class="time-value"><span id="clockValue">21:30</span><small id="dateValue">HEUTE</small></div></div><input class="time-range" id="timeRange" type="range" min="-12" max="12" step="0.25" value="0" aria-label="Zeit um bis zu 12 Stunden verschieben"><div class="time-control"><button class="small-action" id="prevHour" title="Eine Stunde zurueck" aria-label="Eine Stunde zurueck"><svg><use href="#i-minus"/></svg></button><button class="small-action" id="playBtn" title="Zeitablauf starten" aria-label="Zeitablauf starten"><svg><use href="#i-play"/></svg></button><button class="small-action" id="nextHour" title="Eine Stunde vor" aria-label="Eine Stunde vor"><svg><use href="#i-plus"/></svg></button></div><button class="now-btn" id="nowBtn" title="Zur aktuellen Zeit">JETZT</button></div>
+ <nav class="dock" aria-label="Himmelskarten-Ebenen"><div class="dock-caption"><div class="dock-caption-top">KARTENANSICHT</div><div class="dock-caption-title">Sky <b>Layers</b></div></div><div class="dock-divider"></div><div class="layer-buttons"><button class="layer-toggle active" id="constBtn" data-layer="constellations" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-const"/></svg></span><span><div class="layer-name">Sternbilder</div><div class="layer-description" id="constCount">IAU-Konstellationen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="deepBtn" data-layer="deepSky" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-nebula"/></svg></span><span><div class="layer-name">Deep Sky</div><div class="layer-description">NASA-Aufnahmen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="satBtn" data-layer="satellites" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-satellite"/></svg></span><span><div class="layer-name">Satelliten</div><div class="layer-description" id="satCount">Lade Positionen ...</div></span><span class="layer-state"></span></button></div><div class="dock-divider"></div><div class="tool-actions"><button class="motion-btn" id="motionBtn" aria-pressed="false" title="Smartphone-Bewegungssensor ein- oder ausschalten"><svg><use href="#i-motion"/></svg><span id="motionText">SENSOR AUS</span></button><button class="tool-btn" id="zoomOutBtn" title="Herauszoomen" aria-label="Herauszoomen"><svg><use href="#i-minus"/></svg></button><button class="tool-btn" id="zoomInBtn" title="Hineinzoomen" aria-label="Hineinzoomen"><svg><use href="#i-plus"/></svg></button><button class="tool-btn" id="settingsBtn" title="Standort und Einstellungen" aria-label="Einstellungen oeffnen"><svg><use href="#i-settings"/></svg></button></div></nav>
+</div>
+<div class="toast-stack" id="toasts" role="status" aria-live="polite"></div>
+<aside class="details" id="detailPanel" role="dialog" aria-label="Objektdetails" aria-hidden="true"></aside>
+<div class="modal-shade" id="searchModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Himmelsobjekte suchen"><div class="modal-head"><div><h2>Das Universum entdecken</h2><p>Suche nach Sternbildern, Deep-Sky-Objekten und Satelliten.</p></div><button id="searchClose" aria-label="Suche schliessen"><svg><use href="#i-close"/></svg></button></div><div class="search-field"><svg><use href="#i-search"/></svg><input id="searchInput" autocomplete="off" type="search" placeholder="z. B. Orion, Andromeda, ISS ..." aria-label="Suchbegriff"></div><div class="search-results" id="searchResults"></div></div></div>
+<div class="modal-shade" id="settingsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Standort und Einstellungen"><div class="modal-head"><div><h2>Beobachtungsstandort</h2><p>Die Position bestimmt den sichtbaren Himmel.</p></div><button id="settingsClose" aria-label="Einstellungen schliessen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt; die Koordinaten bleiben in diesem Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich.</span></div></div></div></div>
+</div>
+<script type="module">
+'use strict';
+
+// All code is in this file. External runtime dependency: satellite.js (CDN).
+// Sky catalogues and photos are fetched from public, no-key endpoints at runtime.
+const $ = (id) => document.getElementById(id);
+const cvs = $('sky');
+const ctx = cvs.getContext('2d', { alpha: false });
+const RAD = Math.PI / 180;
+const DEG = 180 / Math.PI;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const wrap = (n) => ((n % 360) + 360) % 360;
+const rad = (v) => v * RAD;
+const deg = (v) => v * DEG;
+const ico = (name) => `<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
+const escapeHTML = (value) => String(value == null ? '' : value).replace(/[&<>"']/g, x => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[x]));
+const validURL = (url) => { try { const u = new URL(url); return u.protocol === 'https:' ? u.href : ''; } catch { return ''; } };
+const formatNumber = (v, digits = 1) => Number.isFinite(v) ? Number(v).toLocaleString('de-DE', {maximumFractionDigits:digits,minimumFractionDigits:digits}) : '--';
+const state = {
+  lat:52.52, lon:13.405, place:'Berlin, Deutschland', az:206, alt:46, fov:94, mag:6,
+  layers:{constellations:true,deepSky:true,satellites:true}, motion:false,
+  playing:false, playStart:0, offsetMs:0, selected:null,
+  starsLoaded:false, constLoaded:false, satLoaded:false,
+  stars:[], names:{}, constellations:[], lines:[], satellites:[],
+  satRender:[], lastSatCompute:0, lastSatDate:0, lastSatLabel:0,
+  catalogError:false, satError:false, sensorRelative:false,
+};
+let satlib = null;
+let W = 0, H = 0, DPR = 1;
+let hitTargets = [];
+let centerX = 0, centerY = 0, perspective = 0;
+let lastRendered = 0, lastUIUpdate = 0;
+let pointerMap = new Map(), startPointer = null, wasDragged = false;
+let lastPinch = 0;
+let lastSensorHeading = null;
+
+const CONST_EXTRA = {
+ Ori:{de:'Orion',about:'Der Himmelsj\u00e4ger ist eines der markantesten Wintersternbilder. Seine drei G\u00fcrtelsterne zeigen zur Sirius-Region; im Schwert liegt der Orionnebel M42.',star:'Rigel / Beteigeuze',season:'Winter'},
+ UMa:{de:'Gro\u00dfer B\u00e4r',about:'Die sieben hellen Sterne des Gro\u00dfen Wagens bilden den bekanntesten Teil dieses ausgedehnten Sternbilds. Die hinteren Kastensterne weisen zum Polarstern.',star:'Alioth',season:'Ganzj\u00e4hrig (Nordhalbkugel)'},
+ UMi:{de:'Kleiner B\u00e4r',about:'Sein hellster Stern, Polaris, steht nahe dem n\u00f6rdlichen Himmelspol und hilft bei der Orientierung.',star:'Polaris',season:'Ganzj\u00e4hrig (Nordhalbkugel)'},
+ Cas:{de:'Kassiopeia',about:'Die auff\u00e4llige W-Form liegt gegen\u00fcber dem Gro\u00dfen Wagen auf der anderen Seite des Polarsterns. Benannt nach einer K\u00f6nigin der griechischen Mythologie.',star:'Schedar',season:'Herbst'},
+ Cyg:{de:'Schwan',about:'Der Schwan bildet das N\u00f6rdliche Kreuz entlang der Milchstra\u00dfe. Deneb ist eine Ecke des Sommerdreiecks.',star:'Deneb',season:'Sommer / Herbst'},
+ Lyr:{de:'Leier',about:'Das kleine Sternbild wird vom sehr hellen Stern Wega dominiert. Zwischen seinen Sternen steht der Ringnebel M57.',star:'Wega',season:'Sommer'},
+ Aql:{de:'Adler',about:'Altair ist einer der drei Sterne des Sommerdreiecks. Der Adler liegt beidseits der hellen Sommermilchstra\u00dfe.',star:'Altair',season:'Sommer'},
+ Sco:{de:'Skorpion',about:'Das Sternbild folgt einer geschwungenen Sternenkette mit dem r\u00f6tlichen \u00dcberriesen Antares nahe dem Herzen.',star:'Antares',season:'Sommer'},
+ Tau:{de:'Stier',about:'Der rote Aldebaran markiert das Auge des Stiers. Im selben Himmelsbereich befinden sich die Hyaden und die Plejaden.',star:'Aldebaran',season:'Winter'},
+ Gem:{de:'Zwillinge',about:'Die Sterne Kastor und Pollux bilden die K\u00f6pfe der mythologischen Zwillinge.',star:'Pollux',season:'Winter'},
+ And:{de:'Andromeda',about:'In diesem Herbststernbild liegt M31, die Andromedagalaxie, unsere gro\u00dfe Nachbargalaxie in etwa 2,5 Millionen Lichtjahren Entfernung.',star:'Alpheratz',season:'Herbst'},
+ Leo:{de:'L\u00f6we',about:'Die Sichel um Regulus bildet Kopf und M\u00e4hne, Denebola markiert den Schwanz des L\u00f6wen.',star:'Regulus',season:'Fr\u00fchling'},
+ Boo:{de:'B\u00e4renh\u00fcter',about:'Arktur, einer der hellsten Sterne am Himmel, ist die auff\u00e4lligste Markierung dieses Fr\u00fchlingssternbilds.',star:'Arktur',season:'Fr\u00fchling'},
+ Per:{de:'Perseus',about:'Der Held Perseus liegt am Rand des Milchstra\u00dfenbandes. Algol ist ein ber\u00fchmter ver\u00e4nderlicher Stern.',star:'Mirfak',season:'Herbst / Winter'},
+ CMa:{de:'Gro\u00dfer Hund',about:'Hier leuchtet Sirius, der hellste Stern des Nachthimmels. Das Sternbild geh\u00f6rt zur Winterregion s\u00fcdlich von Orion.',star:'Sirius',season:'Winter'},
+ CrB:{de:'N\u00f6rdliche Krone',about:'Ein Halbkreis aus Sternen rund um die helle Gemma bildet eine auff\u00e4llige Krone.',star:'Gemma',season:'Sommer'},
+ Sgr:{de:'Sch\u00fctze',about:'In Richtung Sch\u00fctze blicken wir zum Zentrum unserer Milchstra\u00dfe. Hier liegen viele helle Nebel und Sternhaufen.',star:'Kaus Australis',season:'Sommer'},
+ Peg:{de:'Pegasus',about:'Das markante Herbstviereck verbindet Pegasus und Andromeda. Das gefl\u00fcgelte Pferd ist gro\u00dffl\u00e4chig.',star:'Enif',season:'Herbst'},
+};
+
+// Bright-star coordinates are embedded as an offline fallback, not a replacement
+// for the fetched photometric catalogue.
+const BRIGHT = [
+ ['Sirius',101.287,-16.716,-1.46,-.01],['Canopus',95.988,-52.696,-.74,.15],['Arcturus',213.915,19.182,-.05,1.23],
+ ['Vega',279.235,38.784,.03,.00],['Capella',79.172,45.998,.08,.80],['Rigel',78.634,-8.202,.13,-.03],
+ ['Procyon',114.825,5.225,.34,.42],['Achernar',24.429,-57.237,.46,-.16],['Betelgeuse',88.793,7.407,.50,1.85],
+ ['Hadar',210.955,-60.374,.61,-.23],['Acrux',186.650,-63.099,.76,-.24],['Altair',297.696,8.868,.77,.22],
+ ['Aldebaran',68.980,16.509,.85,1.54],['Spica',201.298,-11.161,.98,-.23],['Antares',247.352,-26.432,1.06,1.83],
+ ['Pollux',116.329,28.026,1.14,1.00],['Fomalhaut',344.413,-29.622,1.16,.09],['Deneb',310.358,45.280,1.25,.09],
+ ['Mimosa',191.930,-59.689,1.25,-.23],['Regulus',152.093,11.967,1.35,-.11],['Adhara',104.656,-28.972,1.50,-.21],
+ ['Castor',113.650,31.888,1.58,.03],['Gacrux',187.792,-57.113,1.63,1.59],['Shaula',263.402,-37.104,1.62,-.23],
+ ['Bellatrix',81.283,6.350,1.64,-.21],['Elnath',81.573,28.608,1.65,-.13],['Miaplacidus',138.300,-69.717,1.67,.07],
+ ['Alnair',332.058,-46.961,1.73,-.07],['Alioth',193.507,55.960,1.77,-.02],['Alhena',99.428,16.399,1.93,.00],
+ ['Dubhe',165.932,61.751,1.79,1.07],['Merak',165.460,56.383,2.37,-.02],['Phecda',178.457,53.694,2.44,.03],
+ ['Megrez',183.857,57.032,3.31,.08],['Mizar',200.981,54.926,2.23,.02],['Alkaid',206.886,49.313,1.85,-.16],
+ ['Kochab',222.676,74.155,2.08,1.47],['Polaris',37.954,89.264,1.98,.60],['Caph',2.294,59.150,2.27,.38],
+ ['Schedar',10.127,56.537,2.24,1.17],['Gamma Cas',14.177,60.716,2.47,-.15],['Ruchbah',21.454,60.235,2.68,.13],
+ ['Segin',28.599,63.670,3.35,-.11],['Sadr',305.557,40.257,2.23,.68],['Gienah Cyg',304.513,33.970,2.46,1.02],
+ ['Albireo',292.680,27.960,3.05,1.09],['Fawaris',296.243,45.130,2.86,-.06],
+ ['Sheliak',282.520,33.363,3.45,-.02],['Sulafat',284.736,32.689,3.24,-.06],
+ ['Tarazed',296.565,10.613,2.72,1.51],['Alshain',298.828,6.407,3.71,.86],
+ ['Alnitak',85.190,-1.943,1.74,-.21],['Alnilam',84.053,-1.202,1.69,-.18],['Mintaka',83.002,-.300,2.23,-.20],
+ ['Saiph',86.939,-9.670,2.06,-.18],['Alpheratz',2.097,29.090,2.06,-.11],['Mirach',17.433,35.620,2.07,1.58],
+ ['Almach',30.975,42.330,2.10,1.37],['Denebola',177.265,14.572,2.14,.09],['Algieba',154.994,19.842,2.28,1.13],
+ ['Zosma',168.527,20.524,2.56,.12],['Izar',221.247,27.074,2.37,1.00],['Nekkar',225.486,40.391,3.49,.95],
+ ['Mirfak',51.081,49.861,1.79,.48],['Algol',47.042,40.955,2.12,-.05],['Atik',56.080,32.290,2.86,-.01],
+ ['Kaus Australis',276.043,-34.385,1.79,-.04],['Nunki',283.817,-26.297,2.05,-.11],
+ ['Enif',333.366,9.875,2.39,1.52],['Markab',346.190,15.205,2.49,-.04],['Scheat',345.943,28.083,2.44,1.67],
+ ['Algenib',3.308,15.184,2.84,-.19],['Hamal',31.793,23.462,2.00,1.15],
+ ['Rasalhague',263.733,12.560,2.08,.16],['Gemma',233.672,26.715,2.23,.00],
+ ['Dschubba',240.083,-22.622,2.32,-.12],['Sargas',264.330,-42.997,1.86,.41],
+ ['Wezen',107.097,-26.393,1.83,.67],['Aludra',111.024,-29.303,2.45,-.08],
+ ['Atria',252.166,-69.028,1.91,1.45],['Alkaid',206.886,49.313,1.85,-.16]
+];
+const FALLBACK_STARS = BRIGHT.map((s,i) => ({ id:'fallback-'+i,name:s[0],ra:s[1],dec:s[2],mag:s[3],bv:s[4]}));
+const named = (name) => { const s = FALLBACK_STARS.find(o => o.name === name); return s ? [s.ra,s.dec] : null; };
+function buildFallbackConstellations() {
+ const groups = [
+ ['Ori','Orion',[['Betelgeuse','Bellatrix'],['Betelgeuse','Alnitak'],['Bellatrix','Mintaka'],['Mintaka','Alnilam','Alnitak'],['Alnitak','Saiph'],['Alnilam','Rigel'],['Saiph','Rigel']]],
+ ['UMa','Ursa Major',[['Dubhe','Merak','Phecda','Megrez','Dubhe'],['Megrez','Alioth','Mizar','Alkaid']]],
+ ['Cas','Cassiopeia',[['Caph','Schedar','Gamma Cas','Ruchbah','Segin']]],
+ ['Cyg','Cygnus',[['Deneb','Sadr','Albireo'],['Fawaris','Sadr','Gienah Cyg']]],
+ ['Lyr','Lyra',[['Vega','Sheliak','Sulafat']]],
+ ['Aql','Aquila',[['Tarazed','Altair','Alshain']]],
+ ['And','Andromeda',[['Alpheratz','Mirach','Almach']]],
+ ['Leo','Leo',[['Regulus','Algieba','Zosma','Denebola']]],
+ ['Sco','Scorpius',[['Dschubba','Antares','Sargas','Shaula']]],
+ ['Peg','Pegasus',[['Alpheratz','Algenib','Markab','Scheat','Alpheratz']]],
+ ['Per','Perseus',[['Mirfak','Algol'],['Mirfak','Atik']]],
+ ['CMa','Canis Major',[['Sirius','Adhara','Wezen','Aludra']]],
+ ['Boo','Bootes',[['Arcturus','Izar','Nekkar']]],
+ ];
+ return groups.map(g => {
+  const all = g[2].flat().map(named).filter(Boolean);
+  const ra = all.reduce((a,p)=>a+p[0],0)/(all.length||1);
+  const dec = all.reduce((a,p)=>a+p[1],0)/(all.length||1);
+  return {id:g[0],name:g[1],de:CONST_EXTRA[g[0]]?.de || g[1],ra,dec,segments:g[2].map(line=>line.map(named).filter(Boolean)).filter(l=>l.length>1)};
+ });
+}
+state.constellations = buildFallbackConstellations();
+state.stars = FALLBACK_STARS;
+
+const DEEP = [
+ {id:'M31',name:'Andromedagalaxie',type:'Spiralgalaxie',ra:10.685,dec:41.269,extent:3.2,dist:'2,54 Mio. Lj.',query:'Andromeda Galaxy M31',about:'Die n\u00e4chste gro\u00dfe Spiralgalaxie zur Milchstra\u00dfe. Unter dunklem Himmel erscheint ihr heller Kern bereits mit blo\u00dfem Auge.'},
+ {id:'M42',name:'Orionnebel',type:'Emissionsnebel',ra:83.822,dec:-5.391,extent:1.0,dist:'1.350 Lj.',query:'Orion Nebula Hubble',about:'Eine nahe Sternentstehungsregion im Schwert des Orion. Junge Sterne beleuchten gewaltige Gas- und Staubwolken.'},
+ {id:'M45',name:'Plejaden',type:'Offener Sternhaufen',ra:56.75,dec:24.116,extent:1.8,dist:'444 Lj.',query:'Pleiades NASA',about:'Ein junger, heller Sternhaufen im Stier. Seine bl\u00e4ulichen Sterne sind mit blo\u00dfem Auge leicht zu erkennen.'},
+ {id:'M51',name:'Whirlpool-Galaxie',type:'Spiralgalaxie',ra:202.47,dec:47.195,extent:.22,dist:'23 Mio. Lj.',query:'Whirlpool Galaxy M51 Hubble',about:'Eine wechselwirkende Spiralgalaxie im Sternbild Jagdhunde, ber\u00fchmt f\u00fcr ihre klar ausgepr\u00e4gten Spiralarme.'},
+ {id:'M13',name:'Herkuleshaufen',type:'Kugelsternhaufen',ra:250.422,dec:36.461,extent:.35,dist:'22.200 Lj.',query:'Messier 13 Hubble globular cluster',about:'Hunderttausende alter Sterne ballen sich im Kugelsternhaufen M13 im Sternbild Herkules.'},
+ {id:'M8',name:'Lagunennebel',type:'Emissionsnebel',ra:270.92,dec:-24.38,extent:1.5,dist:'4.100 Lj.',query:'Lagoon Nebula Hubble',about:'Eine ausgedehnte Sternentstehungsregion im Sch\u00fctzen, eingebettet in das Sternenband der Milchstra\u00dfe.'},
+ {id:'M57',name:'Ringnebel',type:'Planetarischer Nebel',ra:283.396,dec:33.028,extent:.10,dist:'2.570 Lj.',query:'Ring Nebula M57 Hubble',about:'Die abgesto\u00dfene H\u00fclle eines sterbenden Sterns im Sternbild Leier. Ihre ringf\u00f6rmige Gestalt entsteht durch unsere Blickrichtung.'},
+ {id:'NGC 2237',name:'Rosettennebel',type:'Emissionsnebel',ra:98.1,dec:4.96,extent:1.3,dist:'5.200 Lj.',query:'Rosette Nebula NASA',about:'Eine gro\u00dfe, rosettenf\u00f6rmige Gaswolke im Einhorn mit einem jungen Sternhaufen im Zentrum.'},
+ {id:'NGC 7000',name:'Nordamerikanebel',type:'Emissionsnebel',ra:314.5,dec:44.25,extent:2.0,dist:'2.200 Lj.',query:'North America Nebula NASA',about:'Ein ausgedehnter Nebelkomplex im Schwan, dessen Umriss an Nordamerika erinnert.'},
+ {id:'NGC 3372',name:'Carinanebel',type:'Sternentstehungsgebiet',ra:161.2,dec:-59.6,extent:2.0,dist:'7.500 Lj.',query:'Carina Nebula Webb NASA',about:'Ein riesiges Sternentstehungsgebiet am S\u00fcdhimmel mit hei\u00dfen jungen Sternen, darunter Eta Carinae.'},
+ {id:'M104',name:'Sombrerogalaxie',type:'Spiralgalaxie',ra:189.997,dec:-11.623,extent:.2,dist:'29 Mio. Lj.',query:'Sombrero Galaxy Hubble',about:'Die fast von der Seite sichtbare Galaxie besitzt einen hellen Kern und eine markante dunkle Staubscheibe.'},
+ {id:'M16',name:'Adlernebel',type:'Emissionsnebel',ra:274.7,dec:-13.80,extent:.6,dist:'7.000 Lj.',query:'Eagle Nebula Pillars of Creation',about:'Hier befinden sich die ber\u00fchmten S\u00e4ulen der Sch\u00f6pfung, dichte Staubstrukturen in einer aktiven Sternentstehungsregion.'},
+ {id:'M27',name:'Hantelnebel',type:'Planetarischer Nebel',ra:299.90,dec:22.72,extent:.16,dist:'1.360 Lj.',query:'Dumbbell Nebula Hubble',about:'Ein heller planetarischer Nebel im F\u00fcchschen, sichtbar als gl\u00fchende H\u00fclle eines entwickelten Sterns.'},
+ {id:'NGC 7293',name:'Helixnebel',type:'Planetarischer Nebel',ra:337.41,dec:-20.84,extent:.4,dist:'650 Lj.',query:'Helix Nebula NASA',about:'Einer der n\u00e4chsten planetarischen Nebel; auf Aufnahmen erinnert die Struktur an ein kosmisches Auge.'},
+ {id:'M33',name:'Dreiecksgalaxie',type:'Spiralgalaxie',ra:23.46,dec:30.66,extent:1.1,dist:'2,73 Mio. Lj.',query:'Triangulum Galaxy M33 Hubble',about:'Die drittgr\u00f6\u00dfte Galaxie der Lokalen Gruppe nach Andromeda und der Milchstra\u00dfe.'},
+ {id:'M1',name:'Krebsnebel',type:'Supernova-\u00dcberrest',ra:83.633,dec:22.015,extent:.12,dist:'6.500 Lj.',query:'Crab Nebula Webb NASA',about:'Ein sich ausdehnender Supernova-\u00dcberrest, dessen Explosion auf der Erde im Jahr 1054 beobachtet wurde.'},
+ {id:'HUDF',name:'Hubble Ultra Deep Field',type:'Deep-Field-Aufnahme',ra:53.163,dec:-27.791,extent:.05,dist:'Milliarden Lj.',query:'Hubble Ultra Deep Field',about:'Eine extrem tiefe Hubble-Aufnahme eines winzigen Himmelsfeldes im Fornax. Sie zeigt tausende, zum Teil sehr ferne Galaxien.'},
+ {id:'HDF-N',name:'Hubble Deep Field North',type:'Deep-Field-Aufnahme',ra:189.205,dec:62.216,extent:.05,dist:'Milliarden Lj.',query:'Hubble Deep Field North',about:'Eine ber\u00fchmte Langzeitbelichtung eines scheinbar leeren Himmelsausschnitts im Gro\u00dfen B\u00e4ren, voller ferner Galaxien.'},
+];
+const imageCache = new Map();
+const nasaQueue = [];
+const nasaQueued = new Set();
+let nasaActive = 0;
+
+function getDate() { return new Date(Date.now() + state.offsetMs + (state.playing ? (Date.now()-state.playStart)*179 : 0)); }
+function setPlaying(value) {
+ if (state.playing && !value) state.offsetMs += (Date.now()-state.playStart)*179;
+ state.playing = value;
+ if (value) state.playStart = Date.now();
+ $('playBtn').innerHTML = ico(value ? 'pause' : 'play');
+ $('playBtn').title = value ? 'Zeitablauf anhalten' : 'Zeitablauf starten';
+ updateTimeUI();
+}
+function addHours(h) { if(state.playing)setPlaying(false); state.offsetMs += h * 3600000; updateTimeUI(); }
+function updateTimeUI() {
+ const d = getDate();
+ $('clockValue').textContent = d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+ $('dateValue').textContent = d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'});
+ $('timeMode').textContent = state.playing ? 'ZEITRAFFER \u00d7 180' : Math.abs(state.offsetMs)<60000 ? 'LIVE-BEOBACHTUNGSZEIT' : 'SIMULIERTE ZEIT';
+ $('timeRange').value = String(clamp(state.offsetMs/3600000,-12,12));
+}
+function showToast(message, warn = false) {
+ const el = document.createElement('div'); el.className = 'toast' + (warn ? ' warn' : ''); el.textContent = message;
+ $('toasts').append(el); while ($('toasts').children.length > 3) $('toasts').firstElementChild.remove();
+ setTimeout(() => { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),350);}, 4500);
+}
+function updateCounters() {
+ $('constCount').textContent = state.constLoaded ? `${state.constellations.length} IAU-Sternbilder` : 'Basiskatalog';
+ $('satCount').textContent = state.satLoaded ? `${state.satellites.length} Orbitdaten` : state.satError ? 'API nicht erreichbar' : 'Lade Positionen ...';
+ const all = state.starsLoaded && state.constLoaded && state.satLoaded;
+ $('liveStatus').textContent = all ? 'DATEN AKTUELL' : state.starsLoaded ? 'KATALOG AKTUELL' : 'HIMMELSKARTE';
+ $('sourceStatus').textContent = all ? 'Sterne + Satelliten synchronisiert' : state.starsLoaded ? 'Sternkatalog geladen' : state.catalogError ? 'Eingeschr\u00e4nkter Offline-Katalog' : 'Kataloge werden geladen ...';
+ $('sourceDot').classList.toggle('offline', !all);
+}
+function timestampToSidereal(t) {
+ const jd = t.getTime()/86400000 + 2440587.5;
+ const T = (jd - 2451545.0)/36525;
+ return wrap(280.46061837 + 360.98564736629*(jd-2451545) + .000387933*T*T - T*T*T/38710000 + state.lon);
+}
+function radecToHorizontal(ra,dec,lst) {
+ const phi=rad(state.lat), de=rad(dec), ha=rad(wrap(lst-ra));
+ const sinAlt = Math.sin(de)*Math.sin(phi)+Math.cos(de)*Math.cos(phi)*Math.cos(ha);
+ const alt = Math.asin(clamp(sinAlt,-1,1));
+ const east = -Math.cos(de)*Math.sin(ha);
+ const north = Math.sin(de)*Math.cos(phi)-Math.cos(de)*Math.sin(phi)*Math.cos(ha);
+ return {az:wrap(deg(Math.atan2(east,north))),alt:deg(alt)};
+}
+function calcBasis() {
+ const az=rad(state.az), alt=rad(state.alt);
+ const sinAz=Math.sin(az), cosAz=Math.cos(az), sinAlt=Math.sin(alt), cosAlt=Math.cos(alt);
+ return {front:[cosAlt*sinAz,cosAlt*cosAz,sinAlt],right:[cosAz,-sinAz,0],up:[-sinAlt*sinAz,-sinAlt*cosAz,cosAlt]};
+}
+let basis=calcBasis(), sidereal=0;
+function projectHor(az,alt) {
+ const a=rad(az), h=rad(alt), c=Math.cos(h);
+ const v0=c*Math.sin(a),v1=c*Math.cos(a),v2=Math.sin(h);
+ const dz=v0*basis.front[0]+v1*basis.front[1]+v2*basis.front[2];
+ if(dz<=.075)return null;
+ const x=centerX+perspective*(v0*basis.right[0]+v1*basis.right[1])/dz;
+ const y=centerY-perspective*(v0*basis.up[0]+v1*basis.up[1]+v2*basis.up[2])/dz;
+ if(x < -170 || x > W+170 || y < -170 || y > H+170)return null;
+ return {x,y};
+}
+function projectEq(ra,dec) { const h=radecToHorizontal(ra,dec,sidereal); return h.alt<-2 ? null : projectHor(h.az,h.alt); }
+function resize() {
+ DPR=Math.min(2,window.devicePixelRatio || 1);
+ W=Math.max(1,window.innerWidth); H=Math.max(1,window.innerHeight);
+ cvs.width=Math.round(W*DPR);cvs.height=Math.round(H*DPR);
+ cvs.style.width=W+'px';cvs.style.height=H+'px';
+ ctx.setTransform(DPR,0,0,DPR,0,0);
+ centerX=W*.5;centerY=H*(W<=760?.41:.47);
+ perspective=(H*.5)/Math.tan(rad(state.fov)/2);
+}
+function reseed(seed) {let x=seed>>>0;return()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
+const rnd = reseed(148507);
+// Decorative, non-catalogue stars are deliberately extremely faint.
+const decor = Array.from({length:1500},()=>({ra:rnd()*360,dec:Math.asin(rnd()*2-1)*DEG,alpha:.06+rnd()*.19,r:.23+rnd()*.53}));
+function galacticToEquatorial(l,b) {
+ const lr=rad(l), br=rad(b),cb=Math.cos(br), x=cb*Math.cos(lr),y=cb*Math.sin(lr),z=Math.sin(br);
+ const ex=-.0548755604*x+.4941094279*y-.8676661490*z;
+ const ey=-.8734370902*x-.4448296300*y-.1980763734*z;
+ const ez=-.4838350155*x+.7469822445*y+.4559837762*z;
+ return {ra:wrap(deg(Math.atan2(ey,ex))),dec:deg(Math.asin(clamp(ez,-1,1)))};
+}
+const galaxyDust=Array.from({length:1400},()=>{
+ const l=rnd()*360, b=(rnd()+rnd()+rnd()+rnd()-2)*9.5;
+ const eq=galacticToEquatorial(l,b);
+ return {...eq,alpha:(.08+rnd()*.23)*(Math.abs(b)<10?1:.75),r:.22+rnd()*.48};
+});
+function background() {
+ ctx.fillStyle='#040a18'; ctx.fillRect(0,0,W,H);
+ let g=ctx.createRadialGradient(W*.56,H*.43,0,W*.56,H*.43,Math.max(W,H)*.78);
+ g.addColorStop(0,'#102343');g.addColorStop(.38,'#09172d');g.addColorStop(1,'#020511');
+ ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ // Fine atmospheric haze, independent of observer visibility.
+ g=ctx.createLinearGradient(0,H*.3,0,H);g.addColorStop(0,'rgba(5,12,32,0)');g.addColorStop(.65,'rgba(23,41,74,.05)');g.addColorStop(1,'rgba(39,61,103,.21)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+}
+function drawPolyline(points,color,width=1,store=null) {
+ ctx.beginPath();let prev=null,drawn=0;
+ for(const p of points){
+  if(!p){prev=null;continue;}
+  if(prev && Math.hypot(p.x-prev.x,p.y-prev.y) < Math.max(W,H)*.6){ctx.moveTo(prev.x,prev.y);ctx.lineTo(p.x,p.y);drawn++;if(store)store.push([prev.x,prev.y,p.x,p.y]);}
+  prev=p;
+ }
+ if(drawn){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();}
+}
+function drawGrid() {
+ for(let a=0;a<360;a+=30){
+  let pts=[];for(let h=0;h<=90;h+=3)pts.push(projectHor(a,h));
+  drawPolyline(pts,a%90===0?'rgba(122,172,226,.125)':'rgba(121,165,216,.065)',.8);
+ }
+ for(const h of [0,20,40,60,80]){
+  const pts=[];for(let a=0;a<=360;a+=3)pts.push(projectHor(a,h));
+  drawPolyline(pts,h===0?'rgba(147,204,249,.32)':'rgba(121,165,216,.08)',h===0?1.1:.8);
+ }
+ const cardinal=[['N',0],['NO',45],['O',90],['SO',135],['S',180],['SW',225],['W',270],['NW',315]];
+ ctx.font='600 10px "Space Grotesk", sans-serif';ctx.textAlign='center';
+ for(const [label,a] of cardinal){const p=projectHor(a,0);if(!p||p.y>H-110||p.y<65)continue;ctx.fillStyle='rgba(140,192,230,.7)';ctx.fillText(label,p.x,p.y-11);}
+}
+function drawGalaxyDust() {
+ // Coordinate-accurate galactic plane haze (decorative particles, not stellar measurements).
+ for(const item of galaxyDust){const p=projectEq(item.ra,item.dec);if(!p||p.x<0||p.x>W||p.y<0||p.y>H)continue;ctx.fillStyle=`rgba(123,157,236,${item.alpha})`;ctx.fillRect(p.x,p.y,item.r,item.r);}
+ for(const item of decor){const p=projectEq(item.ra,item.dec);if(!p||p.x<0||p.x>W||p.y<0||p.y>H)continue;ctx.fillStyle=`rgba(187,215,246,${item.alpha})`;ctx.fillRect(p.x,p.y,item.r,item.r);}
+}
+function starColor(bv){return bv < -.08 ? '#a8c9ff' : bv < .25 ? '#d2e6ff' : bv < .7 ? '#f5f6ff' : bv < 1.3 ? '#ffe9c5' : '#ffcfaa';}
+function drawStars() {
+ const labels=[];
+ for(const s of state.stars){
+  if(s.mag>state.mag || !Number.isFinite(s.ra)||!Number.isFinite(s.dec))continue;
+  const p=projectEq(s.ra,s.dec); if(!p||p.x<0||p.x>W||p.y<0||p.y>H)continue;
+  const size=clamp((6.45-s.mag)*.44*(94/state.fov)**.3,.43,4.6);
+  const col=starColor(s.bv);
+  if(s.mag<1.85){
+   const radius=size*4.8;const glow=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,radius);
+   glow.addColorStop(0,'rgba(176,216,255,.36)');glow.addColorStop(.35,'rgba(116,169,238,.095)');glow.addColorStop(1,'rgba(94,146,213,0)');
+   ctx.fillStyle=glow;ctx.beginPath();ctx.arc(p.x,p.y,radius,0,Math.PI*2);ctx.fill();
+  }
+  ctx.beginPath();ctx.arc(p.x,p.y,size,0,Math.PI*2);ctx.fillStyle=col;ctx.globalAlpha=clamp(.35+(state.mag-s.mag)*.145,.44,1);ctx.fill();ctx.globalAlpha=1;
+  if(s.mag<1.46 && s.name && state.fov<=107)labels.push({p,name:s.name});
+  if(s.name && s.mag<=2.35)hitTargets.push({kind:'star',item:s,x:p.x,y:p.y,r:Math.max(9,size+5),priority:1});
+ }
+ ctx.textAlign='left';ctx.font='500 10px "DM Sans", sans-serif';
+ for(const {p,name} of labels){
+  if(p.x>W-105||p.y<68||p.y>H-90)continue;
+  ctx.fillStyle='rgba(212,227,248,.68)';ctx.fillText(name,p.x+9,p.y-7);
+ }
+}
+function drawConstellations() {
+ if(!state.layers.constellations)return;
+ const chosen = state.selected?.kind==='constellation' ? state.selected.item.id : null;
+ // Draw line figures, brighter only for the selected constellation.
+ for(const con of state.constellations){
+  const selected=con.id===chosen;
+  const targetLines=[];
+  for(const line of con.segments){const pts=line.map(v=>projectEq(v[0],v[1]));drawPolyline(pts,selected?'rgba(145,211,255,.9)':'rgba(122,176,231,.36)',selected?2:1.1,targetLines);}
+  for(const [x1,y1,x2,y2] of targetLines)hitTargets.push({kind:'constellation',item:con,x1,y1,x2,y2,priority:2});
+  if(selected){const p=projectEq(con.ra,con.dec);if(p){const g=ctx.createRadialGradient(p.x,p.y,1,p.x,p.y,90);g.addColorStop(0,'rgba(85,172,242,.13)');g.addColorStop(1,'rgba(85,172,242,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,90,0,Math.PI*2);ctx.fill();}}
+ }
+ // Label collision suppression and clickable label boxes.
+ const used=[];
+ const candidates=[];
+ for(const con of state.constellations){const p=projectEq(con.ra,con.dec);if(p&&p.x>20&&p.x<W-20&&p.y>70&&p.y<H-106)candidates.push({con,p});}
+ candidates.sort((a,b)=> (a.con.id===chosen?-10:0)-(b.con.id===chosen?-10:0));
+ for(const {con,p} of candidates){
+  const name=(con.de||con.name||con.id).toUpperCase();
+  const offset=con.id===chosen?77:Math.max(70,Math.min(108,name.length*5.2));
+  if(used.some(q=>Math.abs(q.x-p.x)<offset && Math.abs(q.y-p.y)<28))continue;
+  used.push(p);
+  const selected=con.id===chosen;
+  ctx.font=(selected?'700 ':'600 ')+(selected?'12px':'10px')+' "Space Grotesk", sans-serif';
+  ctx.textAlign='center';
+  const tw=ctx.measureText(name).width;
+  if(selected){ctx.fillStyle='rgba(52,105,150,.24)';ctx.beginPath();ctx.roundRect(p.x-tw/2-12,p.y-12,tw+24,25,7);ctx.fill();}
+  ctx.fillStyle=selected?'#c9eaff':'rgba(158,202,244,.8)';ctx.fillText(name,p.x,p.y+3);
+  hitTargets.push({kind:'constellation',item:con,x:p.x,y:p.y,r:Math.max(24,tw/2+9),label:true,priority:3});
+ }
+}
+function dssPreview(d) {
+ const fov=clamp(d.extent*2.2,.7,5.0);
+ const params = new URLSearchParams({hips:'CDS/P/DSS2/color',width:'340',height:'340',projection:'TAN',fov:String(fov),ra:String(d.ra),dec:String(d.dec),coordsys:'icrs',format:'jpg'});
+ return 'https://alasky.cds.unistra.fr/hips-image-services/hips2fits?'+params;
+}
+function useDsoImage(d,url,source,metadata=null) {
+ const safe=validURL(url);if(!safe)return;
+ const img = new Image();
+ img.onload=()=>{
+  const entry=imageCache.get(d.id)||{};
+  if(source==='CDS' && entry.source==='NASA')return;
+  imageCache.set(d.id,{...entry,img,src:safe,source,metadata});
+  if(state.selected?.kind==='dso' && state.selected.item.id===d.id) renderDetail();
+ };
+ img.onerror=()=>{
+  const entry=imageCache.get(d.id)||{};
+  if(source==='NASA' && !entry.img)useDsoImage(d,dssPreview(d),'CDS');
+ };
+ img.src=safe;
+}
+function ensureDsoImage(d) {
+ if(!imageCache.has(d.id)) {
+  imageCache.set(d.id,{requested:true,source:'none'});
+  useDsoImage(d,dssPreview(d),'CDS');
+ }
+ if(!nasaQueued.has(d.id)) {
+  nasaQueued.add(d.id);nasaQueue.push(d);processNasaQueue();
+ }
+}
+async function processNasaQueue() {
+ while(nasaActive<2 && nasaQueue.length){
+  const d=nasaQueue.shift();nasaActive++;
+  (async()=>{
+   try{
+    const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);
+    let response;
+    try{
+     response=await fetch('https://images-api.nasa.gov/search?'+new URLSearchParams({q:d.query,media_type:'image',page_size:'10'}),{signal:controller.signal});
+    }finally{clearTimeout(timer);}
+    if(!response.ok)throw Error('NASA HTTP '+response.status);
+    const data=await response.json();
+    const items=(data?.collection?.items||[]).filter(v=>v?.data?.[0] && v.links?.some(l=>l.href));
+    const words=[d.id.toLowerCase(),d.name.toLowerCase().split(' ')[0],d.query.toLowerCase().split(' ')[0]];
+    items.sort((a,b)=>{
+     const score=(item)=>words.reduce((n,w)=>n+(w.length>=2 && String(item.data[0].title||'').toLowerCase().includes(w)?2:0),0);
+     return score(b)-score(a);
+    });
+    const item=items[0];
+    if(item){
+     const link=item.links.find(l=>l.rel==='preview')||item.links[0];
+     if(link?.href)useDsoImage(d,link.href,'NASA',item.data[0]);
+    }
+   }catch(err){ /* The CDS image remains available when NASA cannot respond. */ }
+   finally{nasaActive--;processNasaQueue();}
+  })();
+ }
+}
+function drawDeepSky(){
+ if(!state.layers.deepSky)return;
+ for(const d of DEEP){
+  const p=projectEq(d.ra,d.dec);if(!p||p.x<25||p.x>W-25||p.y<62||p.y>H-105)continue;
+  ensureDsoImage(d);
+  const isSelected=state.selected?.kind==='dso' && state.selected.item.id===d.id;
+  const radius=clamp(16+((95-state.fov)*.13),13,27);
+  const cache=imageCache.get(d.id);
+  ctx.save();
+  ctx.shadowColor=isSelected?'#c7a8ff':'#9d7cf5';ctx.shadowBlur=isSelected?24:12;
+  ctx.beginPath();ctx.arc(p.x,p.y,radius+3,0,Math.PI*2);
+  ctx.fillStyle='rgba(96,58,163,.24)';ctx.fill();ctx.shadowBlur=0;
+  if(cache?.img){
+   ctx.save();ctx.beginPath();ctx.arc(p.x,p.y,radius,0,Math.PI*2);ctx.clip();
+   const image=cache.img;const iw=image.naturalWidth, ih=image.naturalHeight;
+   if(iw && ih){const side=Math.min(iw,ih);ctx.drawImage(image,(iw-side)/2,(ih-side)/2,side,side,p.x-radius,p.y-radius,radius*2,radius*2);}
+   ctx.restore();
+   ctx.beginPath();ctx.arc(p.x,p.y,radius,0,Math.PI*2);
+   ctx.fillStyle='rgba(24,8,57,.13)';ctx.fill();
+  } else {
+   const grd=ctx.createRadialGradient(p.x-radius/3,p.y-radius/4,1,p.x,p.y,radius);
+   grd.addColorStop(0,'rgba(186,164,255,.86)');grd.addColorStop(.4,'rgba(99,74,176,.6)');grd.addColorStop(1,'rgba(41,23,80,.82)');
+   ctx.beginPath();ctx.arc(p.x,p.y,radius,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+   ctx.strokeStyle='rgba(226,213,255,.35)';ctx.beginPath();ctx.moveTo(p.x-6,p.y);ctx.lineTo(p.x+6,p.y);ctx.moveTo(p.x,p.y-6);ctx.lineTo(p.x,p.y+6);ctx.stroke();
+  }
+  ctx.beginPath();ctx.arc(p.x,p.y,radius+2,0,Math.PI*2);
+  ctx.strokeStyle=isSelected?'#d5baff':'rgba(190,160,254,.68)';ctx.lineWidth=isSelected?2.1:1.1;ctx.stroke();
+  ctx.restore();
+  ctx.font='700 9px "Space Grotesk",sans-serif';ctx.textAlign='left';
+  ctx.fillStyle='rgba(229,212,255,.9)';ctx.fillText(d.id,p.x+radius+9,p.y+3);
+  hitTargets.push({kind:'dso',item:d,x:p.x,y:p.y,r:radius+11,priority:5});
+ }
+}
+function calculateSatPosition(s,date,observer) {
+ if(!satlib || !s.rec)return null;
+ try{
+  const pv=satlib.propagate(s.rec,date);if(!pv?.position || !pv?.velocity)return null;
+  const gmst=satlib.gstime(date);
+  const ecf=satlib.eciToEcf(pv.position,gmst);
+  const angles=satlib.ecfToLookAngles(observer,ecf);
+  const geo=satlib.eciToGeodetic(pv.position,gmst);
+  const vel=Math.hypot(pv.velocity.x,pv.velocity.y,pv.velocity.z);
+  if(!Number.isFinite(angles.azimuth)||!Number.isFinite(angles.elevation))return null;
+  return {az:wrap(deg(angles.azimuth)),alt:deg(angles.elevation),range:angles.rangeSat,altitude:geo.height,speed:vel};
+ }catch{return null;}
+}
+function computeSatellites(date) {
+ if(!satlib || !state.satellites.length)return [];
+ const now=performance.now();
+ if(now-state.lastSatCompute<650 && Math.abs(date.getTime()-state.lastSatDate)<130000)return state.satRender;
+ const observer={latitude:rad(state.lat),longitude:rad(state.lon),height:.045};
+ const sats=[];
+ for(const s of state.satellites){
+  const pos=calculateSatPosition(s,date,observer);
+  if(pos)sats.push({...pos,record:s});
+ }
+ state.lastSatCompute=now;state.lastSatDate=date.getTime();state.satRender=sats;
+ if(now-state.lastSatLabel>4000){
+  const above=sats.filter(s=>s.alt>0).length;
+  $('satCount').textContent=`${above} \u00fcber Horizont`;
+  state.lastSatLabel=now;
+ }
+ return sats;
+}
+function drawSelectedSatelliteOrbit(s,date) {
+ if(!satlib||!s?.rec)return;
+ const observer={latitude:rad(state.lat),longitude:rad(state.lon),height:.045};
+ for(const [lo,hi,color] of [[-720,0,'rgba(86,196,244,.25)'],[0,900,'rgba(114,215,252,.66)']]){
+  let points=[];
+  for(let dt=lo;dt<=hi;dt+=35){
+   const sample=calculateSatPosition(s,new Date(date.getTime()+dt*1000),observer);
+   points.push(sample && sample.alt>0 ? projectHor(sample.az,sample.alt) : null);
+  }
+  ctx.save();ctx.setLineDash([5,5]);drawPolyline(points,color,1.55);ctx.restore();
+ }
+}
+function drawSatellites(date){
+ if(!state.layers.satellites)return;
+ const positions=computeSatellites(date);
+ const chosen=state.selected?.kind==='satellite' ? state.selected.item.id : null;
+ if(chosen){const item=state.satellites.find(s=>s.id===chosen);if(item)drawSelectedSatelliteOrbit(item,date);}
+ const visible=positions.filter(s=>s.alt>0).sort((a,b)=>a.alt-b.alt);
+ for(const sat of visible){
+  const p=projectHor(sat.az,sat.alt);if(!p||p.x<10||p.x>W-10||p.y<52||p.y>H-95)continue;
+  const selected=sat.record.id===chosen;
+  ctx.save();ctx.translate(p.x,p.y);ctx.rotate(-.4);
+  ctx.shadowColor='#8addff';ctx.shadowBlur=selected?22:13;
+  ctx.fillStyle=selected?'#d8f8ff':'#9cdbff';ctx.fillRect(-3.5,-3.5,7,7);
+  ctx.shadowBlur=0;ctx.strokeStyle='#92d4ff';ctx.lineWidth=1.2;
+  ctx.strokeRect(-10,-4.5,5,9);ctx.strokeRect(5,-4.5,5,9);
+  if(selected){ctx.beginPath();ctx.arc(0,0,18,0,Math.PI*2);ctx.strokeStyle='rgba(141,227,255,.75)';ctx.stroke();}
+  ctx.restore();
+  if(selected || sat.record.name.includes('ISS')) {
+   ctx.textAlign='left';ctx.font='600 10px "Space Grotesk",sans-serif';ctx.fillStyle='#9de0ff';
+   ctx.fillText(sat.record.name.substring(0,19),p.x+14,p.y-11);
+  }
+  hitTargets.push({kind:'satellite',item:sat.record,x:p.x,y:p.y,r:selected?23:16,priority:6});
+ }
+}
+function drawSelectedStarHalo() {
+ if(state.selected?.kind!=='star')return;
+ const p=projectEq(state.selected.item.ra,state.selected.item.dec);if(!p)return;
+ ctx.beginPath();ctx.arc(p.x,p.y,19,0,Math.PI*2);ctx.strokeStyle='rgba(178,216,255,.62)';ctx.lineWidth=1;ctx.stroke();
+}
+function renderFrame(ts){
+ requestAnimationFrame(renderFrame);
+ const fpsTarget=state.motion || pointerMap.size || state.playing ? 33 : 90;
+ if(ts-lastRendered<fpsTarget)return;
+ lastRendered=ts;
+ if(!W||!H)return;
+ ctx.setTransform(DPR,0,0,DPR,0,0);
+ perspective=(H*.5)/Math.tan(rad(state.fov)/2);
+ basis=calcBasis();
+ const date=getDate();sidereal=timestampToSidereal(date);
+ hitTargets=[];
+ background();drawGrid();drawGalaxyDust();drawConstellations();drawStars();drawDeepSky();drawSatellites(date);drawSelectedStarHalo();
+ if(ts-lastUIUpdate>900){updateTimeUI();updateViewUI();lastUIUpdate=ts;}
+}
+function directionName(az){const labels=['NORD','NORDOST','OST','S\u00dcDOST','S\u00dcD','S\u00dcDWEST','WEST','NORDWEST'];return labels[Math.round(wrap(az)/45)%8];}
+function updateViewUI(){
+ $('directionValue').textContent=directionName(state.az);
+ $('azValue').textContent=formatNumber(state.az,0)+'\u00b0';
+ $('altValue').textContent=formatNumber(state.alt,0)+'\u00b0';
+ $('compassNeedle').style.transform=`rotate(${-state.az}deg)`;
+}
+function openModal(id){$(id).classList.add('visible');$(id).setAttribute('aria-hidden','false');}
+function closeModal(id){$(id).classList.remove('visible');$(id).setAttribute('aria-hidden','true');}
+function updateSelection(kind,item){
+ state.selected=kind&&item?{kind,item}:null;
+ renderDetail();
+ if(state.selected){$('viewInfo').classList.add('compact');}
+}
+function objectHorizontal(kind,item){
+ if(kind==='satellite') {
+  const p=state.satRender.find(s=>s.record.id===item.id);
+  if(p)return p;
+  return calculateSatPosition(item,getDate(),{latitude:rad(state.lat),longitude:rad(state.lon),height:.045});
+ }
+ return radecToHorizontal(item.ra,item.dec,timestampToSidereal(getDate()));
+}
+function focusObject(kind,item){
+ let h=objectHorizontal(kind,item);if(!h)return;
+ if(h.alt<7){
+  // Search for the next useful observing opportunity. Do not show a blank
+  // subterranean sky merely because the current time is daytime.
+  const base=getDate();
+  const observer={latitude:rad(state.lat),longitude:rad(state.lon),height:.045};
+  const threshold=kind==='satellite'?11:20;
+  const step=kind==='satellite'?2:15;
+  let found=null,best=null;
+  for(let minute=step;minute<=24*60;minute+=step){
+   const date=new Date(base.getTime()+minute*60000);
+   const ph=kind==='satellite'?calculateSatPosition(item,date,observer):radecToHorizontal(item.ra,item.dec,timestampToSidereal(date));
+   if(!ph)continue;
+   if(ph.alt>0 && (!best||ph.alt>best.h.alt))best={minute,h:ph};
+   if(ph.alt>=threshold){found={minute,h:ph};break;}
+  }
+  const next=found||(best&&best.h.alt>=5?best:null);
+  if(next){
+   if(state.playing)setPlaying(false);
+   state.offsetMs+=next.minute*60000;
+   state.lastSatCompute=0;
+   h=next.h;
+   updateTimeUI();
+   showToast('Beobachtungszeit auf die naechste Sichtbarkeit des Objekts verschoben.');
+  }else{
+   showToast('Dieses Objekt bleibt an deinem Standort im naechsten Tag unter dem Horizont.',true);
+   return;
+  }
+ }
+ state.az=wrap(h.az);state.alt=clamp(h.alt,2,87);
+ state.fov=kind==='constellation'?75:kind==='satellite'?58:kind==='dso'?48:48;
+ updateViewUI();
+ if(state.selected)renderDetail();
+}
+function niceAngle(a){return `${formatNumber(a,1)}\u00b0`;}
+function metricsHTML(entries) {
+ return `<div class="detail-grid">${entries.map(([label,val])=>`<div class="detail-metric"><label>${escapeHTML(label)}</label><strong>${escapeHTML(val)}</strong></div>`).join('')}</div>`;
+}
+function constellationSketch(con) {
+ const pts=con.segments.flat();
+ if(!pts.length)return `<div class="detail-image no-image">${ico('const')}</div>`;
+ let minX=Math.min(...pts.map(p=>p[0])),maxX=Math.max(...pts.map(p=>p[0]));
+ let minY=Math.min(...pts.map(p=>p[1])),maxY=Math.max(...pts.map(p=>p[1]));
+ // Handle RA wrap across zero for constellations near the prime meridian.
+ let ra0=con.ra;const transformRA=(v)=>((v-ra0+540)%360)-180;
+ minX=Math.min(...pts.map(p=>transformRA(p[0])));maxX=Math.max(...pts.map(p=>transformRA(p[0])));
+ const w=Math.max(1,maxX-minX),h=Math.max(1,maxY-minY);
+ const scale=Math.min(288/w,112/h);
+ const ox=200-(minX+maxX)/2*scale,oy=90+(minY+maxY)/2*scale;
+ const xp=p=>ox+transformRA(p[0])*scale,yp=p=>oy-p[1]*scale;
+ const paths=con.segments.map(seg=>seg.map((p,i)=>(i===0?'M ':'L ')+xp(p).toFixed(1)+' '+yp(p).toFixed(1)).join(' ')).map(path=>`<path d="${path}" fill="none" stroke="#8bc9fa" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" opacity=".78"/>`).join('');
+ const stars=pts.map(p=>`<circle cx="${xp(p).toFixed(1)}" cy="${yp(p).toFixed(1)}" r="3" fill="#d6eaff"/><circle cx="${xp(p).toFixed(1)}" cy="${yp(p).toFixed(1)}" r="7" fill="#84bafa" opacity=".16"/>`).join('');
+ return `<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,#17304c,#09142a 70%)"><svg viewBox="0 0 400 180" style="height:100%;width:100%" role="img" aria-label="Linienfigur ${escapeHTML(con.de)}">${paths}${stars}</svg><span class="detail-photo-credit">IAU / STERNSKIZZE</span></div>`;
+}
+function satelliteSketch() {
+ return `<div class="detail-image no-image"><svg viewBox="0 0 400 180" style="width:100%;height:100%;opacity:1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="earthgrad"><stop stop-color="#467fa8"/><stop offset=".65" stop-color="#153454"/><stop offset="1" stop-color="#0c172b"/></radialGradient></defs><circle cx="200" cy="98" r="57" fill="url(#earthgrad)" stroke="#578baf" stroke-width=".6"/><ellipse cx="200" cy="99" rx="154" ry="55" transform="rotate(-19 200 99)" stroke="#74c8ff" stroke-width="1.7" fill="none" opacity=".52" stroke-dasharray="5 7"/><ellipse cx="200" cy="99" rx="154" ry="55" transform="rotate(35 200 99)" stroke="#508db5" stroke-width="1" fill="none" opacity=".3"/><path d="M175 68 203 83 191 111 220 126" fill="none" stroke="#7eb5d4" stroke-width="1.2" opacity=".35"/><g transform="translate(328 58) rotate(-32)"><rect x="-7" y="-7" width="14" height="14" fill="#bbecff"/><rect x="-24" y="-9" width="13" height="18" fill="#3f9dc8" stroke="#8ddaff"/><rect x="11" y="-9" width="13" height="18" fill="#3f9dc8" stroke="#8ddaff"/></g><circle cx="328" cy="58" r="23" fill="none" stroke="#8bddff" stroke-width=".7" opacity=".36"/></svg><span class="detail-photo-credit">SGP4 / ORBITMODELL</span></div>`;
+}
+function renderDetail(){
+ const panel=$('detailPanel'),selection=state.selected;
+ if(!selection){panel.classList.remove('visible');panel.setAttribute('aria-hidden','true');panel.innerHTML='';return;}
+ const {kind,item}=selection;
+ const h=objectHorizontal(kind,item);
+ let display='',top='',image='',subtitle='',about='',footer='',metrics=[],links='';
+ const close=`<button class="details-close" id="detailClose" aria-label="Details schliessen">${ico('close')}</button>`;
+ if(kind==='constellation'){
+  const extra=CONST_EXTRA[item.id]||{};
+  top='STERNBILD / IAU';display=item.de||item.name||item.id;
+  subtitle=`${item.name} \u00b7 ${item.id}`;
+  image=constellationSketch(item);
+  about=extra.about||`Das Sternbild ${display} geh\u00f6rt zu den 88 offiziell anerkannten IAU-Sternbildern. Die Linien verbinden ausgew\u00e4hlte Sterne; sie stellen keine physisch verbundenen Sterngruppen dar.`;
+  metrics=[['Sichtbarkeit',h?.alt>0?'\u00dcber Horizont':'Unter Horizont'],['H\u00f6he',h?niceAngle(h.alt):'--'],['Himmelsrichtung',h?directionName(h.az):'--'],['Markanter Stern',extra.star||'Mehrere Sterne']];
+  footer=`Sternbild-Koordinaten: IAU / d3-celestial (J2000). ${extra.season?'Beste Jahreszeit: '+extra.season+'. ':''}`;
+  links=`<a class="secondary-btn" target="_blank" rel="noopener noreferrer" href="https://www.iau.org/public/themes/constellations/">IAU-Info ${ico('chevron')}</a>`;
+ }else if(kind==='dso'){
+  top='DEEP SKY / '+item.type.toUpperCase();display=item.name;subtitle=item.id+' \u00b7 NASA / CDS';
+  const cache=imageCache.get(item.id);
+  const url=validURL(cache?.src)||dssPreview(item);
+  image=`<div class="detail-image"><img src="${escapeHTML(url)}" alt="Astronomische Aufnahme von ${escapeHTML(item.name)}" loading="lazy"><span class="detail-photo-credit">${cache?.source==='NASA'?'NASA IMAGE LIBRARY':'CDS / DSS HIMMELSAUSSCHNITT'}</span></div>`;
+  about=item.about;
+  metrics=[['Objekttyp',item.type],['Entfernung',item.dist],['H\u00f6he',h?niceAngle(h.alt):'--'],['Rektaszension',formatNumber(item.ra/15,2)+' h']];
+  footer='Die Vorschau markiert den korrekten Himmelsort, ist jedoch nicht im Kartenma\u00dfstab und nicht astrometrisch orientiert.';
+  const nasaID=cache?.source==='NASA'&&cache?.metadata?.nasa_id;
+  const href=nasaID?'https://images.nasa.gov/details/'+encodeURIComponent(nasaID):'https://images.nasa.gov/search?q='+encodeURIComponent(item.query);
+  links=`<a class="secondary-btn" href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer">NASA-Quelle ${ico('chevron')}</a>`;
+  ensureDsoImage(item);
+ }else if(kind==='satellite'){
+  top='ERDSATELLIT / ORBITALDATEN';display=item.name;subtitle='NORAD '+item.id+' \u00b7 '+(item.omm.OBJECT_ID||'Orbitobjekt');
+  image=satelliteSketch();
+  const pos=h;
+  const age=(getDate().getTime()-new Date(item.omm.EPOCH).getTime())/86400000;
+  about=`Die Position wird mit SGP4 aus aktuellen CelesTrak-OMM-Orbitdaten berechnet. ${pos?.alt>0?'Dieses Objekt steht derzeit rechnerisch \u00fcber deinem Horizont.':'Dieses Objekt befindet sich zum gew\u00e4hlten Zeitpunkt unter deinem Horizont.'} Die optische Sichtbarkeit h\u00e4ngt unter anderem von Sonnenlicht und Wetter ab.`;
+  metrics=[['Horizonth\u00f6he',pos?niceAngle(pos.alt):'--'],['Bahnh\u00f6he',pos?formatNumber(pos.altitude,0)+' km':'--'],['Geschwindigkeit',pos?formatNumber(pos.speed,2)+' km/s':'--'],['Inklination',Number.isFinite(+item.omm.INCLINATION)?formatNumber(+item.omm.INCLINATION,1)+'\u00b0':'--'],['Azimut',pos?niceAngle(pos.az):'--'],['Bahndatenalter',Number.isFinite(age)?formatNumber(age,1)+' Tage':'--']];
+  footer=`Berechnete Satellitenposition (SGP4). Datenstand / Epoche: ${escapeHTML(String(item.omm.EPOCH||'unbekannt'))}. Keine Garantie f\u00fcr optische Sichtbarkeit.`;
+  links=`<a class="secondary-btn" href="https://celestrak.org/NORAD/elements/gp.php?CATNR=${encodeURIComponent(item.id)}&amp;FORMAT=JSON" target="_blank" rel="noopener noreferrer">CelesTrak-Daten ${ico('chevron')}</a>`;
+ }else if(kind==='star'){
+  top='STERN / HELLIGKEIT';display=item.name||('HIP '+item.id);subtitle='Stellarer Katalog / J2000';
+  image=`<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,rgba(79,127,188,.24),#091427 68%)"><svg viewBox="0 0 200 140" style="height:100%;width:100%"><defs><radialGradient id="starg"><stop stop-color="#fff"/><stop offset=".15" stop-color="#d8efff"/><stop offset=".35" stop-color="#6eabdc" stop-opacity=".47"/><stop offset="1" stop-color="#6eabdc" stop-opacity="0"/></radialGradient></defs><circle cx="100" cy="70" r="61" fill="url(#starg)"/><path d="M100 16v108M45 70h110" stroke="#b5dbfa" stroke-opacity=".22" stroke-width=".8"/></svg></div>`;
+  about='Ein einzelner Stern aus dem astronomischen Katalog. Die scheinbare Helligkeit wird in Magnituden angegeben: kleinere Werte bedeuten hellere Sterne.';
+  metrics=[['Scheinbare Helligkeit',formatNumber(item.mag,2)+' mag'],['Rektaszension',formatNumber(item.ra/15,2)+' h'],['Deklination',niceAngle(item.dec)],['Horizonth\u00f6he',h?niceAngle(h.alt):'--']];
+  footer='Sternpositionen zur Epoche J2000, ohne Pr\u00e4zessionskorrektur f\u00fcr den aktuellen Zeitpunkt.';
+ }
+ const body=`<div class="details-header"><div class="details-kicker"><span class="pulse-dot" style="height:5px;width:5px"></span>${escapeHTML(top)}</div>${close}</div>${image}<div class="detail-body"><h2>${escapeHTML(display)}</h2><div class="detail-sub">${escapeHTML(subtitle)}</div><p>${escapeHTML(about)}</p>${metricsHTML(metrics)}<div class="detail-actions"><button class="primary-btn" id="focusDetail">${ico('crosshair')} Auf Karte zeigen</button>${links}</div><div class="detail-footer">${footer}</div></div>`;
+ panel.innerHTML=body;panel.classList.add('visible');panel.setAttribute('aria-hidden','false');
+ $('detailClose').onclick=()=>updateSelection(null,null);
+ $('focusDetail').onclick=()=>focusObject(kind,item);
+}
+function distanceToSegment(x,y,x1,y1,x2,y2){
+ const dx=x2-x1,dy=y2-y1,den=dx*dx+dy*dy;
+ if(!den)return Math.hypot(x-x1,y-y1);
+ const t=clamp(((x-x1)*dx+(y-y1)*dy)/den,0,1);
+ return Math.hypot(x-(x1+t*dx),y-(y1+t*dy));
+}
+function canvasClick(x,y){
+ const matches=[];
+ for(const hit of hitTargets){
+  let distance;
+  if(Number.isFinite(hit.x1))distance=distanceToSegment(x,y,hit.x1,hit.y1,hit.x2,hit.y2);
+  else distance=Math.hypot(x-hit.x,y-hit.y);
+  const limit=hit.label?Math.max(17,hit.r):hit.r||10;
+  if(distance<limit)matches.push({...hit,distance});
+ }
+ matches.sort((a,b)=>b.priority-a.priority || a.distance-b.distance);
+ if(matches.length){const match=matches[0];updateSelection(match.kind,match.item);}
+ else updateSelection(null,null);
+}
+function searchItems(q){
+ const query=q.trim().toLocaleLowerCase('de-DE');
+ const match=(...words)=>!query||words.some(w=>String(w||'').toLocaleLowerCase('de-DE').includes(query));
+ const list=[
+  {section:'STERNBILDER',kind:'constellation',items:state.constellations.filter(c=>match(c.de,c.name,c.id)),sub:c=>(c.name||c.id)+' \u00b7 IAU',name:c=>c.de||c.name},
+  {section:'DEEP SKY',kind:'dso',items:DEEP.filter(d=>match(d.name,d.id,d.type)),sub:d=>d.id+' \u00b7 '+d.type,name:d=>d.name},
+  {section:'SATELLITEN',kind:'satellite',items:state.satellites.filter(s=>match(s.name,s.id)),sub:s=>'NORAD '+s.id,name:s=>s.name},
+  {section:'HELLE STERNE',kind:'star',items:state.stars.filter(s=>s.name&&match(s.name)).slice(0,15),sub:s=>formatNumber(s.mag,2)+' mag',name:s=>s.name}
+ ];
+ return list;
+}
+function updateSearchResults(){
+ const query=$('searchInput').value;
+ const lists=searchItems(query);
+ const results=lists.map(group=>{
+  const max=!query ? (group.kind==='constellation'?7:group.kind==='dso'?6:group.kind==='satellite'?4:3):12;
+  const items=group.items.slice(0,max);
+  if(!items.length)return '';
+  const icon=group.kind==='constellation'?'const':group.kind==='dso'?'nebula':group.kind==='satellite'?'satellite':'stars';
+  const rows=items.map(it=>`<button class="result-row" data-kind="${group.kind}" data-id="${escapeHTML(group.kind==='satellite'?it.id:group.kind==='star'?(it.id||it.name):it.id)}"><span class="result-symbol">${ico(icon)}</span><span class="result-text"><div class="result-title">${escapeHTML(group.name(it))}</div><div class="result-meta">${escapeHTML(group.sub(it))}</div></span>${ico('chevron')}</button>`).join('');
+  return `<div class="result-group">${group.section}</div>${rows}`;
+ }).join('');
+ $('searchResults').innerHTML=results||'<div class="empty-results">Keine Objekte gefunden. Versuche einen anderen Suchbegriff.</div>';
+ for(const btn of $('searchResults').querySelectorAll('[data-kind]')){
+  btn.onclick=()=>{
+   const kind=btn.dataset.kind,id=btn.dataset.id;
+   const item=kind==='constellation'?state.constellations.find(v=>v.id===id):kind==='dso'?DEEP.find(v=>v.id===id):kind==='satellite'?state.satellites.find(v=>v.id===id):state.stars.find(v=>String(v.id||v.name)===id);
+   if(!item)return;
+   closeModal('searchModal');updateSelection(kind,item);focusObject(kind,item);
+  };
+ }
+}
+async function fetchCatalogFile(filename){
+ const bases=['https://cdn.jsdelivr.net/gh/ofrohn/d3-celestial@master/data/','https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/'];
+ let lastErr;
+ for(const base of bases){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),13500);
+  try{
+   const resp=await fetch(base+filename,{signal:controller.signal,cache:'force-cache'});
+   if(!resp.ok)throw Error('HTTP '+resp.status);
+   return await resp.json();
+  }catch(err){lastErr=err;}
+  finally{clearTimeout(timer);}
+ }
+ throw lastErr||Error('catalog download failed');
+}
+async function loadStarCatalog(){
+ try{
+  const [stars,names] = await Promise.all([fetchCatalogFile('stars.6.json'),fetchCatalogFile('starnames.json')]);
+  state.names=names||{};
+  const valid=(stars?.features||[]).map(f=>{
+   const coords=f.geometry?.coordinates||[];
+   const name=state.names[String(f.id)]?.name || '';
+   return {id:f.id,name,ra:wrap(Number(coords[0])),dec:Number(coords[1]),mag:Number(f.properties?.mag),bv:Number(f.properties?.bv||0)};
+  }).filter(s=>Number.isFinite(s.ra)&&Number.isFinite(s.dec)&&Number.isFinite(s.mag));
+  if(valid.length<1000)throw Error('too few stars');
+  state.stars=valid;state.starsLoaded=true;
+  updateCounters();
+ }catch(err){state.catalogError=true;updateCounters();showToast('Sternkatalog offline: eingebettete helle Sterne bleiben sichtbar.',true);}
+}
+async function loadConstellationCatalog(){
+ try{
+  const [locations,geometry]=await Promise.all([fetchCatalogFile('constellations.json'),fetchCatalogFile('constellations.lines.json')]);
+  const segmentsById=new Map();
+  for(const f of geometry?.features||[]){
+   const parts=f.geometry?.coordinates||[];
+   segmentsById.set(String(f.id),parts.map(line=>line.map(p=>[wrap(+p[0]),+p[1]]).filter(p=>p.every(Number.isFinite))).filter(line=>line.length>1));
+  }
+  const features=(locations?.features||[]).map(f=>{
+   const p=f.geometry?.coordinates||[];const id=String(f.id||f.properties?.desig||'');
+   return {id,name:f.properties?.name||id,de:f.properties?.de||CONST_EXTRA[id]?.de||f.properties?.name||id,ra:wrap(+p[0]),dec:+p[1],segments:segmentsById.get(id)||[]};
+  }).filter(f=>Number.isFinite(f.ra)&&Number.isFinite(f.dec));
+  if(features.length<80 || !segmentsById.size)throw Error('incomplete constellation data');
+  state.constellations=features;state.constLoaded=true;
+  updateCounters();
+  if(state.selected?.kind==='constellation'){
+   const updated=features.find(f=>f.id===state.selected.item.id);
+   if(updated){state.selected.item=updated;renderDetail();}
+  }
+ }catch(err){state.catalogError=true;updateCounters();showToast('Sternbild-API offline: grundlegende Figuren stehen weiter bereit.',true);}
+}
+async function loadSatelliteCatalog(){
+ if(!satlib){state.satError=true;updateCounters();return;}
+ const groups=['STATIONS','VISUAL'];
+ const tasks=groups.map(async(group)=>{
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),16000);
+  try{
+   const url=`https://celestrak.org/NORAD/elements/gp.php?GROUP=${group}&FORMAT=JSON`;
+   const resp=await fetch(url,{signal:controller.signal,cache:'default'});
+   if(!resp.ok)throw Error(group+': HTTP '+resp.status);
+   const data=await resp.json();
+   if(!Array.isArray(data))throw Error(group+': invalid JSON');
+   return data;
+  }finally{clearTimeout(timer);}
+ });
+ const results=await Promise.allSettled(tasks);
+ const all=results.flatMap(r=>r.status==='fulfilled'?r.value:[]);
+ const records=new Map();
+ for(const omm of all){
+  try{
+   const id=String(omm.NORAD_CAT_ID||'');if(!id || records.has(id))continue;
+   const rec=satlib.json2satrec(omm);
+   if(!rec || rec.error)continue;
+   records.set(id,{id,name:String(omm.OBJECT_NAME||'SAT '+id).trim(),omm,rec});
+  }catch{ /* one malformed object must not affect the entire feed */ }
+ }
+ if(records.size){
+  state.satellites=[...records.values()];state.satLoaded=true;state.satError=false;
+  updateCounters();updateSearchResults();
+  showToast(`${state.satellites.length} CelesTrak-Satelliten geladen. Ihre Positionen werden live berechnet.`);
+ }else{
+  state.satError=true;updateCounters();
+  showToast('CelesTrak derzeit nicht erreichbar. Die Satellitenebene zeigt keine erfundenen Positionen.',true);
+ }
+}
+// Device orientation: use the rear-camera viewing direction calculated from
+// W3C alpha / beta / gamma rotations, with a relative-heading fallback.
+let headingOffset=null, sensorReceived=false, sensorAbsoluteSeen=false;
+function orientationHandler(e){
+ if(!state.motion)return;
+ if(![e.alpha,e.beta,e.gamma].every(v=>typeof v==='number'))return;
+ if(sensorAbsoluteSeen && !e.absolute && typeof e.webkitCompassHeading!=='number')return;
+ sensorReceived=true;
+ let alpha=rad(e.alpha),beta=rad(e.beta),gamma=rad(e.gamma);
+ let absolute=false;
+ if(typeof e.webkitCompassHeading==='number' && Number.isFinite(e.webkitCompassHeading)){
+  alpha=rad(-e.webkitCompassHeading);absolute=true;
+ }else if(e.absolute){absolute=true;}
+ if(absolute)sensorAbsoluteSeen=true;
+ const sb=Math.sin(beta),cb=Math.cos(beta),sg=Math.sin(gamma),cg=Math.cos(gamma),sa=Math.sin(alpha),ca=Math.cos(alpha);
+ const east=-sg*ca-sb*cg*sa;
+ const north=-sg*sa+sb*cg*ca;
+ const up=-cb*cg;
+ const planar=Math.hypot(east,north);
+ if(planar<.08)return; // near zenith / nadir: azimuth is numerically unstable
+ let az=wrap(deg(Math.atan2(east,north)));
+ const alt=deg(Math.atan2(up,planar));
+ if(!absolute){
+  if(headingOffset===null)headingOffset=wrap(state.az-az);
+  az=wrap(az+headingOffset);
+  state.sensorRelative=true;
+ }else{headingOffset=null;state.sensorRelative=false;}
+ const diff=((az-state.az+540)%360)-180;
+ state.az=wrap(state.az+diff*.25);
+ state.alt=clamp(state.alt+(alt-state.alt)*.22,-30,89);
+}
+async function toggleMotion(){
+ if(state.motion){
+  state.motion=false;headingOffset=null;
+  window.removeEventListener('deviceorientation',orientationHandler,true);
+  window.removeEventListener('deviceorientationabsolute',orientationHandler,true);
+  $('motionBtn').classList.remove('active');$('motionBtn').setAttribute('aria-pressed','false');
+  $('motionText').textContent='SENSOR AUS';showToast('Bewegungssteuerung deaktiviert.');return;
+ }
+ if(typeof window.DeviceOrientationEvent==='undefined'){
+  showToast('Dieses Ger\u00e4t stellt keinen Bewegungssensor bereit.',true);return;
+ }
+ try{
+  // iOS requires the request to happen directly inside the button click.
+  if(typeof DeviceOrientationEvent.requestPermission==='function'){
+   const p=await DeviceOrientationEvent.requestPermission();
+   if(p!=='granted')throw Error('Berechtigung nicht erteilt');
+  }
+  state.motion=true;headingOffset=null;sensorReceived=false;sensorAbsoluteSeen=false;
+  window.addEventListener('deviceorientation',orientationHandler,true);
+  window.addEventListener('deviceorientationabsolute',orientationHandler,true);
+  $('motionBtn').classList.add('active');$('motionBtn').setAttribute('aria-pressed','true');
+  $('motionText').textContent='SENSOR AN';
+  $('viewInfo').classList.add('compact');
+  showToast('Bewege das Smartphone, um die Himmelskarte auszurichten. Die R\u00fcckkamera gibt die Blickrichtung vor.');
+  setTimeout(()=>{if(state.motion&&!sensorReceived)showToast('Keine Sensordaten empfangen. Auf Smartphones ist eine HTTPS-Seite und die Sensorfreigabe erforderlich.',true);},3200);
+ }catch(err){showToast('Sensorzugriff verweigert oder nicht verf\u00fcgbar: '+(err.message||'Fehler'),true);}
+}
+function disableMotionForDrag(){
+ if(!state.motion)return;
+ state.motion=false;headingOffset=null;
+ window.removeEventListener('deviceorientation',orientationHandler,true);
+ window.removeEventListener('deviceorientationabsolute',orientationHandler,true);
+ $('motionBtn').classList.remove('active');$('motionBtn').setAttribute('aria-pressed','false');
+ $('motionText').textContent='SENSOR AUS';
+}
+function setZoom(fov){state.fov=clamp(fov,22,115);}
+function setLocation(lat,lon,place){
+ if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180){showToast('Bitte g\u00fcltige Koordinaten eingeben.',true);return false;}
+ state.lat=lat;state.lon=lon;state.place=place||`${formatNumber(lat,3)}\u00b0, ${formatNumber(lon,3)}\u00b0`;
+ $('placeLabel').textContent=state.place;
+ $('latInput').value=lat.toFixed(4);$('lonInput').value=lon.toFixed(4);
+ state.lastSatCompute=0;
+ if(state.selected)renderDetail();
+ return true;
+}
+function requestGPS(){
+ if(!navigator.geolocation){showToast('Geolokalisierung ist in diesem Browser nicht verf\u00fcgbar.',true);return;}
+ showToast('GPS-Freigabe wird angefragt. Der Standort wird nicht gespeichert.');
+ navigator.geolocation.getCurrentPosition(
+  p=>{
+   setLocation(p.coords.latitude,p.coords.longitude,'Mein Standort');
+   closeModal('settingsModal');showToast('Standort \u00fcbernommen. Die Himmelsansicht wurde aktualisiert.');
+  },
+  err=>showToast('Standort nicht verf\u00fcgbar ('+err.message+'). Bei Bedarf HTTPS verwenden.',true),
+  {enableHighAccuracy:false,timeout:14000,maximumAge:60000}
+ );
+}
+function onPointerDown(e){
+ e.preventDefault();
+ cvs.setPointerCapture(e.pointerId);
+ pointerMap.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointerMap.size===1){startPointer={x:e.clientX,y:e.clientY};wasDragged=false;}
+ if(pointerMap.size===2){
+  const pts=[...pointerMap.values()];lastPinch=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+  wasDragged=true;
+ }
+}
+function onPointerMove(e){
+ if(!pointerMap.has(e.pointerId))return;
+ const prev=pointerMap.get(e.pointerId);
+ pointerMap.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointerMap.size===2){
+  const pts=[...pointerMap.values()];const distance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+  if(lastPinch>0&&distance>0)setZoom(state.fov*lastPinch/distance);
+  lastPinch=distance;wasDragged=true;return;
+ }
+ if(pointerMap.size!==1)return;
+ const dx=e.clientX-prev.x,dy=e.clientY-prev.y;
+ if(startPointer&&Math.hypot(e.clientX-startPointer.x,e.clientY-startPointer.y)>4)wasDragged=true;
+ if(!wasDragged)return;
+ if(state.motion)disableMotionForDrag();
+ state.az=wrap(state.az-dx/Math.max(250,W)*state.fov*1.55);
+ state.alt=clamp(state.alt+dy/Math.max(250,H)*state.fov*1.65,-32,88.5);
+ $('viewInfo').classList.add('compact');
+}
+function onPointerUp(e){
+ const shouldClick=!wasDragged && pointerMap.size===1;
+ pointerMap.delete(e.pointerId);
+ if(!pointerMap.size){lastPinch=0;startPointer=null;}
+ if(shouldClick)canvasClick(e.clientX,e.clientY);
+}
+function connectUI(){
+ document.querySelectorAll('.layer-toggle').forEach(button=>{
+  button.addEventListener('click',()=>{
+   const layer=button.dataset.layer;
+   state.layers[layer]=!state.layers[layer];
+   button.classList.toggle('active',state.layers[layer]);button.setAttribute('aria-pressed',String(state.layers[layer]));
+   if(state.layers.satellites && state.satError && !state.satellites.length && satlib){
+    state.satError=false;loadSatelliteCatalog();
+   }
+  });
+ });
+ $('motionBtn').addEventListener('click',toggleMotion);
+ $('zoomInBtn').onclick=()=>setZoom(state.fov*.81);
+ $('zoomOutBtn').onclick=()=>setZoom(state.fov*1.23);
+ $('playBtn').onclick=()=>setPlaying(!state.playing);
+ $('prevHour').onclick=()=>addHours(-1);
+ $('nextHour').onclick=()=>addHours(1);
+ $('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();};
+ $('timeRange').addEventListener('input',e=>{
+  if(state.playing)setPlaying(false);
+  state.offsetMs=Number(e.target.value)*3600000;updateTimeUI();
+ });
+ $('searchBtn').onclick=()=>{updateSearchResults();openModal('searchModal');$('searchInput').focus();};
+ $('searchClose').onclick=()=>closeModal('searchModal');
+ $('searchInput').addEventListener('input',updateSearchResults);
+ $('locationTop').onclick=()=>openModal('settingsModal');
+ $('settingsBtn').onclick=()=>openModal('settingsModal');
+ $('settingsClose').onclick=()=>closeModal('settingsModal');
+ $('saveLocation').onclick=()=>{
+  const lat=Number($('latInput').value),lon=Number($('lonInput').value);
+  if(setLocation(lat,lon)) {closeModal('settingsModal');showToast('Beobachtungsstandort aktualisiert.');}
+ };
+ $('gpsBtn').onclick=requestGPS;
+ $('magInput').oninput=e=>{state.mag=Number(e.target.value);$('magLabel').textContent=formatNumber(state.mag,2)+' mag';};
+ for(const id of ['searchModal','settingsModal'])$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});
+ cvs.addEventListener('pointerdown',onPointerDown);
+ cvs.addEventListener('pointermove',onPointerMove);
+ cvs.addEventListener('pointerup',onPointerUp);
+ cvs.addEventListener('pointercancel',onPointerUp);
+ cvs.addEventListener('wheel',e=>{e.preventDefault();setZoom(state.fov*(e.deltaY<0?.91:1.1));},{passive:false});
+ cvs.addEventListener('dblclick',e=>{e.preventDefault();setZoom(state.fov*.74);});
+ window.addEventListener('resize',resize);
+ document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+   closeModal('searchModal');closeModal('settingsModal');updateSelection(null,null);return;
+  }
+  const tag=document.activeElement?.tagName?.toLowerCase();if(tag==='input'||tag==='textarea')return;
+  if(e.key==='/'||e.key.toLowerCase()==='f'){
+   e.preventDefault();updateSearchResults();openModal('searchModal');$('searchInput').focus();
+  }else if(e.key==='ArrowLeft'){state.az=wrap(state.az-7);e.preventDefault();}
+  else if(e.key==='ArrowRight'){state.az=wrap(state.az+7);e.preventDefault();}
+  else if(e.key==='ArrowUp'){state.alt=clamp(state.alt+7,-30,88);e.preventDefault();}
+  else if(e.key==='ArrowDown'){state.alt=clamp(state.alt-7,-30,88);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){setZoom(state.fov*.84);e.preventDefault();}
+  else if(e.key==='-'){setZoom(state.fov*1.2);e.preventDefault();}
+ });
+}
+function initialize(){
+ resize();connectUI();updateCounters();updateViewUI();updateTimeUI();updateSearchResults();
+ requestAnimationFrame(renderFrame);
+ // These calls are independent; neither an API outage nor a failed CDN stalls the UI.
+ loadStarCatalog();loadConstellationCatalog();
+ import('https://cdn.jsdelivr.net/npm/satellite.js@6.0.2/+esm')
+  .catch(()=>import('https://esm.sh/satellite.js@6.0.2'))
+  .then(lib=>{satlib=lib;loadSatelliteCatalog();})
+  .catch(()=>{state.satError=true;updateCounters();showToast('satellite.js konnte nicht geladen werden. Bitte Internetzugriff auf jsDelivr pr\u00fcfen.',true);});
+}
+initialize();
+</script>
+</body>
+</html>
