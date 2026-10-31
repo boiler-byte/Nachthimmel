@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#050915">
-<meta name="description" content="Nachthimmel v1: Interaktive Himmelskarte mit Sternbildern, NASA-Deep-Sky-Aufnahmen und live berechneten Satellitenbahnen.">
-<title>Nachthimmel v1 – Interaktive Himmelskarte</title>
+<meta name="description" content="Nachthimmel v2: Interaktive Himmelskarte mit Sternbildern, NASA-Deep-Sky-Aufnahmen und live berechneten Satellitenbahnen.">
+<title>Nachthimmel v2 – Interaktive Himmelskarte</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,6 +29,53 @@
 @media(max-width:345px){.topbar{padding:17px 10px}.brand-logo{width:30px;height:30px}.brand{gap:5px}.brand-name{font-size:12px}.brand-version{font-size:8px}.place-pill{max-width:90px}.top-actions{gap:6px}.icon-btn{width:35px;min-height:35px}}
 @media(max-height:690px){.view-info{top:104px}.hero-title{font-size:34px}.hero-subtitle{display:none}.view-coordinate{margin-top:12px}.hint{display:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Nachthimmel v2: concise sky HUD and pitch-aware precision compass. */
+[hidden]{display:none!important}
+.view-info{top:105px;max-width:calc(100vw - 40px)}
+.view-coordinate{margin:0;padding:11px 14px;border:1px solid rgba(131,177,222,.17);border-radius:13px;gap:13px;background:rgba(7,15,29,.49);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 7px 25px rgba(0,0,0,.12);font-size:10px;letter-spacing:.07em}
+.view-coordinate span{white-space:nowrap}.view-coordinate strong{color:#e2f2ff;font-variant-numeric:tabular-nums;font-weight:600}
+.below-horizon-flag{margin-top:10px;width:max-content;max-width:100%;display:flex;align-items:center;gap:8px;color:#f1c993;font-size:10px;font-weight:700;letter-spacing:.08em;border:1px solid rgba(224,163,96,.24);background:rgba(28,24,26,.68);padding:8px 10px;border-radius:10px;backdrop-filter:blur(12px)}
+.below-horizon-flag small{font-weight:500;color:#b4a39c;letter-spacing:0;font-size:10px}.below-flag-dot{width:6px;height:6px;border-radius:50%;background:#f1c993;box-shadow:0 0 9px rgba(241,201,147,.45)}
+.right-rail{top:44%;gap:14px}
+.compass-unit{width:152px;padding:13px 13px 12px;border:1px solid rgba(141,190,239,.19);border-radius:19px;background:linear-gradient(155deg,rgba(14,26,47,.85),rgba(5,12,24,.74));backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);box-shadow:0 12px 44px rgba(0,0,0,.24),inset 0 1px 0 rgba(179,224,255,.045);user-select:none}
+.compass-overline{display:flex;justify-content:space-between;gap:5px;align-items:center;color:#a7bdd7;font:700 9px var(--display);letter-spacing:.12em}
+.compass-overline #compassMode{font-size:8px;color:#6698c3;letter-spacing:.055em;font-weight:500}
+.compass-stage{width:124px;height:121px;position:relative;margin:2px auto 0;perspective:420px;display:grid;place-items:center}
+.compass-dial{width:119px;height:119px;position:relative;transform:rotateX(43deg);transform-style:preserve-3d;transition:transform .14s ease-out;will-change:transform}
+.compass-rose{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 48% 40%,rgba(31,68,105,.8) 0%,rgba(13,33,60,.88) 52%,rgba(7,16,31,.98) 87%);border:1px solid rgba(146,203,251,.32);box-shadow:inset 0 0 0 5px rgba(4,12,25,.58),inset 0 0 21px rgba(102,166,231,.08),0 0 22px rgba(19,67,116,.25);transform:rotate(0deg);transition:transform .15s linear;will-change:transform}
+.compass-rose:before{content:'';position:absolute;inset:18%;border:1px dashed rgba(128,181,227,.17);border-radius:50%}
+.compass-ticks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.compass-cardinal{position:absolute;font:700 12px var(--display);text-shadow:0 0 7px rgba(0,0,0,.45);color:#acc7e2;z-index:2;line-height:1}
+.compass-cardinal.north{top:18%;left:50%;transform:translate(-50%,-50%);color:#b8edff}
+.compass-cardinal.south{bottom:18%;left:50%;transform:translate(-50%,50%)}
+.compass-cardinal.east{right:19%;top:50%;transform:translate(50%,-50%)}
+.compass-cardinal.west{left:19%;top:50%;transform:translate(-50%,-50%)}
+.compass-north-tip{position:absolute;top:4%;left:50%;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:8px solid #8ceaff;transform:translateX(-50%);filter:drop-shadow(0 0 4px #8ceaff)}
+.compass-pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:11px solid #f3c98e;filter:drop-shadow(0 0 5px rgba(240,198,135,.65));z-index:4}
+.compass-center{position:absolute;inset:calc(50% - 3px);width:6px;height:6px;border-radius:50%;border:1px solid #cdeafe;background:#4587b7;box-shadow:0 0 7px rgba(141,215,255,.62)}
+.compass-data{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-top:0;color:#e3f4ff;font-variant-numeric:tabular-nums}
+.compass-data strong{font:600 17px var(--display);letter-spacing:-.025em}
+.compass-data strong:last-child{font-size:14px;color:#9bc8e7}
+.compass-data-label{display:flex;justify-content:space-between;margin-top:3px;font:700 8px var(--display);color:#7992b0;letter-spacing:.08em}
+.compass-pitch-meter{height:3px;position:relative;background:linear-gradient(90deg,rgba(217,155,105,.35) 0%,rgba(124,157,195,.24) 50%,rgba(99,177,231,.47) 100%);border-radius:5px;margin:12px 3px 1px}
+.compass-pitch-zero{height:9px;width:1px;background:#afbecf;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.compass-pitch-dot{position:absolute;left:75%;top:50%;width:8px;height:8px;border-radius:50%;border:1px solid #e4faff;background:#8cdbff;box-shadow:0 0 8px #7cceff;transform:translate(-50%,-50%);transition:left .13s ease-out}
+@media(max-width:760px){
+ .view-info{top:82px;left:14px;max-width:calc(100% - 28px)}
+ .view-coordinate{margin:0;padding:9px 10px;gap:8px;font-size:9px;letter-spacing:.035em}
+ .below-horizon-flag{margin-top:7px;font-size:8px;padding:7px 9px;gap:5px}.below-horizon-flag small{font-size:8px}
+ .right-rail{top:37%;right:12px}
+ .compass-unit{width:122px;padding:10px 10px 11px;border-radius:16px}
+ .compass-stage{width:101px;height:97px;margin-top:2px}
+ .compass-dial{width:98px;height:98px}
+ .compass-cardinal{font-size:11px}
+ .compass-data strong{font-size:13px}.compass-data strong:last-child{font-size:11px}
+ .compass-overline{font-size:8px}.compass-overline #compassMode{font-size:7px}
+ .compass-data-label{font-size:7px}.compass-pitch-meter{margin-top:10px}
+}
+@media(max-width:390px){.view-coordinate{font-size:8px;gap:7px;padding:9px 8px}.right-rail{right:9px;top:39%}}
+@media(max-height:690px){.view-info{top:86px}.view-coordinate{margin:0}.right-rail{top:41%}}
 </style>
 </head>
 <body>
@@ -54,12 +101,18 @@
 <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
 </svg>
 <header class="topbar">
- <div class="brand"><div class="brand-logo"><svg width="25" height="25" viewBox="0 0 24 24" style="color:#a7dbff"><use href="#i-stars"/></svg></div><div><div class="brand-name">Nachthimmel <span class="brand-version">v1</span></div><div class="brand-tagline">DEIN FENSTER INS UNIVERSUM</div></div></div>
+ <div class="brand"><div class="brand-logo"><svg width="25" height="25" viewBox="0 0 24 24" style="color:#a7dbff"><use href="#i-stars"/></svg></div><div><div class="brand-name">Nachthimmel <span class="brand-version">v2</span></div></div></div>
  <div class="top-actions"><div class="live-pill"><span class="pulse-dot" id="liveDot"></span><span id="liveStatus">HIMMELSKARTE</span></div><button class="place-pill" id="locationTop" title="Standort festlegen"><svg><use href="#i-location"/></svg><span id="placeLabel">Berlin, Deutschland</span></button><button class="icon-btn" id="searchBtn" title="Objekte suchen" aria-label="Suche oeffnen"><svg><use href="#i-search"/></svg></button></div>
 </header>
-<div class="view-info" id="viewInfo"><div class="eyebrow">DEIN FENSTER INS UNIVERSUM</div><h1 class="hero-title">Entdecke den <span>Nachthimmel.</span></h1><p class="hero-subtitle">Reise durch Sternbilder, ferne Galaxien und die Umlaufbahnen unserer Satelliten.</p><div class="view-coordinate"><span>BLICK <strong id="directionValue">S&Uuml;DWEST</strong></span><span class="coord-separator"></span><span>AZ <strong id="azValue">207&deg;</strong></span><span class="coord-separator"></span><span>ALT <strong id="altValue">47&deg;</strong></span></div></div>
+<div class="view-info" id="viewInfo"><div class="view-coordinate" aria-label="Aktuelle Blickrichtung"><span>BLICK <strong id="directionValue">S&Uuml;DWEST</strong></span><span class="coord-separator"></span><span>AZ <strong id="azValue">206,0&deg;</strong></span><span class="coord-separator"></span><span>ALT <strong id="altValue">+46,0&deg;</strong></span></div><div class="below-horizon-flag" id="belowFlag" hidden><span class="below-flag-dot"></span>UNTER DEM HORIZONT <small>Virtuelle Durchsicht</small></div></div>
 <div class="center-reticle" aria-hidden="true"><i></i></div>
-<div class="right-rail"><div class="compass" aria-hidden="true"><span class="compass-label n">N</span><span class="compass-label e">O</span><span class="compass-label s">S</span><span class="compass-label w">W</span><div class="compass-needle" id="compassNeedle"></div></div><div class="rail-label">BEOBACHTUNG / NACHTHIMMEL V1</div></div>
+<div class="right-rail"><div class="compass-unit" role="img" aria-label="Kompass mit Azimut und Neigungswinkel" id="compassUnit">
+ <div class="compass-overline"><span>KOMPASS</span><span id="compassMode">KARTE</span></div>
+ <div class="compass-stage"><div class="compass-dial" id="compassDial"><div class="compass-rose" id="compassRose"><svg class="compass-ticks" viewBox="0 0 120 120" aria-hidden="true"><line x1="60" y1="6" x2="60" y2="16" transform="rotate(0 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(10 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(20 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(30 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(40 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(50 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(60 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(70 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(80 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(90 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(100 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(110 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(120 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(130 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(140 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(150 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(160 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(170 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(180 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(190 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(200 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(210 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(220 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(230 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(240 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(250 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(260 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(270 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(280 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(290 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(300 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(310 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(320 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="6" x2="60" y2="16" transform="rotate(330 60 60)" stroke="#8ccaf7" stroke-width="1.35" opacity="0.75"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(340 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/><line x1="60" y1="7" x2="60" y2="12" transform="rotate(350 60 60)" stroke="#587ba7" stroke-width="0.8" opacity="0.48"/></svg><span class="compass-cardinal north">N</span><span class="compass-cardinal east">O</span><span class="compass-cardinal south">S</span><span class="compass-cardinal west">W</span><span class="compass-north-tip"></span></div><span class="compass-pointer"></span><span class="compass-center"></span></div></div>
+ <div class="compass-data"><strong id="compassBearing">206,0&deg;</strong><strong id="compassHeight">+46,0&deg;</strong></div>
+ <div class="compass-data-label"><span>AZIMUT</span><span>BLICKH&Ouml;HE</span></div>
+ <div class="compass-pitch-meter" aria-hidden="true"><span class="compass-pitch-zero"></span><span class="compass-pitch-dot" id="compassPitchDot"></span></div>
+ </div><div class="rail-label">BEOBACHTUNG / NACHTHIMMEL V2</div></div>
 <div class="hint"><svg><use href="#i-crosshair"/></svg> Ziehen, um dich umzusehen &middot; Scrollen zum Zoomen &middot; Objekte antippen</div>
 <div class="sources"><span>OPEN SKY DATA</span><span class="sep"></span><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener noreferrer">Sternkatalog / IAU</a><span class="sep"></span><a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Images</a><span class="sep"></span><a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer">CelesTrak</a></div>
 <div class="bottom-status"><span class="status-dot" id="sourceDot"></span><span id="sourceStatus">Kataloge werden geladen ...</span></div>
@@ -70,7 +123,7 @@
 <div class="toast-stack" id="toasts" role="status" aria-live="polite"></div>
 <aside class="details" id="detailPanel" role="dialog" aria-label="Objektdetails" aria-hidden="true"></aside>
 <div class="modal-shade" id="searchModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Himmelsobjekte suchen"><div class="modal-head"><div><h2>Das Universum entdecken</h2><p>Suche nach Sternbildern, Deep-Sky-Objekten und Satelliten.</p></div><button id="searchClose" aria-label="Suche schliessen"><svg><use href="#i-close"/></svg></button></div><div class="search-field"><svg><use href="#i-search"/></svg><input id="searchInput" autocomplete="off" type="search" placeholder="z. B. Orion, Andromeda, ISS ..." aria-label="Suchbegriff"></div><div class="search-results" id="searchResults"></div></div></div>
-<div class="modal-shade" id="settingsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Standort und Einstellungen"><div class="modal-head"><div><h2>Beobachtungsstandort</h2><p>Die Position bestimmt den sichtbaren Himmel.</p></div><button id="settingsClose" aria-label="Einstellungen schliessen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt; die Koordinaten bleiben in diesem Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich.</span></div></div></div></div>
+<div class="modal-shade" id="settingsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Standort und Einstellungen"><div class="modal-head"><div><h2>Beobachtungsstandort</h2><p>Die Position bestimmt den sichtbaren Himmel und die virtuelle Ansicht unter dem Horizont.</p></div><button id="settingsClose" aria-label="Einstellungen schliessen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt; die Koordinaten bleiben in diesem Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Die Projektion reicht bis zum Nadir (−90&deg;). Objekte unter dem Horizont sind nur virtuell sichtbar. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich.</span></div></div></div></div>
 </div>
 <script type="module">
 'use strict';
@@ -82,6 +135,7 @@ const cvs = $('sky');
 const ctx = cvs.getContext('2d', { alpha: false });
 const RAD = Math.PI / 180;
 const DEG = 180 / Math.PI;
+const MIN_ALT = -89.5, MAX_ALT = 89.5;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const wrap = (n) => ((n % 360) + 360) % 360;
 const rad = (v) => v * RAD;
@@ -103,7 +157,8 @@ let satlib = null;
 let W = 0, H = 0, DPR = 1;
 let hitTargets = [];
 let centerX = 0, centerY = 0, perspective = 0;
-let lastRendered = 0, lastUIUpdate = 0;
+let lastRendered = 0, lastUIUpdate = 0, lastTimeUIUpdate = 0;
+let roseRotation = null, lastCompassHeading = null;
 let pointerMap = new Map(), startPointer = null, wasDragged = false;
 let lastPinch = 0;
 let lastSensorHeading = null;
@@ -275,7 +330,9 @@ function projectHor(az,alt) {
  if(x < -170 || x > W+170 || y < -170 || y > H+170)return null;
  return {x,y};
 }
-function projectEq(ra,dec) { const h=radecToHorizontal(ra,dec,sidereal); return h.alt<-2 ? null : projectHor(h.az,h.alt); }
+// Deliberately project the complete celestial sphere. Below the local horizon,
+// objects are a labelled virtual through-Earth view rather than optically visible.
+function projectEq(ra,dec) { const h=radecToHorizontal(ra,dec,sidereal); return projectHor(h.az,h.alt); }
 function resize() {
  DPR=Math.min(2,window.devicePixelRatio || 1);
  W=Math.max(1,window.innerWidth); H=Math.max(1,window.innerHeight);
@@ -319,17 +376,43 @@ function drawPolyline(points,color,width=1,store=null) {
  if(drawn){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();}
 }
 function drawGrid() {
+ // Both celestial hemispheres are navigable; negative elevation lines identify
+ // the otherwise invisible directions below the observer's local horizon.
  for(let a=0;a<360;a+=30){
-  let pts=[];for(let h=0;h<=90;h+=3)pts.push(projectHor(a,h));
-  drawPolyline(pts,a%90===0?'rgba(122,172,226,.125)':'rgba(121,165,216,.065)',.8);
+  const points=[];for(let h=-90;h<=90;h+=3)points.push(projectHor(a,h));
+  drawPolyline(points,a%90===0?'rgba(122,172,226,.12)':'rgba(121,165,216,.055)',.8);
  }
- for(const h of [0,20,40,60,80]){
+ for(const h of [-80,-60,-40,-20,0,20,40,60,80]){
   const pts=[];for(let a=0;a<=360;a+=3)pts.push(projectHor(a,h));
-  drawPolyline(pts,h===0?'rgba(147,204,249,.32)':'rgba(121,165,216,.08)',h===0?1.1:.8);
+  ctx.save();if(h<0)ctx.setLineDash([4,7]);
+  drawPolyline(pts,h===0?'rgba(167,213,246,.42)':h<0?'rgba(154,138,170,.16)':'rgba(121,165,216,.08)',h===0?1.4:.8);
+  ctx.restore();
  }
  const cardinal=[['N',0],['NO',45],['O',90],['SO',135],['S',180],['SW',225],['W',270],['NW',315]];
  ctx.font='600 10px "Space Grotesk", sans-serif';ctx.textAlign='center';
  for(const [label,a] of cardinal){const p=projectHor(a,0);if(!p||p.y>H-110||p.y<65)continue;ctx.fillStyle='rgba(140,192,230,.7)';ctx.fillText(label,p.x,p.y-11);}
+}
+function drawBelowHorizon(){
+ // In this roll-free pinhole camera the horizontal plane projects to a true
+ // screen-horizontal line at centerY + focalLength * tan(view altitude).
+ const horizonY=centerY+perspective*Math.tan(rad(state.alt));
+ const top=clamp(horizonY,0,H);
+ if(top<H){
+  ctx.save();
+  const ground=ctx.createLinearGradient(0,top,0,Math.max(top+1,H));
+  ground.addColorStop(0,'rgba(4,9,20,.45)');ground.addColorStop(1,'rgba(5,10,20,.76)');
+  ctx.fillStyle=ground;ctx.fillRect(0,top,W,H-top);
+  ctx.strokeStyle='rgba(154,153,175,.045)';ctx.lineWidth=.7;
+  ctx.beginPath();for(let y=Math.ceil(top/30)*30;y<H;y+=30){ctx.moveTo(0,y);ctx.lineTo(W,y);}ctx.stroke();
+  ctx.restore();
+ }
+ if(horizonY>=42 && horizonY<H-35){
+  ctx.save();ctx.setLineDash([8,7]);ctx.strokeStyle='rgba(205,190,161,.4)';ctx.lineWidth=1.1;
+  ctx.beginPath();ctx.moveTo(0,horizonY);ctx.lineTo(W,horizonY);ctx.stroke();ctx.setLineDash([]);
+  const labelX=clamp(W*.65,90,W-95);
+  ctx.textAlign='center';ctx.font='600 9px "Space Grotesk",sans-serif';
+  ctx.fillStyle='rgba(223,208,182,.8)';ctx.fillText('HORIZONT 0°',labelX,horizonY-9);ctx.restore();
+ }
 }
 function drawGalaxyDust() {
  // Coordinate-accurate galactic plane haze (decorative particles, not stellar measurements).
@@ -561,15 +644,31 @@ function renderFrame(ts){
  basis=calcBasis();
  const date=getDate();sidereal=timestampToSidereal(date);
  hitTargets=[];
- background();drawGrid();drawGalaxyDust();drawConstellations();drawStars();drawDeepSky();drawSatellites(date);drawSelectedStarHalo();
- if(ts-lastUIUpdate>900){updateTimeUI();updateViewUI();lastUIUpdate=ts;}
+ background();drawGrid();drawGalaxyDust();drawConstellations();drawStars();drawDeepSky();drawBelowHorizon();drawSatellites(date);drawSelectedStarHalo();
+ if(ts-lastUIUpdate>(state.motion||pointerMap.size?65:150)){updateViewUI();lastUIUpdate=ts;}
+ if(ts-lastTimeUIUpdate>900){updateTimeUI();lastTimeUIUpdate=ts;}
 }
 function directionName(az){const labels=['NORD','NORDOST','OST','S\u00dcDOST','S\u00dcD','S\u00dcDWEST','WEST','NORDWEST'];return labels[Math.round(wrap(az)/45)%8];}
 function updateViewUI(){
- $('directionValue').textContent=directionName(state.az);
- $('azValue').textContent=formatNumber(state.az,0)+'\u00b0';
- $('altValue').textContent=formatNumber(state.alt,0)+'\u00b0';
- $('compassNeedle').style.transform=`rotate(${-state.az}deg)`;
+ const az=wrap(state.az),alt=clamp(state.alt,MIN_ALT,MAX_ALT);
+ const signedAlt=(alt>=0?'+':'')+formatNumber(alt,1)+'\u00b0';
+ $('directionValue').textContent=directionName(az);
+ $('azValue').textContent=formatNumber(az,1)+'\u00b0';
+ $('altValue').textContent=signedAlt;
+ $('compassBearing').textContent=formatNumber(az,1)+'\u00b0';
+ $('compassHeight').textContent=signedAlt;
+ // Keep the compass rose continuous when crossing north (359 -> 0 degrees).
+ if(lastCompassHeading===null){lastCompassHeading=az;roseRotation=az;}
+ else{roseRotation+=((az-lastCompassHeading+540)%360)-180;lastCompassHeading=az;}
+ $('compassRose').style.transform=`rotate(${-roseRotation}deg)`;
+ // A horizontal compass reference appears more face-on when looking down,
+ // while the dial tilts away when the camera points high into the sky.
+ const tilt=clamp(43+alt*.44,8,74);
+ $('compassDial').style.transform=`rotateX(${tilt.toFixed(2)}deg)`;
+ $('compassPitchDot').style.left=((alt+90)/180*100).toFixed(2)+'%';
+ $('compassMode').textContent=state.motion?(state.sensorRelative?'RELATIV':'SENSOR'):'KARTE';
+ $('belowFlag').hidden=alt>=-0.1;
+ $('compassUnit').setAttribute('aria-label',`Kompass: Azimut ${formatNumber(az,1)} Grad, Blickh\u00f6he ${formatNumber(alt,1)} Grad${alt<0?', virtuell unter dem Horizont':''}`);
 }
 function openModal(id){$(id).classList.add('visible');$(id).setAttribute('aria-hidden','false');}
 function closeModal(id){$(id).classList.remove('visible');$(id).setAttribute('aria-hidden','true');}
@@ -587,38 +686,13 @@ function objectHorizontal(kind,item){
  return radecToHorizontal(item.ra,item.dec,timestampToSidereal(getDate()));
 }
 function focusObject(kind,item){
- let h=objectHorizontal(kind,item);if(!h)return;
- if(h.alt<7){
-  // Search for the next useful observing opportunity. Do not show a blank
-  // subterranean sky merely because the current time is daytime.
-  const base=getDate();
-  const observer={latitude:rad(state.lat),longitude:rad(state.lon),height:.045};
-  const threshold=kind==='satellite'?11:20;
-  const step=kind==='satellite'?2:15;
-  let found=null,best=null;
-  for(let minute=step;minute<=24*60;minute+=step){
-   const date=new Date(base.getTime()+minute*60000);
-   const ph=kind==='satellite'?calculateSatPosition(item,date,observer):radecToHorizontal(item.ra,item.dec,timestampToSidereal(date));
-   if(!ph)continue;
-   if(ph.alt>0 && (!best||ph.alt>best.h.alt))best={minute,h:ph};
-   if(ph.alt>=threshold){found={minute,h:ph};break;}
-  }
-  const next=found||(best&&best.h.alt>=5?best:null);
-  if(next){
-   if(state.playing)setPlaying(false);
-   state.offsetMs+=next.minute*60000;
-   state.lastSatCompute=0;
-   h=next.h;
-   updateTimeUI();
-   showToast('Beobachtungszeit auf die naechste Sichtbarkeit des Objekts verschoben.');
-  }else{
-   showToast('Dieses Objekt bleibt an deinem Standort im naechsten Tag unter dem Horizont.',true);
-   return;
-  }
- }
- state.az=wrap(h.az);state.alt=clamp(h.alt,2,87);
- state.fov=kind==='constellation'?75:kind==='satellite'?58:kind==='dso'?48:48;
+ const h=objectHorizontal(kind,item);if(!h)return;
+ // Preserve the selected observation time and allow direct inspection of an
+ // object at negative altitude, clearly labelled as a virtual view.
+ state.az=wrap(h.az);state.alt=clamp(h.alt,MIN_ALT,MAX_ALT);
+ state.fov=kind==='constellation'?75:kind==='satellite'?58:48;
  updateViewUI();
+ if(h.alt<0)showToast('Objekt unter dem Horizont: Die Karte zeigt eine virtuelle Durchsicht, keine optische Sichtbarkeit.');
  if(state.selected)renderDetail();
 }
 function niceAngle(a){return `${formatNumber(a,1)}\u00b0`;}
@@ -846,9 +920,10 @@ function orientationHandler(e){
  const north=-sg*sa+sb*cg*ca;
  const up=-cb*cg;
  const planar=Math.hypot(east,north);
- if(planar<.08)return; // near zenith / nadir: azimuth is numerically unstable
- let az=wrap(deg(Math.atan2(east,north)));
  const alt=deg(Math.atan2(up,planar));
+ // When viewing the zenith/nadir, azimuth is undefined. Preserve the last
+ // reliable azimuth while continuing to update elevation all the way to -90°.
+ let az=planar<.08 ? state.az : wrap(deg(Math.atan2(east,north)));
  if(!absolute){
   if(headingOffset===null)headingOffset=wrap(state.az-az);
   az=wrap(az+headingOffset);
@@ -856,7 +931,7 @@ function orientationHandler(e){
  }else{headingOffset=null;state.sensorRelative=false;}
  const diff=((az-state.az+540)%360)-180;
  state.az=wrap(state.az+diff*.25);
- state.alt=clamp(state.alt+(alt-state.alt)*.22,-30,89);
+ state.alt=clamp(state.alt+(alt-state.alt)*.22,MIN_ALT,MAX_ALT);
 }
 async function toggleMotion(){
  if(state.motion){
@@ -940,7 +1015,7 @@ function onPointerMove(e){
  if(!wasDragged)return;
  if(state.motion)disableMotionForDrag();
  state.az=wrap(state.az-dx/Math.max(250,W)*state.fov*1.55);
- state.alt=clamp(state.alt+dy/Math.max(250,H)*state.fov*1.65,-32,88.5);
+ state.alt=clamp(state.alt+dy/Math.max(250,H)*state.fov*1.65,MIN_ALT,MAX_ALT);
  $('viewInfo').classList.add('compact');
 }
 function onPointerUp(e){
@@ -1000,8 +1075,8 @@ function connectUI(){
    e.preventDefault();updateSearchResults();openModal('searchModal');$('searchInput').focus();
   }else if(e.key==='ArrowLeft'){state.az=wrap(state.az-7);e.preventDefault();}
   else if(e.key==='ArrowRight'){state.az=wrap(state.az+7);e.preventDefault();}
-  else if(e.key==='ArrowUp'){state.alt=clamp(state.alt+7,-30,88);e.preventDefault();}
-  else if(e.key==='ArrowDown'){state.alt=clamp(state.alt-7,-30,88);e.preventDefault();}
+  else if(e.key==='ArrowUp'){state.alt=clamp(state.alt+7,MIN_ALT,MAX_ALT);e.preventDefault();}
+  else if(e.key==='ArrowDown'){state.alt=clamp(state.alt-7,MIN_ALT,MAX_ALT);e.preventDefault();}
   else if(e.key==='+'||e.key==='='){setZoom(state.fov*.84);e.preventDefault();}
   else if(e.key==='-'){setZoom(state.fov*1.2);e.preventDefault();}
  });
