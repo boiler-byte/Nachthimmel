@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#050915">
-<meta name="description" content="Nachthimmel v3: Interaktive Himmelskarte mit Sternbildern, NASA-Deep-Sky-Aufnahmen und live berechneten Satellitenbahnen.">
-<title>Nachthimmel v3 – Interaktive Himmelskarte</title>
+<meta name="description" content="Nachthimmel v5: Interaktive Himmelskarte mit separat schaltbaren Sternen, Planeten, Sternbildern, NASA-Deep-Sky-Aufnahmen, Satelliten und OpenSky-Flugzeugen.">
+<title>Nachthimmel v5 – Interaktive Himmelskarte</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
 .view-info{position:absolute;left:clamp(24px,3.5vw,56px);top:clamp(124px,20vh,195px);z-index:4;pointer-events:none;max-width:min(420px,75vw)}.eyebrow{display:flex;align-items:center;gap:11px;color:var(--blue);font-size:10px;letter-spacing:.24em;font-weight:700;text-transform:uppercase;margin-bottom:16px}.eyebrow:before{content:'';height:1px;width:23px;background:var(--blue);box-shadow:0 0 12px var(--blue)}.hero-title{font-family:var(--display);font-weight:500;letter-spacing:-.055em;font-size:clamp(36px,4.4vw,70px);line-height:1.05;margin:0;text-wrap:balance;text-shadow:0 8px 55px rgba(0,0,0,.35)}.hero-title span{display:block;color:#8ccfff}.hero-subtitle{font-size:13px;line-height:1.8;color:#91a8c7;margin:18px 0 0;max-width:312px}.view-coordinate{display:flex;align-items:center;gap:13px;margin-top:27px;color:#aabbd3;font-size:11px;font-family:var(--display);letter-spacing:.09em}.coord-separator{width:3px;height:3px;border-radius:50%;background:#48617f}.view-coordinate strong{font-weight:500;color:#edf5ff}.view-info.compact .hero-title{font-size:28px}.view-info.compact .hero-subtitle{display:none}
 .right-rail{position:absolute;top:50%;transform:translateY(-50%);right:clamp(23px,3.5vw,55px);z-index:4;pointer-events:none;display:flex;align-items:center;flex-direction:column;gap:22px}.compass{position:relative;width:86px;height:86px;border-radius:50%;border:1px solid rgba(146,194,255,.16);background:rgba(8,15,31,.27);backdrop-filter:blur(10px);box-shadow:0 4px 45px rgba(0,0,0,.1)}.compass:after{content:'';position:absolute;inset:11px;border:1px dashed rgba(144,198,247,.12);border-radius:50%}.compass-label{position:absolute;font-family:var(--display);font-size:9px;color:#8da1ba}.compass-label.n{top:7px;left:50%;transform:translateX(-50%);color:#e0eefa}.compass-label.s{bottom:6px;left:50%;transform:translateX(-50%)}.compass-label.e{right:8px;top:50%;transform:translateY(-50%)}.compass-label.w{left:7px;top:50%;transform:translateY(-50%)}.compass-needle{position:absolute;inset:0;display:grid;place-items:center;transition:transform .15s linear}.compass-needle:before{content:'';width:3px;height:43px;background:linear-gradient(to bottom,#9bddff 0 44%,rgba(126,160,207,.37) 52% 100%);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);filter:drop-shadow(0 0 5px #8ed4ff)}.rail-label{font-family:var(--display);font-size:9px;letter-spacing:.18em;color:#7890b0;writing-mode:vertical-rl;transform:rotate(180deg)}
 .center-reticle{position:absolute;top:47%;left:50%;width:39px;height:39px;transform:translate(-50%,-50%);z-index:3;pointer-events:none;opacity:.5}.center-reticle:before,.center-reticle:after{content:'';position:absolute;background:#c0dafa}.center-reticle:before{height:1px;width:100%;top:50%}.center-reticle:after{width:1px;height:100%;left:50%}.center-reticle i{position:absolute;inset:12px;border:1px solid #b4cfee;border-radius:50%;background:rgba(6,16,31,.24)}.hint{position:absolute;bottom:191px;left:clamp(24px,3.5vw,56px);font-size:10px;letter-spacing:.065em;color:#7b93b4;z-index:4;display:flex;align-items:center;gap:9px;pointer-events:none}.hint svg{width:14px;height:14px}.sources{position:absolute;left:clamp(24px,3.5vw,56px);bottom:16px;z-index:4;display:flex;gap:14px;align-items:center;color:#556987;font-size:10px;letter-spacing:.035em}.sources a{color:#8498b5}.sources a:hover{color:#afdfff}.sources .sep{width:3px;height:3px;background:#50637b;border-radius:50%}
-.bottom-ui{position:absolute;bottom:43px;left:50%;transform:translateX(-50%);width:min(1110px,calc(100% - 90px));z-index:8;display:flex;flex-direction:column;gap:13px;pointer-events:none}.bottom-ui>*{pointer-events:auto}.timebar{min-height:53px;max-width:792px;width:100%;align-self:center;display:flex;align-items:center;gap:17px;border:1px solid rgba(136,173,219,.13);border-radius:15px;background:rgba(8,15,29,.72);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 12px 35px rgba(0,0,0,.16);padding:8px 15px}.time-label{min-width:142px}.time-top{color:#7186a5;font-size:9px;letter-spacing:.13em;font-weight:700;text-transform:uppercase;margin-bottom:3px}.time-value{font-family:var(--display);font-size:15px;font-weight:600;letter-spacing:.025em;white-space:nowrap}.time-value small{font-size:10px;color:#92a9c6;font-weight:500;margin-left:5px}.time-range{flex:1;min-width:70px;accent-color:#8bd4ff;height:3px;cursor:pointer}.time-control{display:flex;align-items:center;gap:5px}.small-action{width:32px;height:32px;border:1px solid transparent;border-radius:10px;background:transparent;display:grid;place-items:center;color:#a5b5cb}.small-action:hover{background:rgba(146,180,228,.1);color:white}.small-action svg{width:16px;height:16px}.now-btn{border:1px solid rgba(154,194,246,.19);background:rgba(116,163,227,.08);font-size:10px;letter-spacing:.09em;font-weight:700;color:#bfe5ff;border-radius:9px;padding:9px 11px}.now-btn:hover{background:rgba(116,163,227,.18)}.dock{display:flex;align-items:center;gap:0;width:100%;min-height:94px;background:rgba(9,16,30,.89);border:1px solid rgba(163,191,234,.19);border-radius:22px;backdrop-filter:blur(38px);-webkit-backdrop-filter:blur(38px);box-shadow:0 20px 75px rgba(0,0,0,.38),inset 0 1px 0 rgba(230,243,255,.035);padding:13px}.dock-caption{min-width:136px;max-width:136px;padding:7px 11px 7px 16px}.dock-caption-top{font-size:9px;letter-spacing:.19em;text-transform:uppercase;color:#758ba9;font-weight:700}.dock-caption-title{font-size:17px;font-family:var(--display);font-weight:600;margin-top:7px}.dock-caption-title b{font-weight:500;color:var(--blue)}.dock-divider{height:47px;width:1px;background:rgba(158,184,219,.16);margin:0 10px}.layer-buttons{display:flex;flex:1;min-width:0;gap:8px}.layer-toggle{position:relative;min-width:0;flex:1;border:1px solid transparent;border-radius:14px;padding:11px 9px;display:flex;align-items:center;gap:11px;text-align:left;background:transparent;transition:background .18s,border-color .18s}.layer-toggle:hover{background:rgba(139,169,214,.085)}.layer-toggle.active{background:rgba(34,59,96,.55);border-color:rgba(124,173,233,.17)}.layer-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(130,152,220,.12);color:#b6aaff}.layer-toggle[data-layer="deepSky"] .layer-icon{background:rgba(178,123,218,.12);color:#d1a1f5}.layer-toggle[data-layer="satellites"] .layer-icon{background:rgba(79,165,203,.13);color:#8cddf8}.layer-icon svg{width:21px;height:21px}.layer-name{font-size:12px;font-weight:700;letter-spacing:-.01em;color:#c6d5e9;white-space:nowrap}.layer-description{font-size:10px;white-space:nowrap;color:#7187a4;margin-top:4px}.layer-toggle.active .layer-name{color:white}.layer-state{position:absolute;right:9px;top:11px;width:6px;height:6px;border-radius:50%;background:#3c4d67}.layer-toggle.active .layer-state{background:#90d4ff;box-shadow:0 0 12px rgba(114,196,255,.7)}.tool-actions{display:flex;align-items:center;gap:7px;padding:0 5px}.tool-btn{border:1px solid rgba(160,187,229,.13);width:38px;height:40px;background:rgba(146,184,230,.04);border-radius:11px;display:grid;place-items:center;color:#a7bad1}.tool-btn:hover{color:white;border-color:rgba(160,187,229,.36);background:rgba(146,184,230,.12)}.tool-btn svg{width:17px;height:17px}.motion-btn{display:none;align-items:center;justify-content:center;gap:7px;padding:0 12px;height:40px;border:1px solid rgba(147,182,234,.21);background:rgba(76,121,179,.12);border-radius:11px;color:#b7c9df;white-space:nowrap;font-size:10px;font-weight:800;letter-spacing:.07em}.motion-btn.active{color:#a8eeff;background:rgba(54,140,182,.24);border-color:rgba(124,220,242,.45)}.motion-btn svg{width:17px;height:17px}.motion-btn:hover{background:rgba(91,157,210,.19)}
+.bottom-ui{position:absolute;bottom:43px;left:50%;transform:translateX(-50%);width:min(1110px,calc(100% - 90px));z-index:8;display:flex;flex-direction:column;gap:13px;pointer-events:none}.bottom-ui>*{pointer-events:auto}.timebar{min-height:53px;max-width:792px;width:100%;align-self:center;display:flex;align-items:center;gap:17px;border:1px solid rgba(136,173,219,.13);border-radius:15px;background:rgba(8,15,29,.72);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 12px 35px rgba(0,0,0,.16);padding:8px 15px}.time-label{min-width:142px}.time-top{color:#7186a5;font-size:9px;letter-spacing:.13em;font-weight:700;text-transform:uppercase;margin-bottom:3px}.time-value{font-family:var(--display);font-size:15px;font-weight:600;letter-spacing:.025em;white-space:nowrap}.time-value small{font-size:10px;color:#92a9c6;font-weight:500;margin-left:5px}.time-range{flex:1;min-width:70px;accent-color:#8bd4ff;height:3px;cursor:pointer}.time-control{display:flex;align-items:center;gap:5px}.small-action{width:32px;height:32px;border:1px solid transparent;border-radius:10px;background:transparent;display:grid;place-items:center;color:#a5b5cb}.small-action:hover{background:rgba(146,180,228,.1);color:white}.small-action svg{width:16px;height:16px}.now-btn{border:1px solid rgba(154,194,246,.19);background:rgba(116,163,227,.08);font-size:10px;letter-spacing:.09em;font-weight:700;color:#bfe5ff;border-radius:9px;padding:9px 11px}.now-btn:hover{background:rgba(116,163,227,.18)}.dock{display:flex;align-items:center;gap:0;width:100%;min-height:94px;background:rgba(9,16,30,.89);border:1px solid rgba(163,191,234,.19);border-radius:22px;backdrop-filter:blur(38px);-webkit-backdrop-filter:blur(38px);box-shadow:0 20px 75px rgba(0,0,0,.38),inset 0 1px 0 rgba(230,243,255,.035);padding:13px}.dock-caption{min-width:136px;max-width:136px;padding:7px 11px 7px 16px}.dock-caption-top{font-size:9px;letter-spacing:.19em;text-transform:uppercase;color:#758ba9;font-weight:700}.dock-caption-title{font-size:17px;font-family:var(--display);font-weight:600;margin-top:7px}.dock-caption-title b{font-weight:500;color:var(--blue)}.dock-divider{height:47px;width:1px;background:rgba(158,184,219,.16);margin:0 10px}.layer-buttons{display:flex;flex:1;min-width:0;gap:8px}.layer-toggle{position:relative;min-width:0;flex:1;border:1px solid transparent;border-radius:14px;padding:11px 9px;display:flex;align-items:center;gap:11px;text-align:left;background:transparent;transition:background .18s,border-color .18s}.layer-toggle:hover{background:rgba(139,169,214,.085)}.layer-toggle.active{background:rgba(34,59,96,.55);border-color:rgba(124,173,233,.17)}.layer-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(130,152,220,.12);color:#b6aaff}.layer-toggle[data-layer="deepSky"] .layer-icon{background:rgba(178,123,218,.12);color:#d1a1f5}.layer-toggle[data-layer="satellites"] .layer-icon{background:rgba(79,165,203,.13);color:#8cddf8}.layer-toggle[data-layer="stars"] .layer-icon{background:rgba(104,153,232,.13);color:#c2e4ff}.layer-toggle[data-layer="aircraft"] .layer-icon{background:rgba(223,170,99,.14);color:#ffdc9d}.layer-icon svg{width:21px;height:21px}.layer-name{font-size:12px;font-weight:700;letter-spacing:-.01em;color:#c6d5e9;white-space:nowrap}.layer-description{font-size:10px;white-space:nowrap;color:#7187a4;margin-top:4px}.layer-toggle.active .layer-name{color:white}.layer-state{position:absolute;right:9px;top:11px;width:6px;height:6px;border-radius:50%;background:#3c4d67}.layer-toggle.active .layer-state{background:#90d4ff;box-shadow:0 0 12px rgba(114,196,255,.7)}.tool-actions{display:flex;align-items:center;gap:7px;padding:0 5px}.tool-btn{border:1px solid rgba(160,187,229,.13);width:38px;height:40px;background:rgba(146,184,230,.04);border-radius:11px;display:grid;place-items:center;color:#a7bad1}.tool-btn:hover{color:white;border-color:rgba(160,187,229,.36);background:rgba(146,184,230,.12)}.tool-btn svg{width:17px;height:17px}.motion-btn{display:none;align-items:center;justify-content:center;gap:7px;padding:0 12px;height:40px;border:1px solid rgba(147,182,234,.21);background:rgba(76,121,179,.12);border-radius:11px;color:#b7c9df;white-space:nowrap;font-size:10px;font-weight:800;letter-spacing:.07em}.motion-btn.active{color:#a8eeff;background:rgba(54,140,182,.24);border-color:rgba(124,220,242,.45)}.motion-btn svg{width:17px;height:17px}.motion-btn:hover{background:rgba(91,157,210,.19)}
 .toast-stack{position:absolute;top:93px;left:50%;transform:translateX(-50%);z-index:22;display:flex;flex-direction:column;gap:9px;pointer-events:none;max-width:min(470px,calc(100vw - 30px));width:max-content}.toast{padding:12px 16px;background:rgba(17,28,47,.96);color:#d5e9fb;border:1px solid rgba(136,192,237,.23);border-radius:13px;box-shadow:0 12px 35px rgba(0,0,0,.35);font-size:12px;line-height:1.5;animation:toastIn .28s ease-out}.toast.warn{border-color:rgba(238,174,109,.4)}@keyframes toastIn{from{transform:translateY(-9px);opacity:0}to{transform:translateY(0);opacity:1}}
 .details{position:absolute;z-index:12;right:24px;top:99px;width:min(387px,calc(100% - 35px));max-height:calc(100% - 310px);overflow-y:auto;background:rgba(11,19,34,.96);border:1px solid rgba(144,184,239,.23);border-radius:21px;box-shadow:0 25px 100px rgba(0,0,0,.58);backdrop-filter:blur(35px);-webkit-backdrop-filter:blur(35px);transform:translateX(calc(100% + 45px));opacity:0;pointer-events:none;transition:transform .31s cubic-bezier(.2,.8,.2,1),opacity .25s}.details.visible{transform:translateX(0);opacity:1;pointer-events:auto}.details-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 15px}.details-kicker{display:flex;align-items:center;gap:7px;font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;color:#93cfff}.details-close{height:30px;width:30px;border:1px solid rgba(156,190,236,.16);border-radius:9px;background:rgba(122,168,231,.05);display:grid;place-items:center}.details-close:hover{background:rgba(122,168,231,.16)}.details-close svg{width:15px;height:15px}.detail-image{height:175px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 60% 30%,#294568,#0b1630 62%,#090f20)}.detail-image img{width:100%;height:100%;object-fit:cover}.detail-image:after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(10,18,34,.48))}.detail-image.no-image{display:flex;align-items:center;justify-content:center}.detail-image.no-image svg{height:100px;width:100px;opacity:.65;filter:drop-shadow(0 0 20px rgba(146,199,255,.24))}.detail-photo-credit{position:absolute;bottom:9px;left:15px;z-index:1;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:#dce9f9;background:rgba(0,0,0,.46);padding:5px 7px;border-radius:6px}.detail-body{padding:23px 23px 24px}.detail-body h2{font:600 27px/1.18 var(--display);letter-spacing:-.045em;margin:0}.detail-sub{color:#9aadd0;margin-top:6px;font-size:12px}.detail-body p{font-size:12.5px;line-height:1.8;color:#a9b9d0;margin:17px 0 19px}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-metric{border:1px solid rgba(149,182,224,.12);border-radius:12px;padding:12px 12px;background:rgba(106,150,208,.055);min-width:0}.detail-metric label{display:block;font-size:9px;color:#7188a7;letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px}.detail-metric strong{font-family:var(--display);font-size:13px;font-weight:500;color:#ecf4ff;overflow-wrap:anywhere}.detail-actions{display:flex;gap:8px;margin-top:19px;flex-wrap:wrap}.primary-btn,.secondary-btn{min-height:39px;border-radius:10px;padding:0 13px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}.primary-btn{border:1px solid #9bc9f3;background:#9dd6fc;color:#081527}.primary-btn:hover{background:#c1e7ff}.secondary-btn{background:rgba(143,192,233,.07);border:1px solid rgba(143,192,233,.19);color:#c5e6ff}.secondary-btn:hover{background:rgba(143,192,233,.16)}.primary-btn svg,.secondary-btn svg{width:15px;height:15px}.detail-footer{margin-top:16px;color:#6f89ab;font-size:10px;line-height:1.6}.detail-footer a{color:#86bfe9}
 .modal-shade{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:rgba(1,5,13,.67);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);opacity:0;pointer-events:none;transition:opacity .18s;padding:22px}.modal-shade.visible{opacity:1;pointer-events:auto}.modal-card{width:min(530px,100%);max-height:min(80vh,680px);border:1px solid rgba(149,189,240,.25);background:#0c1527;box-shadow:0 24px 85px rgba(0,0,0,.6);border-radius:21px;display:flex;flex-direction:column;overflow:hidden;transform:scale(.975) translateY(10px);transition:transform .18s}.modal-shade.visible .modal-card{transform:scale(1) translateY(0)}.modal-head{padding:22px 24px 18px;display:flex;align-items:flex-start;justify-content:space-between}.modal-head h2{font:600 22px var(--display);margin:0;letter-spacing:-.04em}.modal-head p{font-size:12px;color:#839ab8;margin:7px 0 0}.modal-head button{background:rgba(149,189,240,.06);border:1px solid rgba(149,189,240,.15);border-radius:9px;width:31px;height:31px;display:grid;place-items:center}.modal-head button svg{width:16px;height:16px}.search-field{display:flex;align-items:center;gap:11px;border:1px solid rgba(143,180,232,.25);background:rgba(92,141,198,.08);border-radius:12px;margin:0 24px 16px;padding:0 13px}.search-field svg{width:17px;height:17px;color:#8fa8c7}.search-field input{background:none;border:0;outline:0;color:white;padding:13px 0;flex:1;min-width:0;font-size:14px}.search-field input::placeholder{color:#627d9e}.search-results{overflow-y:auto;max-height:440px;padding:0 13px 17px}.result-group{padding:11px 12px 6px;font-size:10px;font-weight:700;letter-spacing:.16em;color:#708cac;text-transform:uppercase}.result-row{width:100%;display:flex;align-items:center;text-align:left;gap:12px;background:none;border:1px solid transparent;border-radius:11px;padding:10px 11px}.result-row:hover{background:rgba(109,162,222,.12);border-color:rgba(109,162,222,.12)}.result-symbol{height:37px;width:37px;border-radius:10px;background:rgba(130,158,223,.1);display:grid;place-items:center;color:#9fd7f8}.result-symbol svg{width:19px;height:19px}.result-text{flex:1;min-width:0}.result-title{font-size:12px;font-weight:700}.result-meta{font-size:10px;color:#849ab6;margin-top:4px}.result-row>.arrow{width:15px;height:15px;color:#5b7495}.empty-results{padding:25px;color:#8094af;font-size:12px;text-align:center}.settings-body{padding:0 24px 24px;overflow:auto}.form-label{font-size:10px;color:#98afc9;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:12px 0 7px;display:block}.setting-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.setting-field{border:1px solid rgba(150,184,231,.23);border-radius:10px;background:rgba(104,152,211,.06);color:#e7f3ff;padding:10px 12px;width:100%;font-size:13px}.setting-helper{font-size:11px;color:#8299b7;line-height:1.7;margin:11px 0 18px}.settings-buttons{display:flex;gap:9px}.settings-buttons button{flex:1}.setting-source{padding:13px 0 0;margin-top:20px;border-top:1px solid rgba(143,180,232,.14);color:#7790ae;font-size:10px;line-height:1.9}.setting-source a{color:#9ed6f6}.bottom-status{position:absolute;z-index:4;right:clamp(24px,3.5vw,56px);bottom:16px;font-size:10px;color:#687e9f;display:flex;align-items:center;gap:8px}.status-dot{width:5px;height:5px;background:#68ddc0;border-radius:50%}.status-dot.offline{background:#efb37e}
@@ -30,7 +30,7 @@
 @media(max-height:690px){.view-info{top:104px}.hero-title{font-size:34px}.hero-subtitle{display:none}.view-coordinate{margin-top:12px}.hint{display:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-/* Nachthimmel v3: concise sky HUD and pitch-aware precision compass. */
+/* Nachthimmel v5: concise sky HUD and pitch-aware precision compass. */
 [hidden]{display:none!important}
 .view-info{top:105px;max-width:calc(100vw - 40px)}
 .view-coordinate{margin:0;padding:11px 14px;border:1px solid rgba(131,177,222,.17);border-radius:13px;gap:13px;background:rgba(7,15,29,.49);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 7px 25px rgba(0,0,0,.12);font-size:10px;letter-spacing:.07em}
@@ -77,7 +77,7 @@
 @media(max-width:390px){.view-coordinate{font-size:8px;gap:7px;padding:9px 8px}.right-rail{right:9px;top:39%}}
 @media(max-height:690px){.view-info{top:86px}.view-coordinate{margin:0}.right-rail{top:41%}}
 
-/* Nachthimmel v3: top-left compass, clean tools dock, settings-layer switches. */
+/* Nachthimmel v5: top-left compass, clean tools dock, settings-layer switches. */
 .topbar{align-items:flex-start;gap:16px;z-index:9;padding:18px clamp(18px,3.4vw,54px)}
 .top-actions{margin-left:auto;flex-shrink:1;justify-content:flex-end}
 .compass-stack{display:flex;flex-direction:column;align-items:flex-start;gap:9px;flex:0 0 auto;min-width:0}
@@ -149,6 +149,15 @@
  .place-pill{max-width:95px}
  .setting-section-heading span{display:none}
 }
+/* v5 - planets: a seventh celestial-object layer independent of stars. */
+.layer-toggle[data-layer="planets"] .layer-icon{background:rgba(242,174,93,.14);color:#ffd5a0}
+.planet-quicklinks{margin:12px 0 0;padding:12px;border:1px solid rgba(199,162,112,.17);border-radius:13px;background:linear-gradient(115deg,rgba(71,50,38,.21),rgba(40,43,65,.14))}
+.planet-quick-title{color:#aaadbf;font-size:9px;letter-spacing:.11em;font-weight:700;text-transform:uppercase}
+.planet-quick-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.planet-quick-buttons button{border:1px solid rgba(211,174,127,.22);color:#f2dfca;border-radius:9px;background:rgba(177,126,80,.08);padding:7px 10px;font-size:11px;line-height:1.35;font-weight:600}
+.planet-quick-buttons button:hover,.planet-quick-buttons button:focus-visible{background:rgba(211,156,93,.22);border-color:rgba(234,186,118,.5)}
+.planet-quicklinks:not(.enabled){opacity:.72}
+.planet-note{font-size:10px;line-height:1.55;color:#9bafc7;margin-top:12px;border-left:2px solid rgba(234,186,118,.55);padding:2px 0 2px 10px}
 </style>
 </head>
 <body>
@@ -160,6 +169,8 @@
 <symbol id="i-const" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 15 3l5 8-9 10-7-7 1-9Z"/><circle cx="5" cy="5" r="2" fill="currentColor"/><circle cx="15" cy="3" r="1.6" fill="currentColor"/><circle cx="20" cy="11" r="2" fill="currentColor"/><circle cx="11" cy="21" r="1.6" fill="currentColor"/><circle cx="4" cy="14" r="1.7" fill="currentColor"/></g></symbol>
 <symbol id="i-nebula" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M12 2c5 2 7 5 7 10 0 7-5 9-10 9-5 0-7-4-6-8 1-4 5-7 9-5 5 2 2 9-2 8-4-1-3-6 0-6"/><path d="M5 3v4M3 5h4M20 18v4M18 20h4"/></g></symbol>
 <symbol id="i-satellite" viewBox="0 0 24 24"><g stroke="currentColor" fill="none" stroke-width="1.55" stroke-linejoin="round" stroke-linecap="round"><path d="m9 9 6 6m-7-3 4-4 4 4-4 4-4-4ZM3 9l6-6 3 3-6 6-3-3Zm9 9 6-6 3 3-6 6-3-3ZM13 11l-2 2"/><path d="M18 3c2 1 3 2 3 4"/></g></symbol>
+ <symbol id="i-planet" viewBox="0 0 24 24"><g stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6.1"/><ellipse cx="12" cy="12" rx="11" ry="3.8" transform="rotate(-23 12 12)"/><path d="M10 8.5c1.8.5 3.6 1 4.6 2.8M8.7 14.4c1.9 1.9 4.9 2.2 6.5.9" opacity=".72"/></g></symbol>
+<symbol id="i-aircraft" viewBox="0 0 24 24"><path d="M12 2.5c.9 0 1.3.9 1.3 1.8v6.2l7.1 4.6v2.5l-7.1-2.2v3.4l2.5 1.7V22L12 20.8 8.2 22v-1.5l2.5-1.7v-3.4l-7.1 2.2v-2.5l7.1-4.6V4.3c0-.9.4-1.8 1.3-1.8Z" stroke="currentColor" fill="none" stroke-width="1.45" stroke-linejoin="round"/></symbol>
 <symbol id="i-location" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4 14 20l-3-7-7-3 16-6Z"/></g></symbol>
 <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
 <symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
@@ -185,7 +196,7 @@
 </header>
 <div class="center-reticle" aria-hidden="true"><i></i></div>
 <div class="hint"><svg><use href="#i-crosshair"/></svg> Ziehen, um dich umzusehen &middot; Scrollen zum Zoomen &middot; Objekte antippen</div>
-<div class="sources"><span>OPEN SKY DATA</span><span class="sep"></span><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener noreferrer">Sternkatalog / IAU</a><span class="sep"></span><a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Images</a><span class="sep"></span><a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer">CelesTrak</a></div>
+<div class="sources"><span>NACHTHIMMEL v5</span><span class="sep"></span><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener noreferrer">Sternkatalog / IAU</a><span class="sep"></span><a href="https://opensky-network.org/" target="_blank" rel="noopener noreferrer">OpenSky Network</a><span class="sep"></span><a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Images</a><span class="sep"></span><a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer">CelesTrak</a></div>
 <div class="bottom-status"><span class="status-dot" id="sourceDot"></span><span id="sourceStatus">Kataloge werden geladen ...</span></div>
 <div class="bottom-ui">
  <div class="timebar"><div class="time-label"><div class="time-top" id="timeMode">BEOBACHTUNGSZEIT</div><div class="time-value"><span id="clockValue">21:30</span><small id="dateValue">HEUTE</small></div></div><input class="time-range" id="timeRange" type="range" min="-12" max="12" step="0.25" value="0" aria-label="Zeit um bis zu 12 Stunden verschieben"><div class="time-control"><button class="small-action" id="prevHour" title="Eine Stunde zurueck" aria-label="Eine Stunde zurueck"><svg><use href="#i-minus"/></svg></button><button class="small-action" id="playBtn" title="Zeitablauf starten" aria-label="Zeitablauf starten"><svg><use href="#i-play"/></svg></button><button class="small-action" id="nextHour" title="Eine Stunde vor" aria-label="Eine Stunde vor"><svg><use href="#i-plus"/></svg></button></div><button class="now-btn" id="nowBtn" title="Zur aktuellen Zeit">JETZT</button></div>
@@ -193,8 +204,8 @@
 </div>
 <div class="toast-stack" id="toasts" role="status" aria-live="polite"></div>
 <aside class="details" id="detailPanel" role="dialog" aria-label="Objektdetails" aria-hidden="true"></aside>
-<div class="modal-shade" id="searchModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Himmelsobjekte suchen"><div class="modal-head"><div><h2>Das Universum entdecken</h2><p>Suche nach Sternbildern, Deep-Sky-Objekten und Satelliten.</p></div><button id="searchClose" aria-label="Suche schliessen"><svg><use href="#i-close"/></svg></button></div><div class="search-field"><svg><use href="#i-search"/></svg><input id="searchInput" autocomplete="off" type="search" placeholder="z. B. Orion, Andromeda, ISS ..." aria-label="Suchbegriff"></div><div class="search-results" id="searchResults"></div></div></div>
-<div class="modal-shade" id="settingsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="modal-head"><div><h2 id="settingsTitle">Einstellungen</h2><p>Kartenebenen, Standort und Darstellung.</p></div><button id="settingsClose" aria-label="Einstellungen schliessen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><section class="settings-section" aria-labelledby="layersTitle"><div class="setting-section-heading"><h3 id="layersTitle">Kartenebenen</h3><span>Ein- und ausblenden</span></div><div class="settings-layers"><button class="layer-toggle active" id="constBtn" data-layer="constellations" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-const"/></svg></span><span><div class="layer-name">Sternbilder</div><div class="layer-description" id="constCount">IAU-Konstellationen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="deepBtn" data-layer="deepSky" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-nebula"/></svg></span><span><div class="layer-name">Deep Sky</div><div class="layer-description">NASA-Aufnahmen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="satBtn" data-layer="satellites" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-satellite"/></svg></span><span><div class="layer-name">Satelliten</div><div class="layer-description" id="satCount">Lade Positionen ...</div></span><span class="layer-state"></span></button></div></section><section class="settings-section location-section" aria-labelledby="locationTitle"><div class="setting-section-heading"><h3 id="locationTitle">Beobachtungsstandort</h3><span>Standort &amp; Sichtbarkeit</span></div><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt; die Koordinaten bleiben in diesem Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div></section><section class="settings-section display-section" aria-labelledby="displayTitle"><div class="setting-section-heading"><h3 id="displayTitle">Darstellung</h3></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Die Projektion reicht bis zum Nadir (−90&deg;). Objekte unter dem Horizont sind nur virtuell sichtbar. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p></section><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich.</span></div></div></div></div>
+<div class="modal-shade" id="searchModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Himmelsobjekte suchen"><div class="modal-head"><div><h2>Das Universum entdecken</h2><p>Suche nach Planeten, Sternen, Sternbildern, Deep-Sky-Objekten, Satelliten und Flugzeugen.</p></div><button id="searchClose" aria-label="Suche schliessen"><svg><use href="#i-close"/></svg></button></div><div class="search-field"><svg><use href="#i-search"/></svg><input id="searchInput" autocomplete="off" type="search" placeholder="z. B. Jupiter, Sirius, Orion, ISS ..." aria-label="Suchbegriff"></div><div class="search-results" id="searchResults"></div></div></div>
+<div class="modal-shade" id="settingsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="modal-head"><div><h2 id="settingsTitle">Einstellungen</h2><p>Kartenebenen, Standort und Darstellung.</p></div><button id="settingsClose" aria-label="Einstellungen schliessen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><section class="settings-section" aria-labelledby="layersTitle"><div class="setting-section-heading"><h3 id="layersTitle">Kartenebenen</h3><span>Ein- und ausblenden</span></div><div class="settings-layers"><button class="layer-toggle active" id="starsBtn" data-layer="stars" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-stars"/></svg></span><span><div class="layer-name">Sterne</div><div class="layer-description" id="starsCount">Sternkatalog &amp; Milchstra&szlig;e</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="planetsBtn" data-layer="planets" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-planet"/></svg></span><span><div class="layer-name">Planeten</div><div class="layer-description" id="planetCount">7 Planeten · berechnete Positionen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="constBtn" data-layer="constellations" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-const"/></svg></span><span><div class="layer-name">Sternbilder</div><div class="layer-description" id="constCount">IAU-Konstellationen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="deepBtn" data-layer="deepSky" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-nebula"/></svg></span><span><div class="layer-name">Deep Sky</div><div class="layer-description">NASA-Aufnahmen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="satBtn" data-layer="satellites" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-satellite"/></svg></span><span><div class="layer-name">Satelliten</div><div class="layer-description" id="satCount">Lade Positionen ...</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="aircraftBtn" data-layer="aircraft" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-aircraft"/></svg></span><span><div class="layer-name">Flugzeuge (OpenSky)</div><div class="layer-description" id="aircraftCount">Live-Daten bei Aktivierung</div></span><span class="layer-state"></span></button></div><div class="planet-quicklinks enabled" id="planetQuicklinks"><div class="planet-quick-title">Planeten direkt auf der Karte anzeigen</div><div class="planet-quick-buttons"><button data-planet-jump="mercury" type="button">Merkur</button><button data-planet-jump="venus" type="button">Venus</button><button data-planet-jump="mars" type="button">Mars</button><button data-planet-jump="jupiter" type="button">Jupiter</button><button data-planet-jump="saturn" type="button">Saturn</button><button data-planet-jump="uranus" type="button">Uranus</button><button data-planet-jump="neptune" type="button">Neptun</button></div></div><p class="setting-helper" style="margin:11px 2px 0">Planeten: Positionen und Entfernungen werden lokal mit den JPL-Näherungsbahnen für 1800–2050 berechnet (keine Live-API). Für präzise Teleskopausrichtung JPL Horizons verwenden.</p><p class="setting-helper" style="margin:11px 2px 0">Flugzeuge: OpenSky-Livepositionen, nur bei <strong>JETZT</strong> sichtbar. F&uuml;r den API-Zugriff die beiliegende <code>nachthimmel_v5_proxy.py</code> starten (CORS-Schutz der OpenSky-API). Kein API-Schl&uuml;ssel erforderlich.</p></section><section class="settings-section location-section" aria-labelledby="locationTitle"><div class="setting-section-heading"><h3 id="locationTitle">Beobachtungsstandort</h3><span>Standort &amp; Sichtbarkeit</span></div><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt. Bei aktivierter Flugzeug-Ebene wird ein Kartenausschnitt rund um den Standort &uuml;ber den lokalen Proxy an OpenSky abgefragt. Sonst bleiben die Koordinaten im Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div></section><section class="settings-section display-section" aria-labelledby="displayTitle"><div class="setting-section-heading"><h3 id="displayTitle">Darstellung</h3></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Die Projektion reicht bis zum Nadir (−90&deg;). Objekte unter dem Horizont sind nur virtuell sichtbar. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p></section><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">NASA/JPL – Näherungspositionen der Planeten (1800–2050)</a><br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/phys_par.html">NASA/JPL – Physikalische Planetendaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://openskynetwork.github.io/opensky-api/rest.html">OpenSky Network / aktuelle Flugzeug-Zustandsvektoren</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich. Flugzeuge werden nicht f&uuml;r simulierte Beobachtungszeiten r&uuml;ckgerechnet. OpenSky erlaubt anonym nur eine begrenzte Zahl API-Anfragen pro Tag.</span></div></div></div></div>
 </div>
 <script type="module">
 'use strict';
@@ -217,12 +228,14 @@ const validURL = (url) => { try { const u = new URL(url); return u.protocol === 
 const formatNumber = (v, digits = 1) => Number.isFinite(v) ? Number(v).toLocaleString('de-DE', {maximumFractionDigits:digits,minimumFractionDigits:digits}) : '--';
 const state = {
   lat:52.52, lon:13.405, place:'Berlin, Deutschland', az:206, alt:46, fov:94, mag:6,
-  layers:{constellations:true,deepSky:true,satellites:true}, motion:false,
+  layers:{stars:true,planets:true,constellations:true,deepSky:true,satellites:true,aircraft:false}, motion:false,
   playing:false, playStart:0, offsetMs:0, selected:null,
-  starsLoaded:false, constLoaded:false, satLoaded:false,
-  stars:[], names:{}, constellations:[], lines:[], satellites:[],
+  starsLoaded:false, constLoaded:false, satLoaded:false, aircraftLoaded:false,
+  stars:[], names:{}, constellations:[], lines:[], satellites:[], aircraft:[],
   satRender:[], lastSatCompute:0, lastSatDate:0, lastSatLabel:0,
-  catalogError:false, satError:false, sensorRelative:false,
+  catalogError:false, satError:false, aircraftError:false, aircraftLoading:false,
+  aircraftFetchedAt:0, aircraftDataTime:0, aircraftNextAt:0, aircraftRequestVersion:0, aircraftAbort:null, aircraftErrorReason:'',
+  sensorRelative:false,
 };
 let satlib = null;
 let W = 0, H = 0, DPR = 1;
@@ -317,6 +330,195 @@ function buildFallbackConstellations() {
 state.constellations = buildFallbackConstellations();
 state.stars = FALLBACK_STARS;
 
+
+// Planet positions without additional network access. JPL's fitted Keplerian
+// orbital elements for 1800-2050 (Earth-Moon barycentre approximates Earth).
+// J2000 ecliptic frame, light-time correction, then mean-of-date RA/Dec.
+// This is NOT an observatory-grade apparent/topocentric ephemeris.
+const AU_KM = 149597870.7;
+const LIGHT_DAYS_PER_AU = .0057755183;
+const PLANETS = [
+ {id:'mercury',name:'Merkur',en:'Mercury',type:'Gesteinsplanet',color:'#b5b8c2',light:'#eceff4',dark:'#545e74',radius:2439.4,year:.2408467,rotation:'58,65 Tage',mass:'.3301',
+  about:'Der sonnennächste und kleinste Planet hat eine stark verkraterte Oberfläche, kaum eine Atmosphäre und benötigt nur rund 88 Tage für einen Umlauf um die Sonne. Er zeigt von der Erde aus wechselnde Phasen.'},
+ {id:'venus',name:'Venus',en:'Venus',type:'Gesteinsplanet',color:'#ebd6a9',light:'#fff2ca',dark:'#99724d',radius:6051.8,year:.61519726,rotation:'243,0 Tage (rückläufig)',mass:'4,867',
+  about:'Die Venus ist von dichten Wolken und einer überwiegend aus Kohlendioxid bestehenden Atmosphäre umgeben. Ihr starker Treibhauseffekt macht sie zum heißesten Planeten. Sie erscheint oft als auffälliger Morgen- oder Abendstern.'},
+ {id:'mars',name:'Mars',en:'Mars',type:'Gesteinsplanet',color:'#db805e',light:'#ffa777',dark:'#783b34',radius:3389.5,year:1.8808476,rotation:'24,62 Stunden',mass:'0,6417',
+  about:'Der rote Planet verdankt seine Farbe eisenoxidhaltigem Staub. Er besitzt polare Eiskappen, gewaltige Vulkane wie Olympus Mons und Spuren früherer Wasseraktivität.'},
+ {id:'jupiter',name:'Jupiter',en:'Jupiter',type:'Gasriese',color:'#d5ae80',light:'#f5d5a4',dark:'#94614a',radius:69911,year:11.862615,rotation:'9,92 Stunden',mass:'1898',
+  about:'Jupiter ist der größte Planet des Sonnensystems. Seine sichtbaren Wolkenbänder und der Große Rote Fleck – ein langlebiger Wirbelsturm – prägen sein Erscheinungsbild.'},
+ {id:'saturn',name:'Saturn',en:'Saturn',type:'Gasriese',color:'#e5cd94',light:'#fff0b6',dark:'#8c7850',radius:58232,year:29.447498,rotation:'10,66 Stunden',mass:'568,3',
+  about:'Saturn ist ein Gasriese mit einem ausgedehnten Ringsystem aus überwiegend Eispartikeln. Seine mittlere Dichte ist geringer als die von flüssigem Wasser.'},
+ {id:'uranus',name:'Uranus',en:'Uranus',type:'Eisriese',color:'#95d9dc',light:'#c8f4f2',dark:'#467f92',radius:25362,year:84.016846,rotation:'17,24 Stunden (rückläufig)',mass:'86,81',
+  about:'Uranus rotiert nahezu auf der Seite: Seine Rotationsachse ist um etwa 98 Grad geneigt. Methan in der Atmosphäre trägt zu seiner blaugrünen Farbe bei.'},
+ {id:'neptune',name:'Neptun',en:'Neptune',type:'Eisriese',color:'#638fe8',light:'#a9c7ff',dark:'#274488',radius:24622,year:164.79132,rotation:'16,11 Stunden',mass:'102,4',
+  about:'Neptun ist der äußerste der acht Planeten. Seine blaue Erscheinung und sehr starke atmosphärische Winde kennzeichnen diesen fernen Eisriesen; er ist ohne optische Hilfe normalerweise nicht sichtbar.'}
+];
+// Columns: semimajor axis (au), eccentricity, inclination (deg), mean longitude,
+// longitude of perihelion, longitude of ascending node. Each has a /century rate.
+const JPL_ELEMENTS = {
+ mercury:[[.38709927,.20563593,7.00497902,252.25032350,77.45779628,48.33076593],[.00000037,.00001906,-.00594749,149472.67411175,.16047689,-.12534081]],
+ venus:[[.72333566,.00677672,3.39467605,181.97909950,131.60246718,76.67984255],[.00000390,-.00004107,-.00078890,58517.81538729,.00268329,-.27769418]],
+ earth:[[1.00000261,.01671123,-.00001531,100.46457166,102.93768193,0],[.00000562,-.00004392,-.01294668,35999.37244981,.32327364,0]],
+ mars:[[1.52371034,.09339410,1.84969142,-4.55343205,-23.94362959,49.55953891],[.00001847,.00007882,-.00813131,19140.30268499,.44441088,-.29257343]],
+ jupiter:[[5.20288700,.04838624,1.30439695,34.39644051,14.72847983,100.47390909],[-.00011607,-.00013253,-.00183714,3034.74612775,.21252668,.20469106]],
+ saturn:[[9.53667594,.05386179,2.48599187,49.95424423,92.59887831,113.66242448],[-.00125060,-.00050991,.00193609,1222.49362201,-.41897216,-.28867794]],
+ uranus:[[19.18916464,.04725744,.77263783,313.23810451,170.95427630,74.01692503],[-.00196176,-.00004397,-.00242939,428.48202785,.40805281,.04240589]],
+ neptune:[[30.06992276,.00859048,1.77004347,-55.12002969,44.96476227,131.78422574],[.00026291,.00005105,.00035372,218.45945325,-.32241464,-.00508664]]
+};
+function jplHeliocentric(id,centuries){
+ const [base,rate]=JPL_ELEMENTS[id];
+ const [a,e,inc,L,peri,node]=base.map((v,i)=>v+rate[i]*centuries);
+ let M=rad(((L-peri+540)%360)-180),E=M;
+ // Newton's method for Kepler's equation (radians).
+ for(let j=0;j<12;j++){
+  const correction=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));
+  E-=correction;if(Math.abs(correction)<1e-12)break;
+ }
+ const xp=a*(Math.cos(E)-e),yp=a*Math.sqrt(1-e*e)*Math.sin(E);
+ const omega=rad(peri-node),O=rad(node),I=rad(inc);
+ const cw=Math.cos(omega),sw=Math.sin(omega),co=Math.cos(O),so=Math.sin(O),ci=Math.cos(I),si=Math.sin(I);
+ const x=(cw*co-sw*so*ci)*xp+(-sw*co-cw*so*ci)*yp;
+ const y=(cw*so+sw*co*ci)*xp+(-sw*so+cw*co*ci)*yp;
+ const z=(sw*si)*xp+(cw*si)*yp;
+ return {x,y,z,r:Math.hypot(x,y,z)};
+}
+let planetCacheTime=NaN,planetCache=[];
+function planetObservations(date){
+ const t=date.getTime();
+ if(Number.isFinite(planetCacheTime) && Math.abs(t-planetCacheTime)<18000)return planetCache;
+ const epoch=(t/86400000+2440587.5-2451545)/36525;
+ const earth=jplHeliocentric('earth',epoch);
+ const eclipticTilt=rad(23.43928),ce=Math.cos(eclipticTilt),se=Math.sin(eclipticTilt);
+ const lst=timestampToSidereal(date);
+ const positions=[];
+ for(const planet of PLANETS){
+  let body=jplHeliocentric(planet.id,epoch),dx=0,dy=0,dz=0,dist=0;
+  // Iterate once or twice for the light emitted by the planet at observation time.
+  for(let j=0;j<3;j++){
+   dx=body.x-earth.x;dy=body.y-earth.y;dz=body.z-earth.z;
+   dist=Math.hypot(dx,dy,dz);
+   body=jplHeliocentric(planet.id,epoch-(dist*LIGHT_DAYS_PER_AU)/36525);
+  }
+  dx=body.x-earth.x;dy=body.y-earth.y;dz=body.z-earth.z;
+  dist=Math.hypot(dx,dy,dz);
+  const eqY=ce*dy-se*dz,eqZ=se*dy+ce*dz;
+  // Precess the J2000 equatorial coordinates to the mean equator/equinox
+  // of the selected date so local sidereal time and the planetary RA agree.
+  const ra2000=rad(wrap(deg(Math.atan2(eqY,dx))));
+  const dec2000=Math.atan2(eqZ,Math.hypot(dx,eqY));
+  const zeta=rad((2306.2181*epoch+.30188*epoch**2+.017998*epoch**3)/3600);
+  const z=rad((2306.2181*epoch+1.09468*epoch**2+.018203*epoch**3)/3600);
+  const theta=rad((2004.3109*epoch-.42665*epoch**2-.041833*epoch**3)/3600);
+  const A=Math.cos(dec2000)*Math.sin(ra2000+zeta);
+  const B=Math.cos(theta)*Math.cos(dec2000)*Math.cos(ra2000+zeta)-Math.sin(theta)*Math.sin(dec2000);
+  const C=Math.sin(theta)*Math.cos(dec2000)*Math.cos(ra2000+zeta)+Math.cos(theta)*Math.sin(dec2000);
+  const ra=wrap(deg(Math.atan2(A,B)+z)),dec=deg(Math.asin(clamp(C,-1,1)));
+  const h=radecToHorizontal(ra,dec,lst);
+  const phaseAngle=Math.acos(clamp((body.r*body.r+dist*dist-earth.r*earth.r)/(2*body.r*dist),-1,1));
+  const illum=(1+Math.cos(phaseAngle))/2;
+  const elong=deg(Math.acos(clamp((-earth.x*dx-earth.y*dy-earth.z*dz)/(earth.r*dist),-1,1)));
+  positions.push({planet,ra,dec,az:h.az,alt:h.alt,dist,sunDist:body.r,illum,elong,
+   phaseAngle:deg(phaseAngle),angularArcsec:2*planet.radius/(dist*AU_KM)*DEG*3600,
+   lightMinutes:dist*LIGHT_DAYS_PER_AU*1440});
+ }
+ planetCacheTime=t;planetCache=positions;
+ return positions;
+}
+function observePlanet(id,date=getDate()){
+ return planetObservations(date).find(o=>o.planet.id===id)||null;
+}
+function drawPlanets(date){
+ if(!state.layers.planets)return;
+ const observations=planetObservations(date);
+ const selectedId=state.selected?.kind==='planet' ? state.selected.item.id : null;
+ const visible=[];
+ for(const p of observations){
+  const coord=projectHor(p.az,p.alt);
+  if(!coord||coord.x<12||coord.x>W-12||coord.y<58||coord.y>H-100)continue;
+  visible.push({p,coord});
+ }
+ visible.sort((a,b)=>Number(a.p.planet.id===selectedId)-Number(b.p.planet.id===selectedId));
+ const usedLabels=[];
+ for(const {p,coord} of visible){
+  const {planet}=p,selected=planet.id===selectedId;
+  const r=selected?8.5:6.5;
+  ctx.save();ctx.translate(coord.x,coord.y);
+  // The icon is intentionally enlarged: planets are not to scale on the map.
+  ctx.globalAlpha=p.alt>=0?1:.48;
+  ctx.shadowColor=planet.color;ctx.shadowBlur=selected?25:15;
+  if(planet.id==='saturn'){
+   ctx.beginPath();ctx.ellipse(0,0,15.5,5.7,-.38,0,Math.PI*2);
+   ctx.strokeStyle=planet.light;ctx.lineWidth=2.2;ctx.stroke();
+  }
+  const disk=ctx.createRadialGradient(-r*.42,-r*.45,0,0,0,r*1.65);
+  disk.addColorStop(0,planet.light);disk.addColorStop(.45,planet.color);disk.addColorStop(1,planet.dark);
+  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=disk;ctx.fill();
+  ctx.shadowBlur=0;ctx.strokeStyle=planet.light;ctx.lineWidth=.75;ctx.stroke();
+  if(planet.id==='jupiter'){
+   ctx.save();ctx.beginPath();ctx.arc(0,0,r-.65,0,Math.PI*2);ctx.clip();
+   ctx.strokeStyle='rgba(143,89,64,.65)';ctx.lineWidth=1.6;
+   for(const v of [-2.8,1.4,4.2]){ctx.beginPath();ctx.moveTo(-r,v);ctx.lineTo(r,v+.7);ctx.stroke();}
+   ctx.restore();
+  }
+  if(selected){ctx.beginPath();ctx.arc(0,0,21,0,Math.PI*2);ctx.strokeStyle='rgba(255,226,185,.88)';ctx.lineWidth=1.2;ctx.stroke();}
+  ctx.restore();
+  // Labels remain readable and do not occlude the icon. Hide only collisions.
+  const lx=coord.x+17,ly=coord.y-11;
+  if(lx<W-72&&ly>68&&ly<H-104 && (selected||!usedLabels.some(q=>Math.abs(q.x-lx)<76&&Math.abs(q.y-ly)<18))){
+   ctx.textAlign='left';ctx.font=(selected?'700 ':'600 ')+'10px "Space Grotesk", sans-serif';
+   ctx.fillStyle=p.alt>=0?'#ffe0ac':'rgba(217,181,137,.59)';
+   ctx.fillText(planet.name,lx,ly);usedLabels.push({x:lx,y:ly});
+  }
+  hitTargets.push({kind:'planet',item:planet,x:coord.x,y:coord.y,r:selected?25:19,priority:8});
+ }
+}
+function planetMetrics(p){
+ if(!p)return [];
+ const angleText=p.angularArcsec<1?formatNumber(p.angularArcsec,2):formatNumber(p.angularArcsec,1);
+ return [
+  ['Sichtbarkeit',p.alt>=0?'Über Horizont':'Unter Horizont','visibility'],
+  ['Horizonthöhe',niceAngle(p.alt),'alt'],
+  ['Azimut',niceAngle(p.az),'az'],
+  ['Rektaszension',formatNumber(p.ra/15,2)+' h','ra'],
+  ['Deklination',niceAngle(p.dec),'dec'],
+  ['Entfernung zur Erde',formatNumber(p.dist,3)+' AE','dist'],
+  ['Entfernung in km',formatNumber(p.dist*AU_KM/1e6,1)+' Mio. km','distKm'],
+  ['Entfernung zur Sonne',formatNumber(p.sunDist,2)+' AE','sunDist'],
+  ['Beleuchtete Scheibe',formatNumber(p.illum*100,0)+' %','phase'],
+  ['Sonnenabstand am Himmel',niceAngle(p.elong),'elong'],
+  ['Winkeldurchmesser',angleText+' ″','angular'],
+  ['Lichtlaufzeit',formatNumber(p.lightMinutes,1)+' min','light'],
+  ['Mittlerer Durchmesser',formatNumber(p.planet.radius*2,0)+' km'],
+  ['Umlaufzeit um Sonne',formatNumber(p.planet.year,2)+' Jahre'],
+  ['Eigendrehung',p.planet.rotation],
+  ['Planetentyp',p.planet.type]
+ ];
+}
+function planetSketch(planet){
+ const {color,light,dark,id,name}=planet;
+ const saturn=id==='saturn';
+ const backgroundRing=saturn?'<ellipse cx="220" cy="92" rx="119" ry="29" transform="rotate(-19 220 92)" fill="none" stroke="#dfc495" stroke-width="13" opacity=".46"/>':'';
+ const frontRing=saturn?'<path d="M113 111 Q 214 148 327 70" fill="none" stroke="#ffe0a5" stroke-width="6" opacity=".68"/>':'';
+ const stripes=id==='jupiter'?'<path d="M130 72Q220 85 310 69M128 90Q223 108 313 92M141 114Q221 126 297 111" stroke="#94634b" stroke-width="11" fill="none" opacity=".42"/>':'';
+ const mars=id==='mars'?'<path d="M150 71Q171 46 201 64T249 90Q231 94 209 112T157 94Z" fill="#723b38" opacity=".38"/>':'';
+ const clouds=id==='venus'||id==='uranus'||id==='neptune'?'<path d="M136 81Q216 64 305 82M139 103Q222 87 297 103" stroke="#fff" opacity=".16" stroke-width="8" fill="none"/>':'';
+ const craters=id==='mercury'?'<circle cx="195" cy="63" r="15" fill="none" stroke="#454e5c" stroke-width="2.7" opacity=".55"/><circle cx="255" cy="102" r="9" fill="none" stroke="#454e5c" stroke-width="2.5" opacity=".45"/>':'';
+ return `<div class="detail-image no-image" style="background:radial-gradient(ellipse at 55% 48%,#1c2d43,#081121 75%)"><svg viewBox="0 0 440 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stilisierte Illustration von ${escapeHTML(name)}" style="width:100%;height:100%;opacity:1"><defs><radialGradient id="planetSphere" cx="33%" cy="25%" r="78%"><stop offset="0" stop-color="${light}"/><stop offset=".49" stop-color="${color}"/><stop offset="1" stop-color="${dark}"/></radialGradient><clipPath id="planetClip"><circle cx="220" cy="90" r="72"/></clipPath></defs><circle cx="106" cy="28" r="1" fill="#b7ddff" opacity=".65"/><circle cx="357" cy="46" r="1.4" fill="#b7ddff" opacity=".35"/>${backgroundRing}<circle cx="220" cy="90" r="81" fill="${color}" opacity=".065"/><circle cx="220" cy="90" r="72" fill="url(#planetSphere)"/><g clip-path="url(#planetClip)">${stripes}${mars}${clouds}${craters}</g>${frontRing}</svg><span class="detail-photo-credit">PLANETEN-ILLUSTRATION / NICHT MAßSTABSGETREU</span></div>`;
+}
+function refreshPlanetDetails(){
+ if(state.selected?.kind!=='planet')return;
+ const panel=$('detailPanel');if(!panel.classList.contains('visible'))return;
+ const observation=observePlanet(state.selected.item.id);
+ if(!observation)return;
+ for(const [label,value,key] of planetMetrics(observation)){
+  if(!key)continue;
+  const field=panel.querySelector(`[data-planet-field="${key}"]`);
+  if(field && field.textContent!==value)field.textContent=value;
+ }
+ const stamp=panel.querySelector('[data-planet-time]');
+ if(stamp)stamp.textContent=getDate().toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'});
+}
+
 const DEEP = [
  {id:'M31',name:'Andromedagalaxie',type:'Spiralgalaxie',ra:10.685,dec:41.269,extent:3.2,dist:'2,54 Mio. Lj.',query:'Andromeda Galaxy M31',about:'Die n\u00e4chste gro\u00dfe Spiralgalaxie zur Milchstra\u00dfe. Unter dunklem Himmel erscheint ihr heller Kern bereits mit blo\u00dfem Auge.'},
  {id:'M42',name:'Orionnebel',type:'Emissionsnebel',ra:83.822,dec:-5.391,extent:1.0,dist:'1.350 Lj.',query:'Orion Nebula Hubble',about:'Eine nahe Sternentstehungsregion im Schwert des Orion. Junge Sterne beleuchten gewaltige Gas- und Staubwolken.'},
@@ -347,26 +549,42 @@ function setPlaying(value) {
  if (state.playing && !value) state.offsetMs += (Date.now()-state.playStart)*179;
  state.playing = value;
  if (value) state.playStart = Date.now();
+ if(!value&&state.layers.aircraft)pollAircraft();
  $('playBtn').innerHTML = ico(value ? 'pause' : 'play');
  $('playBtn').title = value ? 'Zeitablauf anhalten' : 'Zeitablauf starten';
  updateTimeUI();
 }
-function addHours(h) { if(state.playing)setPlaying(false); state.offsetMs += h * 3600000; updateTimeUI(); }
+function addHours(h) { if(state.playing)setPlaying(false); state.offsetMs += h * 3600000; updateTimeUI(); pollAircraft(); }
 function updateTimeUI() {
  const d = getDate();
  $('clockValue').textContent = d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
  $('dateValue').textContent = d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'});
  $('timeMode').textContent = state.playing ? 'ZEITRAFFER \u00d7 180' : Math.abs(state.offsetMs)<60000 ? 'LIVE-BEOBACHTUNGSZEIT' : 'SIMULIERTE ZEIT';
- $('timeRange').value = String(clamp(state.offsetMs/3600000,-12,12));
+  $('timeRange').value = String(clamp(state.offsetMs/3600000,-12,12));
+  if(state.layers.aircraft)updateAircraftCounter();
 }
 function showToast(message, warn = false) {
  const el = document.createElement('div'); el.className = 'toast' + (warn ? ' warn' : ''); el.textContent = message;
  $('toasts').append(el); while ($('toasts').children.length > 3) $('toasts').firstElementChild.remove();
  setTimeout(() => { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),350);}, 4500);
 }
+function aircraftAtLiveTime() {
+ return !state.playing && Math.abs(getDate().getTime()-Date.now()) < 120000;
+}
+function updateAircraftCounter() {
+ const el=$('aircraftCount');
+ if(!el)return;
+ el.textContent=!state.layers.aircraft ? 'Live-Daten bei Aktivierung'
+  : !aircraftAtLiveTime() ? 'Nur zur Live-Zeit (JETZT)'
+  : state.aircraftError ? (state.aircraftErrorReason || 'OpenSky-Proxy / API nicht erreichbar')
+  : state.aircraftLoaded ? `${state.aircraft.length} Flugzeuge in der Region`
+  : state.aircraftLoading ? 'OpenSky wird abgefragt ...' : 'Verbinde mit OpenSky ...';
+}
 function updateCounters() {
- $('constCount').textContent = state.constLoaded ? `${state.constellations.length} IAU-Sternbilder` : 'Basiskatalog';
- $('satCount').textContent = state.satLoaded ? `${state.satellites.length} Orbitdaten` : state.satError ? 'API nicht erreichbar' : 'Lade Positionen ...';
+  $('starsCount').textContent = state.starsLoaded ? `${state.stars.length.toLocaleString('de-DE')} Katalogsterne & Milchstraße` : 'Basissterne & Milchstraße';
+  $('constCount').textContent = state.constLoaded ? `${state.constellations.length} IAU-Sternbilder` : 'Basiskatalog';
+  $('satCount').textContent = state.satLoaded ? `${state.satellites.length} Orbitdaten` : state.satError ? 'API nicht erreichbar' : 'Lade Positionen ...';
+  updateAircraftCounter();
  const all = state.starsLoaded && state.constLoaded && state.satLoaded;
  $('liveStatus').textContent = all ? 'DATEN AKTUELL' : state.starsLoaded ? 'KATALOG AKTUELL' : 'HIMMELSKARTE';
  $('sourceStatus').textContent = all ? 'Sterne + Satelliten synchronisiert' : state.starsLoaded ? 'Sternkatalog geladen' : state.catalogError ? 'Eingeschr\u00e4nkter Offline-Katalog' : 'Kataloge werden geladen ...';
@@ -699,8 +917,85 @@ function drawSatellites(date){
   hitTargets.push({kind:'satellite',item:sat.record,x:p.x,y:p.y,r:selected?23:16,priority:6});
  }
 }
+// OpenSky positions are WGS84 aircraft positions, not astronomical RA/Dec.
+// Convert to the observer's topocentric east/north/up frame (same azimuth
+// and elevation convention as the satellite and star projection).
+function ecef(lat,lon,heightM){
+ const phi=rad(lat),lambda=rad(lon),sinPhi=Math.sin(phi),cosPhi=Math.cos(phi);
+ const a=6378137,e2=.00669437999014;
+ const n=a/Math.sqrt(1-e2*sinPhi*sinPhi);
+ return [(n+heightM)*cosPhi*Math.cos(lambda),(n+heightM)*cosPhi*Math.sin(lambda),
+  (n*(1-e2)+heightM)*sinPhi];
+}
+function aircraftHorizontal(lat,lon,heightM){
+ const p=ecef(lat,lon,heightM),o=ecef(state.lat,state.lon,45);
+ const dx=p[0]-o[0],dy=p[1]-o[1],dz=p[2]-o[2];
+ const phi=rad(state.lat),lambda=rad(state.lon),s=Math.sin,c=Math.cos;
+ const east=-s(lambda)*dx+c(lambda)*dy;
+ const north=-s(phi)*c(lambda)*dx-s(phi)*s(lambda)*dy+c(phi)*dz;
+ const up=c(phi)*c(lambda)*dx+c(phi)*s(lambda)*dy+s(phi)*dz;
+ return {az:wrap(deg(Math.atan2(east,north))),alt:deg(Math.atan2(up,Math.hypot(east,north))),
+  range:Math.hypot(east,north,up)/1000};
+}
+function predictAircraft(record,at=Date.now()){
+ const sample=record.positionTime || state.aircraftDataTime || state.aircraftFetchedAt;
+ // Old/unreported positions must never be shown as live traffic.
+ if(!Number.isFinite(sample)||at-sample>185000)return null;
+ const dt=clamp((at-sample)/1000,0,90); // dead reckoning capped at 90s
+ let lat=record.lat,lon=record.lon,height=record.altitude;
+ if(Number.isFinite(record.track)&&Number.isFinite(record.speed)){
+  const travel=clamp(record.speed,0,430)*dt;
+  lat=clamp(lat+deg(travel*Math.cos(rad(record.track))/6371000),-89.99,89.99);
+  lon=((lon+deg(travel*Math.sin(rad(record.track))/(6371000*Math.max(.03,Math.cos(rad(lat)))))+540)%360)-180;
+ }
+ if(Number.isFinite(record.verticalRate))height=clamp(height+record.verticalRate*dt,0,18000);
+ return {...aircraftHorizontal(lat,lon,height),lat,lon,altitude:height,
+  ageSeconds:Math.max(0,(Date.now()-sample)/1000),predictedSeconds:dt};
+}
+function drawAircraft(){
+ if(!state.layers.aircraft||!aircraftAtLiveTime()||!state.aircraft.length)return;
+ const now=Date.now(),selectedId=state.selected?.kind==='aircraft'?state.selected.item.id:null;
+ const items=[];
+ for(const a of state.aircraft){
+  const h=predictAircraft(a,now);if(!h||h.alt<=0)continue;
+  const p=projectHor(h.az,h.alt);
+  if(!p||p.x<12||p.x>W-12||p.y<54||p.y>H-92)continue;
+  items.push({a,h,p});
+ }
+ // Draw selection on top; other aircraft use a small, recognisable silhouette.
+ items.sort((a,b)=>Number(a.a.id===selectedId)-Number(b.a.id===selectedId));
+ for(const {a,h,p} of items){
+  const selected=a.id===selectedId;
+  let angle=rad(Number.isFinite(a.track)?a.track:0);
+  if(Number.isFinite(a.track)&&Number.isFinite(a.speed)&&a.speed>5){
+   const future=predictAircraft(a,now+12000);
+   const pp=future&&projectHor(future.az,future.alt);
+   if(pp&&Math.hypot(pp.x-p.x,pp.y-p.y)>1.3)angle=Math.atan2(pp.y-p.y,pp.x-p.x)+Math.PI/2;
+  }
+  const size=selected?1.24:1;
+  ctx.save();ctx.translate(p.x,p.y);ctx.rotate(angle);ctx.scale(size,size);
+  ctx.shadowColor='#efc37b';ctx.shadowBlur=selected?21:9;
+  ctx.fillStyle=selected?'#ffe6b5':'#e8c28b';
+  ctx.beginPath();ctx.moveTo(0,-11);ctx.lineTo(2,-3);ctx.lineTo(10,1.8);
+  ctx.lineTo(10,4);ctx.lineTo(2.1,2.8);ctx.lineTo(1.8,8.1);
+  ctx.lineTo(4.8,10);ctx.lineTo(4.8,11.5);ctx.lineTo(0,10.5);
+  ctx.lineTo(-4.8,11.5);ctx.lineTo(-4.8,10);ctx.lineTo(-1.8,8.1);
+  ctx.lineTo(-2.1,2.8);ctx.lineTo(-10,4);ctx.lineTo(-10,1.8);
+  ctx.lineTo(-2,-3);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;
+  if(selected){ctx.beginPath();ctx.arc(0,0,18,0,Math.PI*2);
+   ctx.strokeStyle='rgba(255,222,158,.83)';ctx.lineWidth=1.3;ctx.stroke();}
+  ctx.restore();
+  if(selected || (a.callsign && h.ageSeconds<80 && state.fov<=78 && items.length<35)){
+   ctx.font='600 10px "Space Grotesk",sans-serif';ctx.textAlign='left';
+   ctx.fillStyle='#f8d7a1';ctx.fillText((a.callsign||a.id).slice(0,12),p.x+14,p.y-12);
+  }
+  hitTargets.push({kind:'aircraft',item:a,x:p.x,y:p.y,r:selected?25:16,priority:7});
+ }
+}
+
 function drawSelectedStarHalo() {
- if(state.selected?.kind!=='star')return;
+  if(!state.layers.stars || state.selected?.kind!=='star')return;
  const p=projectEq(state.selected.item.ra,state.selected.item.dec);if(!p)return;
  ctx.beginPath();ctx.arc(p.x,p.y,19,0,Math.PI*2);ctx.strokeStyle='rgba(178,216,255,.62)';ctx.lineWidth=1;ctx.stroke();
 }
@@ -715,9 +1010,9 @@ function renderFrame(ts){
  basis=calcBasis();
  const date=getDate();sidereal=timestampToSidereal(date);
  hitTargets=[];
- background();drawGrid();drawGalaxyDust();drawConstellations();drawStars();drawDeepSky();drawBelowHorizon();drawSatellites(date);drawSelectedStarHalo();
+  background();drawGrid();if(state.layers.stars)drawGalaxyDust();drawConstellations();if(state.layers.stars)drawStars();drawDeepSky();drawPlanets(date);drawBelowHorizon();drawSatellites(date);drawAircraft();drawSelectedStarHalo();
  if(ts-lastUIUpdate>(state.motion||pointerMap.size?65:150)){updateViewUI();lastUIUpdate=ts;}
- if(ts-lastTimeUIUpdate>900){updateTimeUI();lastTimeUIUpdate=ts;}
+ if(ts-lastTimeUIUpdate>900){updateTimeUI();refreshPlanetDetails();lastTimeUIUpdate=ts;}
 }
 function directionName(az){const labels=['NORD','NORDOST','OST','S\u00dcDOST','S\u00dcD','S\u00dcDWEST','WEST','NORDWEST'];return labels[Math.round(wrap(az)/45)%8];}
 function updateViewUI(){
@@ -738,7 +1033,7 @@ function updateViewUI(){
  $('compassUnit').setAttribute('aria-label',`Kompass: Azimut ${formatNumber(az,1)} Grad, Blickh\u00f6he ${formatNumber(alt,1)} Grad${alt<0?', virtuell unter dem Horizont':''}`);
 }
 // Keep dialogs on a separate history entry (same URL) for system Back gestures.
-const HISTORY_OVERLAY_KEY='__nachthimmel_v3_overlay';
+const HISTORY_OVERLAY_KEY='__nachthimmel_v5_overlay';
 const MODAL_IDS=['searchModal','settingsModal'];
 function visibleModal(){return MODAL_IDS.find(id=>$(id).classList.contains('visible'))||null;}
 function setModalVisible(id,visible){
@@ -786,6 +1081,10 @@ function restoreOverlayFromHistory(e){
  }
 }
 function objectHorizontal(kind,item){
+  if(kind==='aircraft')return predictAircraft(item);
+  if(kind==='planet') {
+  const p=observePlanet(item.id);return p?{az:p.az,alt:p.alt}:null;
+ }
  if(kind==='satellite') {
   const p=state.satRender.find(s=>s.record.id===item.id);
   if(p)return p;
@@ -798,14 +1097,14 @@ function focusObject(kind,item){
  // Preserve the selected observation time and allow direct inspection of an
  // object at negative altitude, clearly labelled as a virtual view.
  state.az=wrap(h.az);state.alt=clamp(h.alt,MIN_ALT,MAX_ALT);
- state.fov=kind==='constellation'?75:kind==='satellite'?58:48;
+  state.fov=kind==='constellation'?75:kind==='satellite'||kind==='aircraft'?58:kind==='planet'?48:48;
  updateViewUI();
  if(h.alt<0)showToast('Objekt unter dem Horizont: Die Karte zeigt eine virtuelle Durchsicht, keine optische Sichtbarkeit.');
  if(state.selected)renderDetail();
 }
 function niceAngle(a){return `${formatNumber(a,1)}\u00b0`;}
 function metricsHTML(entries) {
- return `<div class="detail-grid">${entries.map(([label,val])=>`<div class="detail-metric"><label>${escapeHTML(label)}</label><strong>${escapeHTML(val)}</strong></div>`).join('')}</div>`;
+ return `<div class="detail-grid">${entries.map(([label,val,key])=>`<div class="detail-metric"><label>${escapeHTML(label)}</label><strong${key ? ` data-planet-field="${escapeHTML(key)}"` : ''}>${escapeHTML(val)}</strong></div>`).join('')}</div>`;
 }
 function constellationSketch(con) {
  const pts=con.segments.flat();
@@ -833,7 +1132,15 @@ function renderDetail(){
  const h=objectHorizontal(kind,item);
  let display='',top='',image='',subtitle='',about='',footer='',metrics=[],links='';
  const close=`<button class="details-close" id="detailClose" aria-label="Details schliessen">${ico('close')}</button>`;
- if(kind==='constellation'){
+ if(kind==='planet'){
+  const o=observePlanet(item.id);
+  top='PLANET / JPL-BAHNBERECHNUNG';display=item.name;subtitle=item.type+' · Sonnensystem';
+  image=planetSketch(item);
+  about=item.about;
+  metrics=planetMetrics(o);
+  footer='Positionen: NASA/JPL-Keplerelemente (gültig 1800–2050), geozentrisch angenähert, keine atmosphärische Refraktion. Angezeigter Zeitpunkt: <span data-planet-time>'+escapeHTML(getDate().toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}))+'</span>. Unter dem Horizont nur virtuelle Ansicht. Planeten-Symbole sind nicht maßstabsgetreu; die Sichtbarkeit hängt auch von Sonnenlicht und Wetter ab.';
+  links=`<a class="secondary-btn" href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener noreferrer">JPL-Bahndaten ${ico('chevron')}</a>`;
+ }else if(kind==='constellation'){
   const extra=CONST_EXTRA[item.id]||{};
   top='STERNBILD / IAU';display=item.de||item.name||item.id;
   subtitle=`${item.name} \u00b7 ${item.id}`;
@@ -863,6 +1170,24 @@ function renderDetail(){
   metrics=[['Horizonth\u00f6he',pos?niceAngle(pos.alt):'--'],['Bahnh\u00f6he',pos?formatNumber(pos.altitude,0)+' km':'--'],['Geschwindigkeit',pos?formatNumber(pos.speed,2)+' km/s':'--'],['Inklination',Number.isFinite(+item.omm.INCLINATION)?formatNumber(+item.omm.INCLINATION,1)+'\u00b0':'--'],['Azimut',pos?niceAngle(pos.az):'--'],['Bahndatenalter',Number.isFinite(age)?formatNumber(age,1)+' Tage':'--']];
   footer=`Berechnete Satellitenposition (SGP4). Datenstand / Epoche: ${escapeHTML(String(item.omm.EPOCH||'unbekannt'))}. Keine Garantie f\u00fcr optische Sichtbarkeit.`;
   links=`<a class="secondary-btn" href="https://celestrak.org/NORAD/elements/gp.php?CATNR=${encodeURIComponent(item.id)}&amp;FORMAT=JSON" target="_blank" rel="noopener noreferrer">CelesTrak-Daten ${ico('chevron')}</a>`;
+ }else if(kind==='aircraft'){
+  top='FLUGZEUG / OPENSKY LIVE';
+  display=item.callsign||item.id.toUpperCase();
+  subtitle='ICAO24 '+item.id.toUpperCase()+' · '+(item.country||'Herkunft unbekannt');
+  image=`<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,#383329,#151c2c 70%)"><svg viewBox="0 0 200 140" aria-hidden="true" style="height:100%;width:100%;color:#ffdb9f"><g transform="translate(100 70) scale(3.8)"><path d="M0 -11 2 -3 10 1.8 10 4 2.1 2.8 1.8 8.1 4.8 10 4.8 11.5 0 10.5 -4.8 11.5 -4.8 10 -1.8 8.1 -2.1 2.8 -10 4 -10 1.8 -2 -3Z" fill="currentColor" stroke="#fff1d7" stroke-width=".5"/></g></svg><span class="detail-photo-credit">OPENSKY NETWORK / ADS-B</span></div>`;
+  const pos=h,latest=item.positionTime||state.aircraftDataTime||state.aircraftFetchedAt;
+  const age=Math.max(0,Math.round((Date.now()-latest)/1000));
+  about='Aktuelle Transponderposition aus dem OpenSky Network. Die Darstellung berechnet den lokalen Sichtwinkel aus geografischer Position und Höhe. Zwischen Messpunkten erfolgt eine begrenzte Kursfortschreibung (maximal 90 Sekunden). Flugroute und Ziel sind nicht Teil dieser Live-Daten.';
+  metrics=[['Sichtwinkel',pos?niceAngle(pos.alt):'--'],
+   ['Entfernung',pos?formatNumber(pos.range,1)+' km':'--'],
+   ['Höhe (Geo/Baro)',pos?formatNumber(pos.altitude,0)+' m':'--'],
+   ['Geschwindigkeit',Number.isFinite(item.speed)?formatNumber(item.speed*3.6,0)+' km/h':'--'],
+   ['Kurs',Number.isFinite(item.track)?niceAngle(item.track):'--'],
+   ['Azimut',pos?niceAngle(pos.az):'--'],
+   ['Letzte Position',formatNumber(age,0)+' s zuvor'],
+   ['Transpondercode',item.squawk||'--']];
+  footer=`OpenSky-Messzeit: ${latest?new Date(latest).toLocaleTimeString('de-DE'):'unbekannt'}; keine historische Rückrechnung bei Nutzung der Zeitleiste. Nicht für Navigation oder Flugsicherung geeignet.`;
+  links=`<a class="secondary-btn" href="https://opensky-network.org/" target="_blank" rel="noopener noreferrer">OpenSky Network ${ico('chevron')}</a>`;
  }else if(kind==='star'){
   top='STERN / HELLIGKEIT';display=item.name||('HIP '+item.id);subtitle='Stellarer Katalog / J2000';
   image=`<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,rgba(79,127,188,.24),#091427 68%)"><svg viewBox="0 0 200 140" style="height:100%;width:100%"><defs><radialGradient id="starg"><stop stop-color="#fff"/><stop offset=".15" stop-color="#d8efff"/><stop offset=".35" stop-color="#6eabdc" stop-opacity=".47"/><stop offset="1" stop-color="#6eabdc" stop-opacity="0"/></radialGradient></defs><circle cx="100" cy="70" r="61" fill="url(#starg)"/><path d="M100 16v108M45 70h110" stroke="#b5dbfa" stroke-opacity=".22" stroke-width=".8"/></svg></div>`;
@@ -898,9 +1223,11 @@ function searchItems(q){
  const query=q.trim().toLocaleLowerCase('de-DE');
  const match=(...words)=>!query||words.some(w=>String(w||'').toLocaleLowerCase('de-DE').includes(query));
  const list=[
+  {section:'PLANETEN',kind:'planet',items:PLANETS.filter(p=>match(p.name,p.en,p.type)),sub:p=>{const h=observePlanet(p.id);return p.type+' · '+(h?.alt>=0?'über Horizont':'unter Horizont');},name:p=>p.name},
   {section:'STERNBILDER',kind:'constellation',items:state.constellations.filter(c=>match(c.de,c.name,c.id)),sub:c=>(c.name||c.id)+' \u00b7 IAU',name:c=>c.de||c.name},
   {section:'DEEP SKY',kind:'dso',items:DEEP.filter(d=>match(d.name,d.id,d.type)),sub:d=>d.id+' \u00b7 '+d.type,name:d=>d.name},
   {section:'SATELLITEN',kind:'satellite',items:state.satellites.filter(s=>match(s.name,s.id)),sub:s=>'NORAD '+s.id,name:s=>s.name},
+  {section:'FLUGZEUGE / OPENSKY',kind:'aircraft',items:state.aircraft.filter(a=>aircraftAtLiveTime() && predictAircraft(a)?.alt>0 && match(a.callsign,a.id,a.country)),sub:a=>a.id.toUpperCase()+' · '+a.country,name:a=>a.callsign||a.id.toUpperCase()},
   {section:'HELLE STERNE',kind:'star',items:state.stars.filter(s=>s.name&&match(s.name)).slice(0,15),sub:s=>formatNumber(s.mag,2)+' mag',name:s=>s.name}
  ];
  return list;
@@ -909,19 +1236,21 @@ function updateSearchResults(){
  const query=$('searchInput').value;
  const lists=searchItems(query);
  const results=lists.map(group=>{
-  const max=!query ? (group.kind==='constellation'?7:group.kind==='dso'?6:group.kind==='satellite'?4:3):12;
+  const max=!query ? (group.kind==='planet'?7:group.kind==='constellation'?7:group.kind==='dso'?6:group.kind==='satellite'?4:3):12;
   const items=group.items.slice(0,max);
   if(!items.length)return '';
-  const icon=group.kind==='constellation'?'const':group.kind==='dso'?'nebula':group.kind==='satellite'?'satellite':'stars';
-  const rows=items.map(it=>`<button class="result-row" data-kind="${group.kind}" data-id="${escapeHTML(group.kind==='satellite'?it.id:group.kind==='star'?(it.id||it.name):it.id)}"><span class="result-symbol">${ico(icon)}</span><span class="result-text"><div class="result-title">${escapeHTML(group.name(it))}</div><div class="result-meta">${escapeHTML(group.sub(it))}</div></span>${ico('chevron')}</button>`).join('');
+  const icon=group.kind==='planet'?'planet':group.kind==='constellation'?'const':group.kind==='dso'?'nebula':group.kind==='satellite'?'satellite':group.kind==='aircraft'?'aircraft':'stars';
+  const rows=items.map(it=>`<button class="result-row" data-kind="${group.kind}" data-id="${escapeHTML(group.kind==='satellite'||group.kind==='aircraft'?it.id:group.kind==='star'?(it.id||it.name):it.id)}"><span class="result-symbol">${ico(icon)}</span><span class="result-text"><div class="result-title">${escapeHTML(group.name(it))}</div><div class="result-meta">${escapeHTML(group.sub(it))}</div></span>${ico('chevron')}</button>`).join('');
   return `<div class="result-group">${group.section}</div>${rows}`;
  }).join('');
  $('searchResults').innerHTML=results||'<div class="empty-results">Keine Objekte gefunden. Versuche einen anderen Suchbegriff.</div>';
  for(const btn of $('searchResults').querySelectorAll('[data-kind]')){
   btn.onclick=()=>{
    const kind=btn.dataset.kind,id=btn.dataset.id;
-   const item=kind==='constellation'?state.constellations.find(v=>v.id===id):kind==='dso'?DEEP.find(v=>v.id===id):kind==='satellite'?state.satellites.find(v=>v.id===id):state.stars.find(v=>String(v.id||v.name)===id);
+   const item=kind==='planet'?PLANETS.find(v=>v.id===id):kind==='constellation'?state.constellations.find(v=>v.id===id):kind==='dso'?DEEP.find(v=>v.id===id):kind==='satellite'?state.satellites.find(v=>v.id===id):kind==='aircraft'?state.aircraft.find(v=>v.id===id):state.stars.find(v=>String(v.id||v.name)===id);
    if(!item)return;
+   const layer=({star:'stars',planet:'planets',constellation:'constellations',dso:'deepSky',satellite:'satellites',aircraft:'aircraft'})[kind];
+   if(layer && !state.layers[layer])setLayer(layer,true);
    updateSelection(kind,item);focusObject(kind,item);
   };
  }
@@ -1009,6 +1338,124 @@ async function loadSatelliteCatalog(){
   showToast('CelesTrak derzeit nicht erreichbar. Die Satellitenebene zeigt keine erfundenen Positionen.',true);
  }
 }
+// OpenSky Network anonymously offers current state vectors, but not cross-origin
+// access from arbitrary browser pages. The companion Python server provides a
+// same-origin /api/opensky/states/all bridge. Never use secret credentials in HTML.
+const AIRCRAFT_POLL_MS=95000;
+const AIRCRAFT_DAILY_BUDGET=300; // conservative cap below the anonymous 400-credit/day tier
+function aircraftBoundingBox(){
+ // Keep requested region <25 square degrees (one anonymous OpenSky credit).
+ const d=2.35;
+ let lamin=clamp(state.lat-d,-90,90),lamax=clamp(state.lat+d,-90,90);
+ let lomin=clamp(state.lon-d,-180,180),lomax=clamp(state.lon+d,-180,180);
+ if(lamax-lamin<.1||lomax-lomin<.1)return null;
+ return {lamin:lamin.toFixed(4),lamax:lamax.toFixed(4),lomin:lomin.toFixed(4),lomax:lomax.toFixed(4),extended:'1'};
+}
+function consumeAircraftBudget(){
+ try{
+  const key='nachthimmel_v4_opensky_credit_count';
+  const day=new Date().toISOString().slice(0,10);
+  const old=JSON.parse(localStorage.getItem(key)||'null');
+  const count=old?.day===day&&Number.isFinite(old.count)?old.count:0;
+  if(count>=AIRCRAFT_DAILY_BUDGET)return false;
+  localStorage.setItem(key,JSON.stringify({day,count:count+1}));
+ }catch{ /* A browser without localStorage still gets network-level quotas. */ }
+ return true;
+}
+function parseAircraftStates(data){
+ const now=Date.now(),base=Number(data?.time)*1000;
+ if(!data || !Number.isFinite(base) || !(Array.isArray(data.states)||data.states===null))throw Error('Ungültige OpenSky-Antwort');
+ const result=new Map();
+ for(const v of data.states||[]){
+  if(!Array.isArray(v)||typeof v[0]!=='string'||v[8]===true)continue;
+  const id=v[0].trim().toLowerCase(),lat=Number(v[6]),lon=Number(v[5]);
+  const altitude=typeof v[13]==='number'&&Number.isFinite(v[13])?v[13]:v[7];
+  const positionTime=typeof v[3]==='number'?v[3]*1000:base;
+  if(!/^[0-9a-f]{6}$/.test(id)||!Number.isFinite(lat)||!Number.isFinite(lon)||
+     Math.abs(lat)>90||Math.abs(lon)>180||typeof altitude!=='number'||!Number.isFinite(altitude)||
+     altitude<-500||altitude>22000||!Number.isFinite(positionTime)||now-positionTime>175000)continue;
+  result.set(id,{id,callsign:String(v[1]||'').trim().slice(0,16),country:String(v[2]||'').slice(0,65),
+   lat,lon,altitude,positionTime,
+   speed:typeof v[9]==='number'&&Number.isFinite(v[9])?v[9]:null,
+   track:typeof v[10]==='number'&&Number.isFinite(v[10])?wrap(v[10]):null,
+   verticalRate:typeof v[11]==='number'&&Number.isFinite(v[11])?v[11]:null,
+   squawk:typeof v[14]==='string'?v[14].slice(0,5):'',
+   source:Number.isFinite(v[16])?v[16]:null});
+ }
+ return result;
+}
+async function pollAircraft(){
+ if(!state.layers.aircraft||!aircraftAtLiveTime()||document.hidden||state.aircraftLoading||Date.now()<state.aircraftNextAt)return;
+ if(location.protocol==='file:'){
+  state.aircraftError=true;state.aircraftErrorReason='Lokaler OpenSky-Proxy erforderlich';state.aircraftNextAt=Date.now()+10*60*1000;
+  updateAircraftCounter();
+  showToast('OpenSky benötigt den mitgelieferten lokalen Proxy: python3 nachthimmel_v5_proxy.py',true);
+  return;
+ }
+ const bbox=aircraftBoundingBox();if(!bbox)return;
+ if(!consumeAircraftBudget()){
+  state.aircraftError=true;state.aircraftErrorReason='Tageskontingent aufgebraucht';state.aircraftNextAt=Date.now()+60*60*1000;
+  updateAircraftCounter();
+  showToast('OpenSky-Tageskontingent dieser Karte erreicht. Bitte morgen erneut versuchen.',true);
+  return;
+ }
+ state.aircraftLoading=true;state.aircraftError=false;state.aircraftErrorReason='';updateAircraftCounter();
+ const seq=++state.aircraftRequestVersion;
+ const controller=new AbortController();state.aircraftAbort=controller;
+ const timer=setTimeout(()=>controller.abort(),16000);
+ try{
+  const url='/api/opensky/states/all?'+new URLSearchParams(bbox);
+  const response=await fetch(url,{signal:controller.signal,cache:'no-store',headers:{Accept:'application/json'}});
+  if(!response.ok){
+   if(response.status===429){
+    const wait=Number(response.headers.get('Retry-After')||response.headers.get('X-Rate-Limit-Retry-After-Seconds')||600);
+    state.aircraftNextAt=Date.now()+clamp(wait,120,86400)*1000;
+   }
+   throw Error(response.status===404?'Lokaler OpenSky-Proxy nicht gefunden (HTTP 404)':`OpenSky HTTP ${response.status}`);
+  }
+  const data=await response.json();if(seq!==state.aircraftRequestVersion)return;
+  const aircraft=parseAircraftStates(data);
+  state.aircraft=[...aircraft.values()];state.aircraftDataTime=Number(data.time)*1000;
+  state.aircraftFetchedAt=Date.now();state.aircraftLoaded=true;state.aircraftError=false;state.aircraftErrorReason='';
+  state.aircraftNextAt=Date.now()+AIRCRAFT_POLL_MS;
+  if(state.selected?.kind==='aircraft'){
+   const updated=aircraft.get(state.selected.item.id);
+   if(updated){state.selected.item=updated;renderDetail();}
+  }
+  updateSearchResults();updateAircraftCounter();
+ }catch(err){
+  if(seq!==state.aircraftRequestVersion)return;
+  if(err.name!=='AbortError'||state.layers.aircraft){
+   const msg=String(err.message||'Netzwerkfehler');state.aircraftError=true;state.aircraftErrorReason='OpenSky-Proxy / API nicht erreichbar';
+   if(state.aircraftNextAt<Date.now())state.aircraftNextAt=Date.now()+180000;
+   if(!state.aircraftFetchedAt)showToast('Flugzeug-Layer: '+msg+'. Bitte den OpenSky-Proxy starten oder den API-Status prüfen.',true);
+  }
+ }finally{
+  clearTimeout(timer);
+  if(seq===state.aircraftRequestVersion){state.aircraftLoading=false;state.aircraftAbort=null;updateAircraftCounter();}
+ }
+}
+function setLayer(layer,enabled){
+ if(!(layer in state.layers))return;
+ state.layers[layer]=enabled;
+ const button=document.querySelector(`.layer-toggle[data-layer="${layer}"]`);
+ if(button){button.classList.toggle('active',enabled);button.setAttribute('aria-pressed',String(enabled));}
+ if(!enabled && state.selected?.kind===({stars:'star',planets:'planet',constellations:'constellation',deepSky:'dso',satellites:'satellite',aircraft:'aircraft'})[layer]){
+  updateSelection(null,null);
+ }
+ if(layer==='planets')$('planetQuicklinks').classList.toggle('enabled',enabled);
+ if(layer==='aircraft'){
+  if(enabled){state.aircraftNextAt=0;pollAircraft();}
+  else{
+   state.aircraftRequestVersion++;
+   state.aircraftAbort?.abort();state.aircraftAbort=null;state.aircraftLoading=false;
+  }
+  updateAircraftCounter();
+ }
+ if(layer==='satellites'&&enabled&&state.satError&&!state.satellites.length&&satlib){
+  state.satError=false;loadSatelliteCatalog();
+ }
+}
 // Device orientation: use the rear-camera viewing direction calculated from
 // W3C alpha / beta / gamma rotations, with a relative-heading fallback.
 let headingOffset=null, sensorReceived=false, sensorAbsoluteSeen=false;
@@ -1081,7 +1528,12 @@ function setLocation(lat,lon,place){
  state.lat=lat;state.lon=lon;state.place=place||`${formatNumber(lat,3)}\u00b0, ${formatNumber(lon,3)}\u00b0`;
  $('placeLabel').textContent=state.place;
  $('latInput').value=lat.toFixed(4);$('lonInput').value=lon.toFixed(4);
- state.lastSatCompute=0;
+  state.lastSatCompute=0;
+  planetCacheTime=NaN;
+  state.aircraftRequestVersion++;state.aircraftAbort?.abort();state.aircraftAbort=null;
+  state.aircraftLoading=false;state.aircraft=[];state.aircraftLoaded=false;
+  state.aircraftError=false;state.aircraftErrorReason='';state.aircraftNextAt=0;
+  if(state.layers.aircraft)pollAircraft();
  if(state.selected)renderDetail();
  return true;
 }
@@ -1131,14 +1583,19 @@ function onPointerUp(e){
  if(shouldClick)canvasClick(e.clientX,e.clientY);
 }
 function connectUI(){
+ document.querySelectorAll('[data-planet-jump]').forEach(button=>{
+  button.addEventListener('click',()=>{
+   const planet=PLANETS.find(v=>v.id===button.dataset.planetJump);
+   if(!planet)return;
+   if(!state.layers.planets)setLayer('planets',true);
+   updateSelection('planet',planet);
+   focusObject('planet',planet);
+  });
+ });
  document.querySelectorAll('.layer-toggle').forEach(button=>{
   button.addEventListener('click',()=>{
    const layer=button.dataset.layer;
-   state.layers[layer]=!state.layers[layer];
-   button.classList.toggle('active',state.layers[layer]);button.setAttribute('aria-pressed',String(state.layers[layer]));
-   if(state.layers.satellites && state.satError && !state.satellites.length && satlib){
-    state.satError=false;loadSatelliteCatalog();
-   }
+   setLayer(layer,!state.layers[layer]);
   });
  });
  $('motionBtn').addEventListener('click',toggleMotion);
@@ -1147,10 +1604,10 @@ function connectUI(){
  $('playBtn').onclick=()=>setPlaying(!state.playing);
  $('prevHour').onclick=()=>addHours(-1);
  $('nextHour').onclick=()=>addHours(1);
- $('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();};
+ $('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();pollAircraft();};
  $('timeRange').addEventListener('input',e=>{
   if(state.playing)setPlaying(false);
-  state.offsetMs=Number(e.target.value)*3600000;updateTimeUI();
+  state.offsetMs=Number(e.target.value)*3600000;updateTimeUI();pollAircraft();
  });
  $('searchBtn').onclick=()=>{updateSearchResults();openModal('searchModal');$('searchInput').focus();};
  $('searchClose').onclick=()=>closeModal('searchModal');
@@ -1172,6 +1629,8 @@ function connectUI(){
  cvs.addEventListener('wheel',e=>{e.preventDefault();setZoom(state.fov*(e.deltaY<0?.91:1.1));},{passive:false});
  cvs.addEventListener('dblclick',e=>{e.preventDefault();setZoom(state.fov*.74);});
  window.addEventListener('resize',resize);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)pollAircraft();});
+ window.setInterval(pollAircraft,7000);
  window.addEventListener('popstate',restoreOverlayFromHistory);
  document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
