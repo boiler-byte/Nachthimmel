@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#050915">
-<meta name="description" content="Nachthimmel v5: Interaktive Himmelskarte mit separat schaltbaren Sternen, Planeten, Sternbildern, NASA-Deep-Sky-Aufnahmen, Satelliten und OpenSky-Flugzeugen.">
-<title>Nachthimmel v5 – Interaktive Himmelskarte</title>
+<meta name="description" content="Nachthimmel v6: Interaktive Himmelskarte mit separat schaltbaren Sternen, Planeten, Sternbildern, NASA-Deep-Sky-Aufnahmen, Satelliten und OpenSky-Flugzeugen.">
+<title>Nachthimmel v6 – Interaktive Himmelskarte</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
 @media(max-height:690px){.view-info{top:104px}.hero-title{font-size:34px}.hero-subtitle{display:none}.view-coordinate{margin-top:12px}.hint{display:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-/* Nachthimmel v5: concise sky HUD and pitch-aware precision compass. */
+/* Nachthimmel v6: concise sky HUD and pitch-aware precision compass. */
 [hidden]{display:none!important}
 .view-info{top:105px;max-width:calc(100vw - 40px)}
 .view-coordinate{margin:0;padding:11px 14px;border:1px solid rgba(131,177,222,.17);border-radius:13px;gap:13px;background:rgba(7,15,29,.49);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 7px 25px rgba(0,0,0,.12);font-size:10px;letter-spacing:.07em}
@@ -77,7 +77,7 @@
 @media(max-width:390px){.view-coordinate{font-size:8px;gap:7px;padding:9px 8px}.right-rail{right:9px;top:39%}}
 @media(max-height:690px){.view-info{top:86px}.view-coordinate{margin:0}.right-rail{top:41%}}
 
-/* Nachthimmel v5: top-left compass, clean tools dock, settings-layer switches. */
+/* Nachthimmel v6: top-left compass, clean tools dock, settings-layer switches. */
 .topbar{align-items:flex-start;gap:16px;z-index:9;padding:18px clamp(18px,3.4vw,54px)}
 .top-actions{margin-left:auto;flex-shrink:1;justify-content:flex-end}
 .compass-stack{display:flex;flex-direction:column;align-items:flex-start;gap:9px;flex:0 0 auto;min-width:0}
@@ -196,7 +196,7 @@
 </header>
 <div class="center-reticle" aria-hidden="true"><i></i></div>
 <div class="hint"><svg><use href="#i-crosshair"/></svg> Ziehen, um dich umzusehen &middot; Scrollen zum Zoomen &middot; Objekte antippen</div>
-<div class="sources"><span>NACHTHIMMEL v5</span><span class="sep"></span><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener noreferrer">Sternkatalog / IAU</a><span class="sep"></span><a href="https://opensky-network.org/" target="_blank" rel="noopener noreferrer">OpenSky Network</a><span class="sep"></span><a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Images</a><span class="sep"></span><a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer">CelesTrak</a></div>
+<div class="sources"><span>NACHTHIMMEL v6</span><span class="sep"></span><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener noreferrer">Sternkatalog / IAU</a><span class="sep"></span><a href="https://airlabs.co/" target="_blank" rel="noopener noreferrer">AirLabs</a><span class="sep"></span><a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Images</a><span class="sep"></span><a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer">CelesTrak</a></div>
 <div class="bottom-status"><span class="status-dot" id="sourceDot"></span><span id="sourceStatus">Kataloge werden geladen ...</span></div>
 <div class="bottom-ui">
  <div class="timebar"><div class="time-label"><div class="time-top" id="timeMode">BEOBACHTUNGSZEIT</div><div class="time-value"><span id="clockValue">21:30</span><small id="dateValue">HEUTE</small></div></div><input class="time-range" id="timeRange" type="range" min="-12" max="12" step="0.25" value="0" aria-label="Zeit um bis zu 12 Stunden verschieben"><div class="time-control"><button class="small-action" id="prevHour" title="Eine Stunde zurueck" aria-label="Eine Stunde zurueck"><svg><use href="#i-minus"/></svg></button><button class="small-action" id="playBtn" title="Zeitablauf starten" aria-label="Zeitablauf starten"><svg><use href="#i-play"/></svg></button><button class="small-action" id="nextHour" title="Eine Stunde vor" aria-label="Eine Stunde vor"><svg><use href="#i-plus"/></svg></button></div><button class="now-btn" id="nowBtn" title="Zur aktuellen Zeit">JETZT</button></div>
@@ -205,7 +205,7 @@
 <div class="toast-stack" id="toasts" role="status" aria-live="polite"></div>
 <aside class="details" id="detailPanel" role="dialog" aria-label="Objektdetails" aria-hidden="true"></aside>
 <div class="modal-shade" id="searchModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Himmelsobjekte suchen"><div class="modal-head"><div><h2>Das Universum entdecken</h2><p>Suche nach Planeten, Sternen, Sternbildern, Deep-Sky-Objekten, Satelliten und Flugzeugen.</p></div><button id="searchClose" aria-label="Suche schliessen"><svg><use href="#i-close"/></svg></button></div><div class="search-field"><svg><use href="#i-search"/></svg><input id="searchInput" autocomplete="off" type="search" placeholder="z. B. Jupiter, Sirius, Orion, ISS ..." aria-label="Suchbegriff"></div><div class="search-results" id="searchResults"></div></div></div>
-<div class="modal-shade" id="settingsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="modal-head"><div><h2 id="settingsTitle">Einstellungen</h2><p>Kartenebenen, Standort und Darstellung.</p></div><button id="settingsClose" aria-label="Einstellungen schliessen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><section class="settings-section" aria-labelledby="layersTitle"><div class="setting-section-heading"><h3 id="layersTitle">Kartenebenen</h3><span>Ein- und ausblenden</span></div><div class="settings-layers"><button class="layer-toggle active" id="starsBtn" data-layer="stars" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-stars"/></svg></span><span><div class="layer-name">Sterne</div><div class="layer-description" id="starsCount">Sternkatalog &amp; Milchstra&szlig;e</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="planetsBtn" data-layer="planets" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-planet"/></svg></span><span><div class="layer-name">Planeten</div><div class="layer-description" id="planetCount">7 Planeten · berechnete Positionen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="constBtn" data-layer="constellations" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-const"/></svg></span><span><div class="layer-name">Sternbilder</div><div class="layer-description" id="constCount">IAU-Konstellationen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="deepBtn" data-layer="deepSky" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-nebula"/></svg></span><span><div class="layer-name">Deep Sky</div><div class="layer-description">NASA-Aufnahmen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="satBtn" data-layer="satellites" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-satellite"/></svg></span><span><div class="layer-name">Satelliten</div><div class="layer-description" id="satCount">Lade Positionen ...</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="aircraftBtn" data-layer="aircraft" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-aircraft"/></svg></span><span><div class="layer-name">Flugzeuge (OpenSky)</div><div class="layer-description" id="aircraftCount">Live-Daten bei Aktivierung</div></span><span class="layer-state"></span></button></div><div class="planet-quicklinks enabled" id="planetQuicklinks"><div class="planet-quick-title">Planeten direkt auf der Karte anzeigen</div><div class="planet-quick-buttons"><button data-planet-jump="mercury" type="button">Merkur</button><button data-planet-jump="venus" type="button">Venus</button><button data-planet-jump="mars" type="button">Mars</button><button data-planet-jump="jupiter" type="button">Jupiter</button><button data-planet-jump="saturn" type="button">Saturn</button><button data-planet-jump="uranus" type="button">Uranus</button><button data-planet-jump="neptune" type="button">Neptun</button></div></div><p class="setting-helper" style="margin:11px 2px 0">Planeten: Positionen und Entfernungen werden lokal mit den JPL-Näherungsbahnen für 1800–2050 berechnet (keine Live-API). Für präzise Teleskopausrichtung JPL Horizons verwenden.</p><p class="setting-helper" style="margin:11px 2px 0">Flugzeuge: OpenSky-Livepositionen, nur bei <strong>JETZT</strong> sichtbar. F&uuml;r den API-Zugriff die beiliegende <code>nachthimmel_v5_proxy.py</code> starten (CORS-Schutz der OpenSky-API). Kein API-Schl&uuml;ssel erforderlich.</p></section><section class="settings-section location-section" aria-labelledby="locationTitle"><div class="setting-section-heading"><h3 id="locationTitle">Beobachtungsstandort</h3><span>Standort &amp; Sichtbarkeit</span></div><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt. Bei aktivierter Flugzeug-Ebene wird ein Kartenausschnitt rund um den Standort &uuml;ber den lokalen Proxy an OpenSky abgefragt. Sonst bleiben die Koordinaten im Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div></section><section class="settings-section display-section" aria-labelledby="displayTitle"><div class="setting-section-heading"><h3 id="displayTitle">Darstellung</h3></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Die Projektion reicht bis zum Nadir (−90&deg;). Objekte unter dem Horizont sind nur virtuell sichtbar. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p></section><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">NASA/JPL – Näherungspositionen der Planeten (1800–2050)</a><br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/phys_par.html">NASA/JPL – Physikalische Planetendaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://openskynetwork.github.io/opensky-api/rest.html">OpenSky Network / aktuelle Flugzeug-Zustandsvektoren</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich. Flugzeuge werden nicht f&uuml;r simulierte Beobachtungszeiten r&uuml;ckgerechnet. OpenSky erlaubt anonym nur eine begrenzte Zahl API-Anfragen pro Tag.</span></div></div></div></div>
+<div class="modal-shade" id="settingsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="modal-head"><div><h2 id="settingsTitle">Einstellungen</h2><p>Kartenebenen, Standort und Darstellung.</p></div><button id="settingsClose" aria-label="Einstellungen schliessen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><section class="settings-section" aria-labelledby="layersTitle"><div class="setting-section-heading"><h3 id="layersTitle">Kartenebenen</h3><span>Ein- und ausblenden</span></div><div class="settings-layers"><button class="layer-toggle active" id="starsBtn" data-layer="stars" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-stars"/></svg></span><span><div class="layer-name">Sterne</div><div class="layer-description" id="starsCount">Sternkatalog &amp; Milchstra&szlig;e</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="planetsBtn" data-layer="planets" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-planet"/></svg></span><span><div class="layer-name">Planeten</div><div class="layer-description" id="planetCount">7 Planeten · berechnete Positionen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="constBtn" data-layer="constellations" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-const"/></svg></span><span><div class="layer-name">Sternbilder</div><div class="layer-description" id="constCount">IAU-Konstellationen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="deepBtn" data-layer="deepSky" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-nebula"/></svg></span><span><div class="layer-name">Deep Sky</div><div class="layer-description">NASA-Aufnahmen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="satBtn" data-layer="satellites" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-satellite"/></svg></span><span><div class="layer-name">Satelliten</div><div class="layer-description" id="satCount">Lade Positionen ...</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="aircraftBtn" data-layer="aircraft" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-aircraft"/></svg></span><span><div class="layer-name">Flugzeuge (AirLabs)</div><div class="layer-description" id="aircraftCount">API-Key in Einstellungen hinterlegen</div></span><span class="layer-state"></span></button></div><div class="planet-quicklinks enabled" id="planetQuicklinks"><div class="planet-quick-title">Planeten direkt auf der Karte anzeigen</div><div class="planet-quick-buttons"><button data-planet-jump="mercury" type="button">Merkur</button><button data-planet-jump="venus" type="button">Venus</button><button data-planet-jump="mars" type="button">Mars</button><button data-planet-jump="jupiter" type="button">Jupiter</button><button data-planet-jump="saturn" type="button">Saturn</button><button data-planet-jump="uranus" type="button">Uranus</button><button data-planet-jump="neptune" type="button">Neptun</button></div></div><p class="setting-helper" style="margin:11px 2px 0">Planeten: Positionen und Entfernungen werden lokal mit den JPL-Näherungsbahnen für 1800–2050 berechnet (keine Live-API). Für präzise Teleskopausrichtung JPL Horizons verwenden.</p><p class="setting-helper" style="margin:11px 2px 0">Flugzeuge: AirLabs-Livepositionen, nur bei <strong>JETZT</strong> sichtbar. Ein kostenloser AirLabs-API-Key ist erforderlich, aber kein Proxy oder lokaler Server. Die Abfrage erfolgt direkt aus dem Browser.</p></section><section class="settings-section" aria-label="AirLabs API"><div class="setting-section-heading"><h3>Flugzeugdaten (AirLabs)</h3><span>Direkt ohne Proxy</span></div><label class="form-label" for="airlabsKey">AirLabs-API-Key</label><input id="airlabsKey" class="setting-field" type="password" autocomplete="off" spellcheck="false" placeholder="Kostenlosen API-Key eingeben"><p class="setting-helper">Registrierung: <a href="https://airlabs.co/" target="_blank" rel="noopener noreferrer">airlabs.co</a>. Der Schlüssel wird nur für diese Browser-Sitzung gespeichert und direkt an AirLabs übertragen. Bei Veröffentlichung dieser HTML-Datei keinen Schlüssel fest einbauen. Abfrage ungefähr alle 10 Minuten, um das Gratiskontingent zu schonen.</p><button class="secondary-btn" id="airlabsSaveKey" type="button">API-Key übernehmen und Flugzeuge aktualisieren</button></section><section class="settings-section location-section" aria-labelledby="locationTitle"><div class="setting-section-heading"><h3 id="locationTitle">Beobachtungsstandort</h3><span>Standort &amp; Sichtbarkeit</span></div><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt. Bei aktivierter Flugzeug-Ebene wird ein Kartenausschnitt rund um den Standort direkt bei AirLabs abgefragt. Sonst bleiben die Koordinaten im Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div></section><section class="settings-section display-section" aria-labelledby="displayTitle"><div class="setting-section-heading"><h3 id="displayTitle">Darstellung</h3></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Die Projektion reicht bis zum Nadir (−90&deg;). Objekte unter dem Horizont sind nur virtuell sichtbar. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p></section><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">NASA/JPL – Näherungspositionen der Planeten (1800–2050)</a><br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/phys_par.html">NASA/JPL – Physikalische Planetendaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://airlabs.co/docs/flights">AirLabs / aktuelle Flugzeugpositionen</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich. Flugzeuge werden nicht f&uuml;r simulierte Beobachtungszeiten r&uuml;ckgerechnet. AirLabs bietet einen begrenzten kostenlosen Monatsumfang (Nutzungsbedingungen beachten).</span></div></div></div></div>
 </div>
 <script type="module">
 'use strict';
@@ -574,11 +574,11 @@ function aircraftAtLiveTime() {
 function updateAircraftCounter() {
  const el=$('aircraftCount');
  if(!el)return;
- el.textContent=!state.layers.aircraft ? 'Live-Daten bei Aktivierung'
+ el.textContent=!state.layers.aircraft ? 'API-Key in Einstellungen hinterlegen'
   : !aircraftAtLiveTime() ? 'Nur zur Live-Zeit (JETZT)'
-  : state.aircraftError ? (state.aircraftErrorReason || 'OpenSky-Proxy / API nicht erreichbar')
+  : state.aircraftError ? (state.aircraftErrorReason || 'AirLabs-API nicht erreichbar')
   : state.aircraftLoaded ? `${state.aircraft.length} Flugzeuge in der Region`
-  : state.aircraftLoading ? 'OpenSky wird abgefragt ...' : 'Verbinde mit OpenSky ...';
+  : state.aircraftLoading ? 'AirLabs wird abgefragt ...' : 'Verbinde mit AirLabs ...';
 }
 function updateCounters() {
   $('starsCount').textContent = state.starsLoaded ? `${state.stars.length.toLocaleString('de-DE')} Katalogsterne & Milchstraße` : 'Basissterne & Milchstraße';
@@ -1177,7 +1177,7 @@ function renderDetail(){
   image=`<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,#383329,#151c2c 70%)"><svg viewBox="0 0 200 140" aria-hidden="true" style="height:100%;width:100%;color:#ffdb9f"><g transform="translate(100 70) scale(3.8)"><path d="M0 -11 2 -3 10 1.8 10 4 2.1 2.8 1.8 8.1 4.8 10 4.8 11.5 0 10.5 -4.8 11.5 -4.8 10 -1.8 8.1 -2.1 2.8 -10 4 -10 1.8 -2 -3Z" fill="currentColor" stroke="#fff1d7" stroke-width=".5"/></g></svg><span class="detail-photo-credit">OPENSKY NETWORK / ADS-B</span></div>`;
   const pos=h,latest=item.positionTime||state.aircraftDataTime||state.aircraftFetchedAt;
   const age=Math.max(0,Math.round((Date.now()-latest)/1000));
-  about='Aktuelle Transponderposition aus dem OpenSky Network. Die Darstellung berechnet den lokalen Sichtwinkel aus geografischer Position und Höhe. Zwischen Messpunkten erfolgt eine begrenzte Kursfortschreibung (maximal 90 Sekunden). Flugroute und Ziel sind nicht Teil dieser Live-Daten.';
+  about='Aktuelle Flugzeugposition aus AirLabs. Die Darstellung berechnet den lokalen Sichtwinkel aus geografischer Position und Höhe. Zwischen Messpunkten erfolgt eine begrenzte Kursfortschreibung (maximal 90 Sekunden). Flugroute und Ziel sind nicht Teil dieser Live-Daten.';
   metrics=[['Sichtwinkel',pos?niceAngle(pos.alt):'--'],
    ['Entfernung',pos?formatNumber(pos.range,1)+' km':'--'],
    ['Höhe (Geo/Baro)',pos?formatNumber(pos.altitude,0)+' m':'--'],
@@ -1186,8 +1186,8 @@ function renderDetail(){
    ['Azimut',pos?niceAngle(pos.az):'--'],
    ['Letzte Position',formatNumber(age,0)+' s zuvor'],
    ['Transpondercode',item.squawk||'--']];
-  footer=`OpenSky-Messzeit: ${latest?new Date(latest).toLocaleTimeString('de-DE'):'unbekannt'}; keine historische Rückrechnung bei Nutzung der Zeitleiste. Nicht für Navigation oder Flugsicherung geeignet.`;
-  links=`<a class="secondary-btn" href="https://opensky-network.org/" target="_blank" rel="noopener noreferrer">OpenSky Network ${ico('chevron')}</a>`;
+  footer=`AirLabs-Messzeit: ${latest?new Date(latest).toLocaleTimeString('de-DE'):'unbekannt'}; keine historische Rückrechnung bei Nutzung der Zeitleiste. Nicht für Navigation oder Flugsicherung geeignet.`;
+  links=`<a class="secondary-btn" href="https://airlabs.co/" target="_blank" rel="noopener noreferrer">AirLabs ${ico('chevron')}</a>`;
  }else if(kind==='star'){
   top='STERN / HELLIGKEIT';display=item.name||('HIP '+item.id);subtitle='Stellarer Katalog / J2000';
   image=`<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,rgba(79,127,188,.24),#091427 68%)"><svg viewBox="0 0 200 140" style="height:100%;width:100%"><defs><radialGradient id="starg"><stop stop-color="#fff"/><stop offset=".15" stop-color="#d8efff"/><stop offset=".35" stop-color="#6eabdc" stop-opacity=".47"/><stop offset="1" stop-color="#6eabdc" stop-opacity="0"/></radialGradient></defs><circle cx="100" cy="70" r="61" fill="url(#starg)"/><path d="M100 16v108M45 70h110" stroke="#b5dbfa" stroke-opacity=".22" stroke-width=".8"/></svg></div>`;
@@ -1227,7 +1227,7 @@ function searchItems(q){
   {section:'STERNBILDER',kind:'constellation',items:state.constellations.filter(c=>match(c.de,c.name,c.id)),sub:c=>(c.name||c.id)+' \u00b7 IAU',name:c=>c.de||c.name},
   {section:'DEEP SKY',kind:'dso',items:DEEP.filter(d=>match(d.name,d.id,d.type)),sub:d=>d.id+' \u00b7 '+d.type,name:d=>d.name},
   {section:'SATELLITEN',kind:'satellite',items:state.satellites.filter(s=>match(s.name,s.id)),sub:s=>'NORAD '+s.id,name:s=>s.name},
-  {section:'FLUGZEUGE / OPENSKY',kind:'aircraft',items:state.aircraft.filter(a=>aircraftAtLiveTime() && predictAircraft(a)?.alt>0 && match(a.callsign,a.id,a.country)),sub:a=>a.id.toUpperCase()+' · '+a.country,name:a=>a.callsign||a.id.toUpperCase()},
+  {section:'FLUGZEUGE / AIRLABS',kind:'aircraft',items:state.aircraft.filter(a=>aircraftAtLiveTime() && predictAircraft(a)?.alt>0 && match(a.callsign,a.id,a.country)),sub:a=>a.id.toUpperCase()+' · '+a.country,name:a=>a.callsign||a.id.toUpperCase()},
   {section:'HELLE STERNE',kind:'star',items:state.stars.filter(s=>s.name&&match(s.name)).slice(0,15),sub:s=>formatNumber(s.mag,2)+' mag',name:s=>s.name}
  ];
  return list;
@@ -1338,84 +1338,53 @@ async function loadSatelliteCatalog(){
   showToast('CelesTrak derzeit nicht erreichbar. Die Satellitenebene zeigt keine erfundenen Positionen.',true);
  }
 }
-// OpenSky Network anonymously offers current state vectors, but not cross-origin
-// access from arbitrary browser pages. The companion Python server provides a
-// same-origin /api/opensky/states/all bridge. Never use secret credentials in HTML.
-const AIRCRAFT_POLL_MS=95000;
-const AIRCRAFT_DAILY_BUDGET=300; // conservative cap below the anonymous 400-credit/day tier
+// AirLabs allows browser-side CORS requests; a user-supplied key is required.
+// No proxy, server-side bridge or embedded shared credential is used.
+const AIRCRAFT_POLL_MS=10*60*1000;
+let airlabsKey='';
+try{airlabsKey=sessionStorage.getItem('nachthimmel_airlabs_key')||'';}catch{}
 function aircraftBoundingBox(){
- // Keep requested region <25 square degrees (one anonymous OpenSky credit).
  const d=2.35;
- let lamin=clamp(state.lat-d,-90,90),lamax=clamp(state.lat+d,-90,90);
- let lomin=clamp(state.lon-d,-180,180),lomax=clamp(state.lon+d,-180,180);
- if(lamax-lamin<.1||lomax-lomin<.1)return null;
- return {lamin:lamin.toFixed(4),lamax:lamax.toFixed(4),lomin:lomin.toFixed(4),lomax:lomax.toFixed(4),extended:'1'};
-}
-function consumeAircraftBudget(){
- try{
-  const key='nachthimmel_v4_opensky_credit_count';
-  const day=new Date().toISOString().slice(0,10);
-  const old=JSON.parse(localStorage.getItem(key)||'null');
-  const count=old?.day===day&&Number.isFinite(old.count)?old.count:0;
-  if(count>=AIRCRAFT_DAILY_BUDGET)return false;
-  localStorage.setItem(key,JSON.stringify({day,count:count+1}));
- }catch{ /* A browser without localStorage still gets network-level quotas. */ }
- return true;
+ return [clamp(state.lat-d,-90,90),clamp(state.lon-d,-180,180),clamp(state.lat+d,-90,90),clamp(state.lon+d,-180,180)].map(x=>x.toFixed(4)).join(',');
 }
 function parseAircraftStates(data){
- const now=Date.now(),base=Number(data?.time)*1000;
- if(!data || !Number.isFinite(base) || !(Array.isArray(data.states)||data.states===null))throw Error('Ungültige OpenSky-Antwort');
- const result=new Map();
- for(const v of data.states||[]){
-  if(!Array.isArray(v)||typeof v[0]!=='string'||v[8]===true)continue;
-  const id=v[0].trim().toLowerCase(),lat=Number(v[6]),lon=Number(v[5]);
-  const altitude=typeof v[13]==='number'&&Number.isFinite(v[13])?v[13]:v[7];
-  const positionTime=typeof v[3]==='number'?v[3]*1000:base;
-  if(!/^[0-9a-f]{6}$/.test(id)||!Number.isFinite(lat)||!Number.isFinite(lon)||
-     Math.abs(lat)>90||Math.abs(lon)>180||typeof altitude!=='number'||!Number.isFinite(altitude)||
-     altitude<-500||altitude>22000||!Number.isFinite(positionTime)||now-positionTime>175000)continue;
-  result.set(id,{id,callsign:String(v[1]||'').trim().slice(0,16),country:String(v[2]||'').slice(0,65),
-   lat,lon,altitude,positionTime,
-   speed:typeof v[9]==='number'&&Number.isFinite(v[9])?v[9]:null,
-   track:typeof v[10]==='number'&&Number.isFinite(v[10])?wrap(v[10]):null,
-   verticalRate:typeof v[11]==='number'&&Number.isFinite(v[11])?v[11]:null,
-   squawk:typeof v[14]==='string'?v[14].slice(0,5):'',
-   source:Number.isFinite(v[16])?v[16]:null});
+ if(!data||!Array.isArray(data.response))throw Error('Ungültige AirLabs-Antwort');
+ const result=new Map(),now=Date.now();
+ for(const v of data.response){
+  if(!v || typeof v!=='object')continue;
+  const id=String(v.hex||'').trim().toLowerCase();
+  const lat=Number(v.lat),lon=Number(v.lng),altitude=Number(v.alt);
+  const positionTime=Number.isFinite(Number(v.updated))&&Number(v.updated)>0?Number(v.updated)*1000:now;
+  if(!/^[0-9a-f]{6}$/.test(id)||!Number.isFinite(lat)||!Number.isFinite(lon)||!Number.isFinite(altitude)||
+   Math.abs(lat)>90||Math.abs(lon)>180||altitude<-500||altitude>22000||now-positionTime>175000||v.status==='landed')continue;
+  result.set(id,{id,callsign:String(v.flight_icao||v.flight_iata||v.flight_number||'').trim().slice(0,16),
+   country:String(v.flag||'').slice(0,65),lat,lon,altitude,positionTime,
+   speed:Number.isFinite(Number(v.speed))?Number(v.speed)/3.6:null,
+   track:Number.isFinite(Number(v.dir))?wrap(Number(v.dir)):null,
+   verticalRate:Number.isFinite(Number(v.v_speed))?Number(v.v_speed):null,
+   squawk:String(v.squawk||'').slice(0,5),source:null});
  }
  return result;
 }
 async function pollAircraft(){
  if(!state.layers.aircraft||!aircraftAtLiveTime()||document.hidden||state.aircraftLoading||Date.now()<state.aircraftNextAt)return;
- if(location.protocol==='file:'){
-  state.aircraftError=true;state.aircraftErrorReason='Lokaler OpenSky-Proxy erforderlich';state.aircraftNextAt=Date.now()+10*60*1000;
-  updateAircraftCounter();
-  showToast('OpenSky benötigt den mitgelieferten lokalen Proxy: python3 nachthimmel_v5_proxy.py',true);
-  return;
- }
- const bbox=aircraftBoundingBox();if(!bbox)return;
- if(!consumeAircraftBudget()){
-  state.aircraftError=true;state.aircraftErrorReason='Tageskontingent aufgebraucht';state.aircraftNextAt=Date.now()+60*60*1000;
-  updateAircraftCounter();
-  showToast('OpenSky-Tageskontingent dieser Karte erreicht. Bitte morgen erneut versuchen.',true);
-  return;
+ if(!airlabsKey){
+  state.aircraftError=true;state.aircraftErrorReason='AirLabs-Key in Einstellungen eingeben';
+  updateAircraftCounter();return;
  }
  state.aircraftLoading=true;state.aircraftError=false;state.aircraftErrorReason='';updateAircraftCounter();
  const seq=++state.aircraftRequestVersion;
  const controller=new AbortController();state.aircraftAbort=controller;
  const timer=setTimeout(()=>controller.abort(),16000);
  try{
-  const url='/api/opensky/states/all?'+new URLSearchParams(bbox);
-  const response=await fetch(url,{signal:controller.signal,cache:'no-store',headers:{Accept:'application/json'}});
-  if(!response.ok){
-   if(response.status===429){
-    const wait=Number(response.headers.get('Retry-After')||response.headers.get('X-Rate-Limit-Retry-After-Seconds')||600);
-    state.aircraftNextAt=Date.now()+clamp(wait,120,86400)*1000;
-   }
-   throw Error(response.status===404?'Lokaler OpenSky-Proxy nicht gefunden (HTTP 404)':`OpenSky HTTP ${response.status}`);
-  }
+  const params=new URLSearchParams({api_key:airlabsKey,bbox:aircraftBoundingBox(),
+   _fields:'hex,flight_icao,flight_iata,flight_number,flag,lat,lng,alt,dir,speed,v_speed,squawk,updated,status'});
+  const response=await fetch('https://airlabs.co/api/v9/flights?'+params,{signal:controller.signal,cache:'no-store'});
+  if(!response.ok)throw Error('AirLabs HTTP '+response.status);
   const data=await response.json();if(seq!==state.aircraftRequestVersion)return;
+  if(data.error)throw Error('AirLabs: '+String(data.error.message||data.error.code||'API-Fehler').slice(0,120));
   const aircraft=parseAircraftStates(data);
-  state.aircraft=[...aircraft.values()];state.aircraftDataTime=Number(data.time)*1000;
+  state.aircraft=[...aircraft.values()];state.aircraftDataTime=Date.now();
   state.aircraftFetchedAt=Date.now();state.aircraftLoaded=true;state.aircraftError=false;state.aircraftErrorReason='';
   state.aircraftNextAt=Date.now()+AIRCRAFT_POLL_MS;
   if(state.selected?.kind==='aircraft'){
@@ -1425,11 +1394,10 @@ async function pollAircraft(){
   updateSearchResults();updateAircraftCounter();
  }catch(err){
   if(seq!==state.aircraftRequestVersion)return;
-  if(err.name!=='AbortError'||state.layers.aircraft){
-   const msg=String(err.message||'Netzwerkfehler');state.aircraftError=true;state.aircraftErrorReason='OpenSky-Proxy / API nicht erreichbar';
-   if(state.aircraftNextAt<Date.now())state.aircraftNextAt=Date.now()+180000;
-   if(!state.aircraftFetchedAt)showToast('Flugzeug-Layer: '+msg+'. Bitte den OpenSky-Proxy starten oder den API-Status prüfen.',true);
-  }
+  state.aircraftError=true;
+  state.aircraftErrorReason=String(err.message||'AirLabs nicht erreichbar').slice(0,90);
+  state.aircraftNextAt=Date.now()+AIRCRAFT_POLL_MS;
+  if(!state.aircraftFetchedAt)showToast('Flugzeug-Layer: '+state.aircraftErrorReason,true);
  }finally{
   clearTimeout(timer);
   if(seq===state.aircraftRequestVersion){state.aircraftLoading=false;state.aircraftAbort=null;updateAircraftCounter();}
@@ -1604,7 +1572,16 @@ function connectUI(){
  $('playBtn').onclick=()=>setPlaying(!state.playing);
  $('prevHour').onclick=()=>addHours(-1);
  $('nextHour').onclick=()=>addHours(1);
- $('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();pollAircraft();};
+ $('airlabsKey').value=airlabsKey;
+$('airlabsSaveKey').onclick=()=>{
+ airlabsKey=$('airlabsKey').value.trim();
+ try{if(airlabsKey)sessionStorage.setItem('nachthimmel_airlabs_key',airlabsKey);else sessionStorage.removeItem('nachthimmel_airlabs_key');}catch{}
+ state.aircraftRequestVersion++;state.aircraftAbort?.abort();state.aircraftAbort=null;state.aircraftLoading=false;
+ state.aircraftNextAt=0;state.aircraftError=false;state.aircraftLoaded=false;
+ if(airlabsKey){showToast('AirLabs-Key übernommen.');setLayer('aircraft',true);pollAircraft();}
+ else{showToast('Bitte AirLabs-API-Key eingeben.',true);updateAircraftCounter();}
+};
+$('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();pollAircraft();};
  $('timeRange').addEventListener('input',e=>{
   if(state.playing)setPlaying(false);
   state.offsetMs=Number(e.target.value)*3600000;updateTimeUI();pollAircraft();
