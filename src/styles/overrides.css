@@ -1,0 +1,138 @@
+
+/* Nachthimmel v6: concise sky HUD and pitch-aware precision compass. */
+[hidden]{display:none!important}
+.view-info{top:105px;max-width:calc(100vw - 40px)}
+.view-coordinate{margin:0;padding:11px 14px;border:1px solid rgba(131,177,222,.17);border-radius:13px;gap:13px;background:rgba(7,15,29,.49);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 7px 25px rgba(0,0,0,.12);font-size:10px;letter-spacing:.07em}
+.view-coordinate span{white-space:nowrap}.view-coordinate strong{color:#e2f2ff;font-variant-numeric:tabular-nums;font-weight:600}
+.below-horizon-flag{margin-top:10px;width:max-content;max-width:100%;display:flex;align-items:center;gap:8px;color:#f1c993;font-size:10px;font-weight:700;letter-spacing:.08em;border:1px solid rgba(224,163,96,.24);background:rgba(28,24,26,.68);padding:8px 10px;border-radius:10px;backdrop-filter:blur(12px)}
+.below-horizon-flag small{font-weight:500;color:#b4a39c;letter-spacing:0;font-size:10px}.below-flag-dot{width:6px;height:6px;border-radius:50%;background:#f1c993;box-shadow:0 0 9px rgba(241,201,147,.45)}
+.right-rail{top:44%;gap:14px}
+.compass-unit{width:152px;padding:13px 13px 12px;border:1px solid rgba(141,190,239,.19);border-radius:19px;background:linear-gradient(155deg,rgba(14,26,47,.85),rgba(5,12,24,.74));backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);box-shadow:0 12px 44px rgba(0,0,0,.24),inset 0 1px 0 rgba(179,224,255,.045);user-select:none}
+
+
+.compass-stage{width:124px;height:121px;position:relative;margin:2px auto 0;perspective:420px;display:grid;place-items:center}
+.compass-dial{width:119px;height:119px;position:relative;transform:rotateX(43deg);transform-style:preserve-3d;transition:transform .14s ease-out;will-change:transform}
+.compass-rose{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 48% 40%,rgba(31,68,105,.8) 0%,rgba(13,33,60,.88) 52%,rgba(7,16,31,.98) 87%);border:1px solid rgba(146,203,251,.32);box-shadow:inset 0 0 0 5px rgba(4,12,25,.58),inset 0 0 21px rgba(102,166,231,.08),0 0 22px rgba(19,67,116,.25);transform:rotate(0deg);transition:transform .15s linear;will-change:transform}
+.compass-rose:before{content:'';position:absolute;inset:18%;border:1px dashed rgba(128,181,227,.17);border-radius:50%}
+.compass-ticks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.compass-cardinal{position:absolute;font:700 12px var(--display);text-shadow:0 0 7px rgba(0,0,0,.45);color:#acc7e2;z-index:2;line-height:1}
+.compass-cardinal.north{top:18%;left:50%;transform:translate(-50%,-50%);color:#b8edff}
+.compass-cardinal.south{bottom:18%;left:50%;transform:translate(-50%,50%)}
+.compass-cardinal.east{right:19%;top:50%;transform:translate(50%,-50%)}
+.compass-cardinal.west{left:19%;top:50%;transform:translate(-50%,-50%)}
+.compass-north-tip{position:absolute;top:4%;left:50%;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:8px solid #8ceaff;transform:translateX(-50%);filter:drop-shadow(0 0 4px #8ceaff)}
+.compass-pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:11px solid #f3c98e;filter:drop-shadow(0 0 5px rgba(240,198,135,.65));z-index:4}
+.compass-center{position:absolute;inset:calc(50% - 3px);width:6px;height:6px;border-radius:50%;border:1px solid #cdeafe;background:#4587b7;box-shadow:0 0 7px rgba(141,215,255,.62)}
+.compass-data{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-top:0;color:#e3f4ff;font-variant-numeric:tabular-nums}
+.compass-data strong{font:600 17px var(--display);letter-spacing:-.025em}
+.compass-data strong:last-child{font-size:14px;color:#9bc8e7}
+.compass-data-label{display:flex;justify-content:space-between;margin-top:3px;font:700 8px var(--display);color:#7992b0;letter-spacing:.08em}
+.compass-pitch-meter{height:3px;position:relative;background:linear-gradient(90deg,rgba(217,155,105,.35) 0%,rgba(124,157,195,.24) 50%,rgba(99,177,231,.47) 100%);border-radius:5px;margin:12px 3px 1px}
+.compass-pitch-zero{height:9px;width:1px;background:#afbecf;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.compass-pitch-dot{position:absolute;left:75%;top:50%;width:8px;height:8px;border-radius:50%;border:1px solid #e4faff;background:#8cdbff;box-shadow:0 0 8px #7cceff;transform:translate(-50%,-50%);transition:left .13s ease-out}
+@media(max-width:760px){
+ .view-info{top:82px;left:14px;max-width:calc(100% - 28px)}
+ .view-coordinate{margin:0;padding:9px 10px;gap:8px;font-size:9px;letter-spacing:.035em}
+ .below-horizon-flag{margin-top:7px;font-size:8px;padding:7px 9px;gap:5px}.below-horizon-flag small{font-size:8px}
+ .right-rail{top:37%;right:12px}
+ .compass-unit{width:122px;padding:10px 10px 11px;border-radius:16px}
+ .compass-stage{width:101px;height:97px;margin-top:2px}
+ .compass-dial{width:98px;height:98px}
+ .compass-cardinal{font-size:11px}
+ .compass-data strong{font-size:13px}.compass-data strong:last-child{font-size:11px}
+ 
+ .compass-data-label{font-size:7px}.compass-pitch-meter{margin-top:10px}
+}
+@media(max-width:390px){.view-coordinate{font-size:8px;gap:7px;padding:9px 8px}.right-rail{right:9px;top:39%}}
+@media(max-height:690px){.view-info{top:86px}.view-coordinate{margin:0}.right-rail{top:41%}}
+
+/* Nachthimmel v6: top-left compass, clean tools dock, settings-layer switches. */
+.topbar{align-items:flex-start;gap:16px;z-index:9;padding:18px clamp(18px,3.4vw,54px)}
+.top-actions{margin-left:auto;flex-shrink:1;justify-content:flex-end}
+.compass-stack{display:flex;flex-direction:column;align-items:flex-start;gap:9px;flex:0 0 auto;min-width:0}
+.compass-stack .compass-unit{width:146px;padding:12px 12px 11px}
+.compass-stack .compass-stage{width:120px;height:114px;margin:0 auto}
+.compass-stack .compass-dial{width:112px;height:112px}
+.compass-stack .below-horizon-flag{margin:0;max-width:190px;font-size:9px;flex-wrap:wrap}
+.bottom-ui{gap:11px}
+.dock{align-self:center;width:max-content;min-height:0;padding:10px 12px;border-radius:16px}
+.dock .tool-actions{padding:0;gap:9px}
+.dock .tool-btn{width:42px;height:42px}
+.modal-card{max-height:min(86vh,750px);max-height:min(86dvh,750px)}
+.settings-body{padding-bottom:22px;overscroll-behavior:contain}
+.settings-section{padding:7px 0 19px}
+.settings-section+.settings-section{border-top:1px solid rgba(151,183,218,.14);padding-top:20px}
+.setting-section-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 13px}
+.setting-section-heading h3{font:600 14px var(--display);letter-spacing:-.02em;margin:0;color:#e7f4ff}
+.setting-section-heading span{font-size:10px;color:#849bb7;white-space:nowrap}
+.settings-layers{display:grid;gap:8px}
+.settings-layers .layer-toggle{width:100%;flex:none;min-height:63px;justify-content:flex-start;padding:10px 13px;gap:13px;border:1px solid rgba(141,175,222,.14);background:rgba(116,152,199,.045);border-radius:13px}
+.settings-layers .layer-toggle:hover{background:rgba(77,120,174,.17);border-color:rgba(136,197,249,.25)}
+.settings-layers .layer-toggle.active{border-color:rgba(118,185,241,.24);background:rgba(38,67,105,.34)}
+.settings-layers .layer-icon{width:41px;height:41px;flex:0 0 41px;border-radius:11px}
+.settings-layers .layer-toggle>span:nth-child(2){min-width:0;flex:1}
+.settings-layers .layer-name{font-size:13px}
+.settings-layers .layer-description{font-size:10px;white-space:normal;margin-top:4px}
+.settings-layers .layer-state{position:relative;inset:auto;flex:0 0 36px;width:36px;height:21px;margin-left:auto;border-radius:40px;background:rgba(108,129,154,.26);border:1px solid rgba(146,166,190,.30);box-shadow:none;transition:background .18s ease}
+.settings-layers .layer-state:after{content:'';position:absolute;top:2px;left:2px;height:15px;width:15px;border-radius:50%;background:#96a5b9;box-shadow:0 1px 3px rgba(0,0,0,.28);transition:transform .18s ease,background .18s ease}
+.settings-layers .layer-toggle.active .layer-state{background:#327ea9;border-color:#63b8ec;box-shadow:0 0 12px rgba(104,183,239,.10)}
+.settings-layers .layer-toggle.active .layer-state:after{transform:translateX(15px);background:#eff9ff}
+.display-section .form-label{margin-top:2px!important}
+@media(max-width:760px){
+ .topbar{padding:14px 14px;gap:11px}
+ .compass-stack .compass-unit{width:121px;padding:9px 9px 10px}
+ .compass-stack .compass-stage{width:101px;height:97px}
+ .compass-stack .compass-dial{width:98px;height:98px}
+ .compass-stack .compass-data strong{font-size:13px}
+ .compass-stack .compass-data strong:last-child{font-size:11px}
+ .compass-stack .compass-pitch-meter{margin-top:10px}
+ .compass-stack .below-horizon-flag{max-width:160px;font-size:8px;padding:7px 9px;gap:5px}
+ .compass-stack .below-horizon-flag small{font-size:8px}
+ .top-actions{gap:8px}
+ .place-pill{max-width:145px}
+ .dock{width:max-content;min-height:0;flex-wrap:nowrap;gap:0;padding:9px 10px;border-radius:16px}
+ .dock .tool-actions{width:auto;justify-content:center;gap:8px}
+ .dock .tool-btn{width:40px;height:40px;flex:0 0 40px;max-width:none}
+ .dock .motion-btn{flex:0 0 auto;max-width:none;padding:0 11px}
+ .bottom-ui{gap:9px}
+ .details{bottom:calc(max(18px,env(safe-area-inset-bottom)) + 135px);max-height:min(61vh,540px)}
+ .settings-section{padding-bottom:17px}
+ .setting-section-heading h3{font-size:13px}
+ .setting-section-heading span{font-size:9px}
+ .settings-layers .layer-toggle{min-height:59px;padding:9px 11px;gap:11px}
+ .settings-layers .layer-icon{width:39px;height:39px;flex-basis:39px}
+ .settings-layers .layer-name{font-size:12px}
+ .settings-layers .layer-description{font-size:10px}
+}
+@media(max-width:390px){
+ .topbar{padding:12px 11px;gap:6px}
+ .compass-stack .compass-unit{width:117px}
+ .place-pill{max-width:125px}
+ .top-actions{gap:6px}
+ .dock .tool-actions{gap:6px}
+}
+@media(max-width:345px){
+ .compass-stack .compass-unit{width:111px;padding:8px}
+ .compass-stack .compass-stage{width:93px;height:93px}
+ .compass-stack .compass-dial{width:91px;height:91px}
+ .place-pill{max-width:95px}
+ .setting-section-heading span{display:none}
+}
+/* v5 - planets: a seventh celestial-object layer independent of stars. */
+.layer-toggle[data-layer="planets"] .layer-icon{background:rgba(242,174,93,.14);color:#ffd5a0}
+.planet-quicklinks{margin:12px 0 0;padding:12px;border:1px solid rgba(199,162,112,.17);border-radius:13px;background:linear-gradient(115deg,rgba(71,50,38,.21),rgba(40,43,65,.14))}
+.planet-quick-title{color:#aaadbf;font-size:9px;letter-spacing:.11em;font-weight:700;text-transform:uppercase}
+.planet-quick-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.planet-quick-buttons button{border:1px solid rgba(211,174,127,.22);color:#f2dfca;border-radius:9px;background:rgba(177,126,80,.08);padding:7px 10px;font-size:11px;line-height:1.35;font-weight:600}
+.planet-quick-buttons button:hover,.planet-quick-buttons button:focus-visible{background:rgba(211,156,93,.22);border-color:rgba(234,186,118,.5)}
+.planet-quicklinks:not(.enabled){opacity:.72}
+.planet-note{font-size:10px;line-height:1.55;color:#9bafc7;margin-top:12px;border-left:2px solid rgba(234,186,118,.55);padding:2px 0 2px 10px}
+
+/* V2 orbit overlays - settings entries and legend. */
+.layer-toggle[data-layer="sunMoon"] .layer-icon,
+.layer-toggle[data-layer="sunPath"] .layer-icon {background:rgba(230,176,92,.14);color:#f3cf97}
+.layer-toggle[data-layer="moonPath"] .layer-icon {background:rgba(135,173,227,.13);color:#c2daef}
+.layer-toggle[data-layer="planetPaths"] .layer-icon,
+.layer-toggle[data-layer="selectedPath"] .layer-icon {background:rgba(155,139,229,.12);color:#c9bcff}
+.layer-toggle[data-layer="pathArrows"] .layer-icon {background:rgba(93,195,186,.12);color:#afe6df}
+.trajectory-explain {margin:13px 3px 0}
