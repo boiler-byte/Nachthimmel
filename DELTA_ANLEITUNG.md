@@ -1,14 +1,21 @@
-# Nachthimmel v2 – Delta „Layer/Bahnen + ADSB.lol"
+# Nachthimmel v2 – Delta: Flugzeug-Entfernung + Details
 
-**Basis:** Nachthimmel v2 nach dem letzten PWA-Delta (Stand 08.11.2026).
+## Einspielen
 
-1. Vor dem Einspielen das vorhandene Projekt sichern.
-2. Das ZIP im **übergeordneten Ordner** entpacken, sodass die darin enthaltenen Dateien nach `nachthimmel-v2/` kopiert und ältere gleichnamige Dateien überschrieben werden.
-3. Die in `DELETE_FILES.txt` genannte alte AirLabs-Datei löschen (wird nicht mehr verwendet).
-4. Für lokale Live-Flugzeuge `npm install`, `npm run build:portable` und `npm run preview:proxy` ausführen. Alternativ die im ZIP bereits aktualisierte PWA mit der enthaltenen Cloudflare-Pages-Function deployen.
+**Dieses ZIP enthält nur neue und geänderte Quell- und PWA-Dateien** gegenüber `Nachthimmel_v2_Layer_Bahnen_ADSB_Delta.zip`. Es ersetzt nicht dein vollständiges Projekt. Es enthält bewusst **keine vorbereiteten `dist/`-Dateien**: Diese könnten eine bereits individuell konfigurierte Cloudflare-Worker-Adresse überschreiben.
 
-**Keine vollständige Projektkopie:** Unveränderte Dateien (z. B. die PWA-Icons und die meisten Himmelsmodule) sind nicht enthalten.
+1. Entpacke `nachthimmel-v2/` über das **bestehende Nachthimmel-Projekt**. Dateien mit identischem Pfad ersetzen, andere Dateien unverändert lassen.
+2. **`src/features/aircraft/adsb.service.js` nicht verändern.** Diese Datei ist im Delta nicht enthalten. Eine darin hinterlegte Cloudflare-Worker-URL bleibt so erhalten.
+3. Falls GitHub Pages deine Quellversion (`index.html` im Projekt-Root) direkt bereitstellt: Dateien committen und deployen. `sw.js` und `pwa-assets.json` im Delta aktualisieren den PWA-Cache.
+4. Falls GitHub Pages die gebaute PWA aus `dist/` bereitstellt: **im aktualisierten Projekt** `npm run build:portable` ausführen und anschließend den neu erzeugten `dist/`-Inhalt wie gewohnt auf GitHub Pages hochladen. Der vorhandene Worker-Endpunkt aus deiner Service-Datei wird dabei übernommen.
+5. Falls du die Worker-Adresse **ausschließlich in einer fertigen `dist/index.html`** eingetragen hast, muss dieselbe URL vor dem Build einmal in `src/features/aircraft/adsb.service.js` stehen; sonst kann kein Build sie übernehmen. Weitere Cloudflare-Worker-Änderungen sind nicht erforderlich.
 
-**ADSB.lol benötigt einen Serverproxy.** Ohne `functions/api/aircraft.js` auf Cloudflare Pages oder den Node-Proxy funktioniert der Flugzeug-Layer auf einem statischen Host nicht; die übrige PWA funktioniert weiterhin. Bei Cloudflare Pages muss die Function aus dem Projekt-Root bereitgestellt werden, nicht nur das `dist/`-Verzeichnis.
+## Änderungen
 
-Die Flugzeugdaten sind nicht für Navigation oder Flugsicherung geeignet. Attribution und Lizenz (ODbL 1.0) sind zu beachten.
+- **Kartenebenen → Flugzeugdaten (ADSB.lol):** Slider 25–370 km, Default 100 km.
+- Filter für sichtbare Flugzeuge, Treffer der Suche und angezeigte Anzahl. Die ADSB-Abfrage bleibt unverändert (200 nautische Meilen). Es entstehen keine zusätzlichen ADSB-Requests.
+- Detailansicht: horizontale Entfernung vs. direkte Sichtlinienentfernung, Geschwindigkeit, Flughöhe, Kurs, Steig-/Sinkrate, letzte Meldung, Kennzeichen, Flugzeugtyp, Rufzeichen, Transpondercode.
+- Foto über HexDB *nur beim Öffnen der Flugzeugdetails*. Bei nicht verfügbarem Bild wird das vorhandene Flugzeugsymbol gezeigt. HexDB ist ein externer Bilddienst.
+- **Keine Flugbahn.** Satelliten, Planeten, Sonne/Mond und PWA bleiben ansonsten unverändert.
+
+Tests: `npm test`, `npm run build:portable`, `npm run test:runtime`.

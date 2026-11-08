@@ -3,6 +3,7 @@ import { aircraftAtLiveTime } from '../core/clock.js';
 import { $, escapeHTML, formatNumber, ico } from '../core/dom.js';
 import { state } from '../core/store.js';
 import { predictAircraft } from '../features/aircraft/aircraft.positions.js';
+import { aircraftGroundDistanceKm, withinAircraftDistance } from '../features/aircraft/aircraft.distance.js';
 import { DEEP } from '../features/deep-sky/catalog.data.js';
 import { PLANETS } from '../features/planets/planets.data.js';
 import { BODIES, observeBody } from '../features/solar-system/celestial.ephemeris.js';
@@ -20,7 +21,7 @@ export function searchItems(q){
   {section:'STERNBILDER',kind:'constellation',items:state.constellations.filter(c=>match(c.de,c.name,c.id)),sub:c=>(c.name||c.id)+' \u00b7 IAU',name:c=>c.de||c.name},
   {section:'DEEP SKY',kind:'dso',items:DEEP.filter(d=>match(d.name,d.id,d.type)),sub:d=>d.id+' \u00b7 '+d.type,name:d=>d.name},
   {section:'SATELLITEN',kind:'satellite',items:state.satellites.filter(s=>match(s.name,s.id)),sub:s=>'NORAD '+s.id,name:s=>s.name},
-  {section:'FLUGZEUGE / ADSB.LOL',kind:'aircraft',items:state.aircraft.filter(a=>aircraftAtLiveTime() && predictAircraft(a)?.alt>0 && match(a.callsign,a.id,a.registration,a.type)),sub:a=>a.id.toUpperCase()+(a.registration?' · '+a.registration:''),name:a=>a.callsign||a.id.toUpperCase()},
+  {section:'FLUGZEUGE / ADSB.LOL',kind:'aircraft',items:state.aircraft.filter(a=>{const h=aircraftAtLiveTime()?predictAircraft(a):null;return h&&h.alt>0&&withinAircraftDistance(h.lat,h.lon)&&match(a.callsign,a.id,a.registration,a.type);}),sub:a=>formatNumber(aircraftGroundDistanceKm(a.lat,a.lon),0)+' km · '+a.id.toUpperCase()+(a.registration?' · '+a.registration:''),name:a=>a.callsign||a.id.toUpperCase()},
   {section:'HELLE STERNE',kind:'star',items:state.stars.filter(s=>s.name&&match(s.name)).slice(0,15),sub:s=>formatNumber(s.mag,2)+' mag',name:s=>s.name}
  ];
  return list;

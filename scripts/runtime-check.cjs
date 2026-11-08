@@ -16,6 +16,8 @@ for (const id of ['planetPathsBtn', 'sunPathBtn', 'moonPathBtn', 'pathArrowsBtn'
  assert(pathMarkup.includes(`id="${id}"`), `${id} belongs to trajectory modal`);
 }
 assert(generalSettingsMarkup.includes('id="aircraftBtn"'), 'Aircraft layer exists');
+assert(generalSettingsMarkup.includes('id="aircraftDistanceRange"'), 'Aircraft distance slider is in layer dialog');
+assert(!pathMarkup.includes('aircraftDistanceRange'), 'Aircraft distance slider is not a trajectory');
 assert(!source.includes('airlabsKey'), 'No AirLabs API key interface');
 const observerSettingsMarkup = source.split('id="locationModal"')[1].split('<script>')[0];
 for (const id of ['latInput','lonInput','gpsBtn','saveLocation','magInput','magLabel']) {
@@ -137,6 +139,14 @@ assert(!el('pathsModal').classList.contains('visible'),'Paths close works');
 el('layersBtn').click();
 el('layersClose').click();
 assert(!el('layersModal').classList.contains('visible'),'Layer close works');
+assert.equal(store.aircraftMaxDistanceKm,100,'Default aircraft range 100 km');
+assert.equal(el('aircraftDistanceValue').textContent,'100 km','Range label initialized');
+el('aircraftDistanceRange').value='50';
+el('aircraftDistanceRange').listeners.input.forEach(fn=>fn());
+assert.equal(store.aircraftMaxDistanceKm,50,'Range slider updates active aircraft filter');
+assert.equal(el('aircraftDistanceValue').textContent,'50 km','Range label updates on input');
+el('aircraftDistanceRange').value='100';
+el('aircraftDistanceRange').listeners.input.forEach(fn=>fn());
 // The GPS callback must close only the observer modal.
 c.navigator.geolocation={getCurrentPosition:success=>success({coords:{latitude:53.628,longitude:11.416}})};
 el('locationTop').click();
@@ -165,6 +175,15 @@ const example=adsb.parseAircraftStates({now:Date.now(),ac:[{
 assert(example.size===1,'ADSB.lol format normalized');
 assert(Math.abs(example.get('3c4b5a').altitude-9144)<1,'Feet converted to metres');
 assert(adsb.aircraftProxyURL('https://example.com/nachthimmel/').pathname==='/nachthimmel/api/aircraft','Relative same-origin ADSB proxy URL');
+// Selected live aircraft show both distance types and optional image with a local fallback.
+store.lat=52.52;store.lon=13.405;
+const chosen=example.get('3c4b5a');
+c.__getModule('ui/dialogs.js').updateSelection('aircraft',chosen);
+assert(el('detailPanel').innerHTML.includes('Zum Standort (horizontal)'),'Horizontal observer distance shown');
+assert(el('detailPanel').innerHTML.includes('Direkte Entfernung'),'Slant distance shown');
+assert(el('detailPanel').innerHTML.includes('hexdb.io/api/v2/aircraft/3c4b5a/image/thumbnail'),'Photo only on selection');
+el('aircraftPhotoImage').listeners.error?.forEach(fn=>fn());
+assert(el('aircraftDetailPhoto').outerHTML.includes('OHNE FOTO'),'Missing photo falls back to illustration');
 // A second frame after interactive changes must still render correctly.
 frame=scheduled.shift();frame(400);
 assert(position.hitTargets.length>=0,'Second canvas frame completed');

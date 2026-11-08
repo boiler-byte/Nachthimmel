@@ -1,3 +1,12 @@
+## Nachthimmel v2 – Flugzeug-Entfernungsfilter und Details (November 2026)
+
+- Kartenebenen: Slider für den lokalen Flugzeug-Entfernungsfilter (25–370 km, Standard 100 km).
+- Canvas/Flugzeugsuche/Status: Filter nach horizontaler Distanz zum Beobachtungsstandort.
+- Flugzeugdetail: getrennte horizontale und direkte Entfernung, erweiterte Live-Metriken.
+- Optionaler Flugzeug-Fotolookup über HexDB (nur bei Details, mit Bild-Fallback).
+- Keine Flugbahn; ADSB.lol-Proxy und Cloudflare-Worker-Konfiguration unverändert.
+- Zusätzliche automatisierte Tests, PWA-Cache-Version wird beim Build neu erzeugt.
+
 ## Layer-/Bahnen-Dialoge und ADSB.lol (08.11.2026)
 
 - Bisherigen Einstellungsdialog in **Kartenebenen** und **Bewegungsbahnen** aufgeteilt. Zwei nebeneinanderliegende Werkzeugleistenbuttons mit Layer- und Orbit-Icon.

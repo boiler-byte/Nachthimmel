@@ -3,6 +3,7 @@ export const state = {
   // Observer and camera
   lat: 52.52, lon: 13.405, place: 'Berlin, Deutschland',
   az: 206, alt: 46, fov: 94, mag: 6,
+  aircraftMaxDistanceKm: 100, // Horizontal distance filter in kilometres (25..370).
 
   // View and simulation
   layers: {

@@ -148,3 +148,13 @@
  .dock .motion-btn{width:38px;max-width:38px;min-width:38px;padding:0}
  .dock .motion-btn span{display:none}
 }
+
+/* Aircraft range control in the layer dialog and optional photo in details. */
+.aircraft-range-field{padding:13px 15px 8px;border:1px solid rgba(215,170,102,.21);border-radius:13px;background:rgba(179,125,69,.065);margin:4px 0 15px}
+.aircraft-range-heading{display:flex;justify-content:space-between;align-items:baseline;gap:9px;font-size:12px;font-weight:650;color:#d7e4f3}
+.aircraft-range-heading output{font:600 16px var(--display);color:#ffdca8;font-variant-numeric:tabular-nums;white-space:nowrap}
+.aircraft-range-field input[type="range"]{width:100%;margin:14px 0 5px;accent-color:#f0c889;cursor:pointer}
+.aircraft-range-scale{display:flex;justify-content:space-between;font-size:10px;color:#8198b5}
+.aircraft-range-field .setting-helper{font-size:10px;margin:12px 0 4px;line-height:1.55}
+.aircraft-image img{width:100%;height:100%;object-fit:cover}
+.aircraft-image .detail-photo-credit a{color:#d9ebff}

@@ -2,14 +2,19 @@
 import { aircraftAtLiveTime } from '../core/clock.js';
 import { $ } from '../core/dom.js';
 import { state } from '../core/store.js';
+import { withinAircraftDistance } from '../features/aircraft/aircraft.distance.js';
+import { predictAircraft } from '../features/aircraft/aircraft.positions.js';
 
 export function updateAircraftCounter() {
  const el=$('aircraftCount');
  if(!el)return;
+ const inRange=state.aircraftLoaded ? state.aircraft.filter(a=>{
+  const p=predictAircraft(a);return p&&p.alt>0&&withinAircraftDistance(p.lat,p.lon);
+ }).length : 0;
  el.textContent=!state.layers.aircraft ? 'Ohne API-Key · Proxy erforderlich'
   : !aircraftAtLiveTime() ? 'Nur zur Live-Zeit (JETZT)'
   : state.aircraftError ? (state.aircraftErrorReason || 'ADSB.lol-Proxy nicht erreichbar')
-  : state.aircraftLoaded ? `${state.aircraft.length} ${state.aircraft.length===1 ? 'Flugzeug' : 'Flugzeuge'} in der Region`
+  : state.aircraftLoaded ? `${inRange} ${inRange===1 ? 'Flugzeug' : 'Flugzeuge'} bis ${state.aircraftMaxDistanceKm} km`
   : state.aircraftLoading ? 'ADSB.lol wird abgefragt ...' : 'Verbinde mit ADSB.lol ...';
 }
 

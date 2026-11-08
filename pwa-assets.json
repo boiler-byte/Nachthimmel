@@ -22,6 +22,8 @@
   "./src/engine/render-loop.js",
   "./src/engine/sky-renderer.js",
   "./src/features/aircraft/adsb.service.js",
+  "./src/features/aircraft/aircraft.details.js",
+  "./src/features/aircraft/aircraft.distance.js",
   "./src/features/aircraft/aircraft.layer.js",
   "./src/features/aircraft/aircraft.positions.js",
   "./src/features/constellations/catalog.data.js",

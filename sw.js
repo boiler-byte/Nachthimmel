@@ -2,7 +2,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'nachthimmel-v2-shell-';
-const CACHE_NAME = CACHE_PREFIX + 'cd7a114c42d3';
+const CACHE_NAME = CACHE_PREFIX + 'fcc3723f714d';
 const SCOPE = new URL(self.registration.scope);
 const APP_SHELL = new URL('./index.html', SCOPE).href;
 

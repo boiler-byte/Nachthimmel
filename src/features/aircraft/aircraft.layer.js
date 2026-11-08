@@ -5,13 +5,14 @@ import { state } from '../../core/store.js';
 import { ctx } from '../../engine/canvas.js';
 import { H, W, hitTargets, projectHor } from '../../engine/projection.js';
 import { predictAircraft } from './aircraft.positions.js';
+import { withinAircraftDistance } from './aircraft.distance.js';
 
 export function drawAircraft(){
  if(!state.layers.aircraft||!aircraftAtLiveTime()||!state.aircraft.length)return;
  const now=Date.now(),selectedId=state.selected?.kind==='aircraft'?state.selected.item.id:null;
  const items=[];
  for(const a of state.aircraft){
-  const h=predictAircraft(a,now);if(!h||h.alt<=0)continue;
+  const h=predictAircraft(a,now);if(!h||h.alt<=0||!withinAircraftDistance(h.lat,h.lon))continue;
   const p=projectHor(h.az,h.alt);
   if(!p||p.x<12||p.x>W-12||p.y<54||p.y>H-92)continue;
   items.push({a,h,p});

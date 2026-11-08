@@ -6,6 +6,8 @@ import { onPointerDown, onPointerMove, onPointerUp, setZoom } from '../engine/ca
 import { cvs } from '../engine/canvas.js';
 import { resize } from '../engine/projection.js';
 import { pollAircraft } from '../features/aircraft/adsb.service.js';
+import { AIRCRAFT_MIN_DISTANCE_KM, AIRCRAFT_MAX_DISTANCE_KM, withinAircraftDistance } from '../features/aircraft/aircraft.distance.js';
+import { predictAircraft } from '../features/aircraft/aircraft.positions.js';
 import { PLANETS } from '../features/planets/planets.data.js';
 import { toggleMotion } from '../sensors/orientation.js';
 import { closeModal, openModal, restoreOverlayFromHistory, updateSelection, visibleModal } from './dialogs.js';
@@ -14,6 +16,7 @@ import { connectLocationDialog } from './location-dialog.js';
 import { showToast } from './notifications.js';
 import { updateSearchResults } from './search.js';
 import { focusObject } from './selection.js';
+import { updateAircraftCounter } from './status.js';
 import { addHours, setPlaying, updateTimeUI } from './time-controls.js';
 
 export function connectUI(){
@@ -42,6 +45,22 @@ export function connectUI(){
   if(!state.layers.aircraft)setLayer('aircraft',true);
   else {state.aircraftNextAt=0;pollAircraft();}
  };
+ const aircraftRange=$('aircraftDistanceRange');
+ if(aircraftRange){
+  aircraftRange.value=String(state.aircraftMaxDistanceKm);
+  $('aircraftDistanceValue').textContent=state.aircraftMaxDistanceKm+' km';
+  aircraftRange.addEventListener('input',()=>{
+   const distance=Number(aircraftRange.value);
+   if(!Number.isFinite(distance))return;
+   state.aircraftMaxDistanceKm=Math.max(AIRCRAFT_MIN_DISTANCE_KM,Math.min(AIRCRAFT_MAX_DISTANCE_KM,distance));
+   $('aircraftDistanceValue').textContent=state.aircraftMaxDistanceKm+' km';
+   updateAircraftCounter();
+   if(state.selected?.kind==='aircraft'){
+    const pos=predictAircraft(state.selected.item);
+    if(!pos||!withinAircraftDistance(pos.lat,pos.lon))updateSelection(null,null);
+   }
+  });
+ }
  $('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();pollAircraft();};
  $('timeRange').addEventListener('input',e=>{
   if(state.playing)setPlaying(false);

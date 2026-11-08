@@ -10,6 +10,17 @@ Nachthimmel v2 ist eine modulare Vanilla-JavaScript-Himmelskarte mit Canvas-Laye
 
 Die Bahn-Overlays sind standardmäßig AUS. Pfeile und die automatische Bahn beim Auswählen eines Planeten, der Sonne oder des Mondes sind standardmäßig AN. Planetenbahnen zeigen ±30 Tage gegen den Sternhimmel, die Mondbewegung ±7 Tage, die Tagesbögen dagegen den Verlauf über dem lokalen Horizont.
 
+## Erweiterung: Flugzeug-Entfernungsfilter und Objektdetails
+
+- Unter **Kartenebenen → Flugzeugdaten (ADSB.lol)** lässt sich die **maximale horizontale Entfernung** zwischen 25 und 370 km einstellen (Standard: **100 km**). Berechnet wird die Großkreisentfernung zum eingestellten Beobachtungsstandort, ohne Flugzeughöhe.
+- Der **ADSB-Abfrageradius bleibt unverändert** bei 200 nautischen Meilen (ca. 370,4 km). Das ist ein lokaler Darstellungsfilter; er erzeugt keine zusätzlichen API-Anfragen und erfordert **keine Änderung des Cloudflare Workers**.
+- Der Filter wirkt auf **Canvas, Suche und Flugzeuganzahl**. Meldungen `alt_baro: "ground"` werden wie bisher verworfen; es sind nur als fliegend gemeldete Positionen über dem Horizont sichtbar. Fehlende ADSB-Daten können die Klassifizierung einschränken.
+- Flugzeugdetails zeigen **horizontale und direkte Entfernung**, gemeldete Flughöhe, Geschwindigkeit, Kurs/Himmelsrichtung, Steig-/Sinkrate, Alter der letzten Position, Rufzeichen, Kennzeichen, ICAO-Typ und Squawk soweit vorhanden.
+- Beim Öffnen der Flugzeugdetails wird **optional ein Foto von HexDB** als externe Browser-Bildanfrage geladen (`https://hexdb.io/api/v2/aircraft/{hex}/image/thumbnail`). Fehlt es, erscheint die bisherige Flugzeugillustration. Die Bildquelle ist verlinkt. HexDB erhält beim Abruf technische Verbindungsdaten; die Bildabfrage wird weder vom Nachthimmel-Service-Worker gespeichert noch über den ADSB-Proxy geleitet.
+- **Keine Flugbahn**: Es wird weiterhin nur das aktuelle Flugzeugsymbol dargestellt.
+
+**GitHub-Pages-Wichtig:** Dieses Delta verändert `src/features/aircraft/adsb.service.js` **nicht**. Eine dort von dir hinterlegte Cloudflare-Worker-Adresse muss beim Einspielen in dein vorhandenes Projekt erhalten bleiben. Vorbereitete `dist/`-Dateien des Archivs können deine persönliche Worker-URL nicht enthalten; am besten **die Änderungen in dein bestehendes Quellprojekt übernehmen und mit deiner bestehenden Worker-Konfiguration `npm run build:portable` ausführen**. Den Cloudflare Worker selbst musst du nicht anfassen.
+
 ## Flugzeug-Layer – ADSB.lol statt AirLabs
 
 Der Flugzeug-Layer verwendet nun das öffentliche **ADSB.lol-v2-Format**. Es wird **kein API-Key** benötigt. Über einen Radius von 200 nautischen Meilen rund um den Beobachtungsstandort werden Flugzeuge ungefähr alle 90 Sekunden abgefragt (nur bei **JETZT**, aktivem Layer und sichtbarer App). Daten mit ungültiger oder zu alter Position und Meldungen vom Boden werden herausgefiltert. Höhen in Fuß werden in Meter, Geschwindigkeit in Knoten in m/s und Steig-/Sinkraten von ft/min in m/s umgerechnet. In Suche und Details werden vorhandene Callsigns, Kennzeichen und Flugzeugtypen angezeigt.

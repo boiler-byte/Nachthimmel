@@ -1,5 +1,6 @@
 /** Nachthimmel v2 - ui/details.js. Extracted from the original v6 app. */
 import { getDate } from '../core/clock.js';
+import { aircraftMetrics, aircraftPhotoHTML, aircraftSketch } from '../features/aircraft/aircraft.details.js';
 import { $, escapeHTML, formatNumber, ico, niceAngle, validURL } from '../core/dom.js';
 import { state } from '../core/store.js';
 import { CONST_EXTRA } from '../features/constellations/catalog.data.js';
@@ -98,24 +99,14 @@ export function renderDetail(){
   links=`<a class="secondary-btn" href="https://celestrak.org/NORAD/elements/gp.php?CATNR=${encodeURIComponent(item.id)}&amp;FORMAT=JSON" target="_blank" rel="noopener noreferrer">CelesTrak-Daten ${ico('chevron')}</a>`;
  }else if(kind==='aircraft'){
   top='FLUGZEUG / ADSB.LOL LIVE';
-  display=item.callsign||item.id.toUpperCase();
+  display=item.callsign||item.registration||item.id.toUpperCase();
   subtitle='ICAO24 '+item.id.toUpperCase()+(item.registration?' · '+item.registration:'')+(item.type?' · '+item.type:'');
-  image=`<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,#383329,#151c2c 70%)"><svg viewBox="0 0 200 140" aria-hidden="true" style="height:100%;width:100%;color:#ffdb9f"><g transform="translate(100 70) scale(3.8)"><path d="M0 -11 2 -3 10 1.8 10 4 2.1 2.8 1.8 8.1 4.8 10 4.8 11.5 0 10.5 -4.8 11.5 -4.8 10 -1.8 8.1 -2.1 2.8 -10 4 -10 1.8 -2 -3Z" fill="currentColor" stroke="#fff1d7" stroke-width=".5"/></g></svg><span class="detail-photo-credit">ADSB.LOL / ADS-B</span></div>`;
+  image=aircraftPhotoHTML(item);
   const pos=h,latest=item.positionTime||state.aircraftDataTime||state.aircraftFetchedAt;
-  const age=Math.max(0,Math.round((Date.now()-latest)/1000));
-  about='Aktuelle Position aus dem ADSB.lol-Empfängernetz. Die Darstellung berechnet den lokalen Sichtwinkel aus Position und Höhe; zwischen Messpunkten wird der Kurs begrenzt fortgeschrieben (maximal 90 Sekunden). Die Abdeckung und Aktualität variieren je nach Region.';
-  metrics=[['Sichtwinkel',pos?niceAngle(pos.alt):'--'],
-   ['Entfernung',pos?formatNumber(pos.range,1)+' km':'--'],
-   ['Höhe (Geo/Baro)',pos?formatNumber(pos.altitude,0)+' m':'--'],
-   ['Geschwindigkeit',Number.isFinite(item.speed)?formatNumber(item.speed*3.6,0)+' km/h':'--'],
-   ['Kurs',Number.isFinite(item.track)?niceAngle(item.track):'--'],
-   ['Azimut',pos?niceAngle(pos.az):'--'],
-   ['Letzte Position',formatNumber(age,0)+' s zuvor'],
-   ['Transpondercode',item.squawk||'--'],
-   ['Kennzeichen',item.registration||'--'],
-   ['Flugzeugtyp',item.type||'--']];
-  footer=`ADSB.lol-Positionszeit: ${latest?new Date(latest).toLocaleTimeString('de-DE'):'unbekannt'}; keine historische Rückrechnung bei Nutzung der Zeitleiste. Nicht für Navigation oder Flugsicherung geeignet.`;
-  links=`<a class="secondary-btn" href="https://www.adsb.lol/docs/open-data/api" target="_blank" rel="noopener noreferrer">ADSB.lol (ODbL 1.0) ${ico('chevron')}</a>`;
+  about='Live-Position eines Flugzeugs in der Luft. Die App zeigt die Entfernung von deinem Beobachtungsstandort und den tatsächlichen Sichtlinienabstand. Positionen werden zwischen Meldungen für höchstens 90 Sekunden näherungsweise fortgeschrieben.';
+  metrics=aircraftMetrics(item,pos);
+  footer=`Quelle: ADSB.lol (ODbL 1.0). Letzte Positionsmeldung: ${latest?new Date(latest).toLocaleTimeString('de-DE'):'unbekannt'}. Horizontale Distanz ohne Flughöhe; direkte Entfernung einschließlich Flughöhe. Flugzeugbilder werden nur bei geöffneter Detailansicht von HexDB geladen (falls vorhanden). Keine historische Flugroute. Nicht für Navigation geeignet.`;
+  links=`<a class="secondary-btn" href="https://www.adsb.lol/docs/open-data/api" target="_blank" rel="noopener noreferrer">ADSB.lol ${ico('chevron')}</a>`;
  }else if(kind==='star'){
   top='STERN / HELLIGKEIT';display=item.name||('HIP '+item.id);subtitle='Stellarer Katalog / J2000';
   image=`<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,rgba(79,127,188,.24),#091427 68%)"><svg viewBox="0 0 200 140" style="height:100%;width:100%"><defs><radialGradient id="starg"><stop stop-color="#fff"/><stop offset=".15" stop-color="#d8efff"/><stop offset=".35" stop-color="#6eabdc" stop-opacity=".47"/><stop offset="1" stop-color="#6eabdc" stop-opacity="0"/></radialGradient></defs><circle cx="100" cy="70" r="61" fill="url(#starg)"/><path d="M100 16v108M45 70h110" stroke="#b5dbfa" stroke-opacity=".22" stroke-width=".8"/></svg></div>`;
@@ -126,6 +117,15 @@ export function renderDetail(){
  const pathToggle=kind==='planet'||kind==='body' ? `<button class="secondary-btn" id="togglePathDetail" aria-pressed="${state.layers.selectedPath}">${ico('orbit')} ${state.layers.selectedPath?'Auswahlbahn ausblenden':'Auswahlbahn anzeigen'}</button>` : '';
  const body=`<div class="details-header"><div class="details-kicker"><span class="pulse-dot" style="height:5px;width:5px"></span>${escapeHTML(top)}</div>${close}</div>${image}<div class="detail-body"><h2>${escapeHTML(display)}</h2><div class="detail-sub">${escapeHTML(subtitle)}</div><p>${escapeHTML(about)}</p>${metricsHTML(metrics,kind==='body'?'body':'planet')}<div class="detail-actions"><button class="primary-btn" id="focusDetail">${ico('crosshair')} Auf Karte zeigen</button>${pathToggle}${links}</div><div class="detail-footer">${footer}</div></div>`;
  panel.innerHTML=body;panel.classList.add('visible');panel.setAttribute('aria-hidden','false');
+ // HexDB may return 404 when no photo is available. Keep a useful local illustration.
+ if(kind==='aircraft'){
+  const photo=$('aircraftPhotoImage');
+  if(photo)photo.addEventListener('error',()=>{
+   const target=$('aircraftDetailPhoto');
+   if(target && state.selected?.kind==='aircraft' && state.selected.item.id===item.id)
+    target.outerHTML=aircraftSketch();
+  },{once:true});
+ }
  $('detailClose').onclick=()=>updateSelection(null,null);
  $('focusDetail').onclick=()=>focusObject(kind,item);
  if(pathToggle)$('togglePathDetail').onclick=()=>setLayer('selectedPath',!state.layers.selectedPath);
