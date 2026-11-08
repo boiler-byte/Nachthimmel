@@ -6,7 +6,7 @@ import { renderDetail } from './details.js';
 // Keep dialogs on a separate history entry (same URL) for system Back gestures.
 export const HISTORY_OVERLAY_KEY='__nachthimmel_v2_overlay';
 
-export const MODAL_IDS=['searchModal','settingsModal'];
+export const MODAL_IDS=['searchModal','layersModal','pathsModal','locationModal'];
 
 export function visibleModal(){return MODAL_IDS.find(id=>$(id).classList.contains('visible'))||null;}
 
@@ -55,7 +55,7 @@ export function restoreOverlayFromHistory(e){
  const target=e.state?.[HISTORY_OVERLAY_KEY];
  for(const id of MODAL_IDS)setModalVisible(id,id===target);
  if(target==='detailPanel' && state.selected){renderDetail();}
- else if(target!=='detailPanel' && target!== 'settingsModal' && target!=='searchModal' && state.selected){
+ else if(target!=='detailPanel' && !MODAL_IDS.includes(target) && state.selected){
   updateSelection(null,null,true);
  }
 }

@@ -1,20 +1,19 @@
 /** Nachthimmel v2 - ui/events.js. Extracted from the original v6 app. */
-import { $, formatNumber } from '../core/dom.js';
+import { $ } from '../core/dom.js';
 import { MAX_ALT, MIN_ALT, clamp, wrap } from '../core/math.js';
 import { state } from '../core/store.js';
 import { onPointerDown, onPointerMove, onPointerUp, setZoom } from '../engine/canvas-input.js';
 import { cvs } from '../engine/canvas.js';
 import { resize } from '../engine/projection.js';
-import { getAirLabsKey, pollAircraft, setAirLabsKey } from '../features/aircraft/airlabs.service.js';
+import { pollAircraft } from '../features/aircraft/adsb.service.js';
 import { PLANETS } from '../features/planets/planets.data.js';
-import { requestGPS, setLocation } from '../sensors/geolocation.js';
 import { toggleMotion } from '../sensors/orientation.js';
 import { closeModal, openModal, restoreOverlayFromHistory, updateSelection, visibleModal } from './dialogs.js';
 import { setLayer } from './layers.js';
+import { connectLocationDialog } from './location-dialog.js';
 import { showToast } from './notifications.js';
 import { updateSearchResults } from './search.js';
 import { focusObject } from './selection.js';
-import { updateAircraftCounter } from './status.js';
 import { addHours, setPlaying, updateTimeUI } from './time-controls.js';
 
 export function connectUI(){
@@ -39,17 +38,11 @@ export function connectUI(){
  $('playBtn').onclick=()=>setPlaying(!state.playing);
  $('prevHour').onclick=()=>addHours(-1);
  $('nextHour').onclick=()=>addHours(1);
- $('airlabsKey').value=getAirLabsKey();
-$('airlabsSaveKey').onclick=()=>{
- const airlabsKey=$('airlabsKey').value.trim();
- setAirLabsKey(airlabsKey);
- try{if(airlabsKey)sessionStorage.setItem('nachthimmel_airlabs_key',airlabsKey);else sessionStorage.removeItem('nachthimmel_airlabs_key');}catch{}
- state.aircraftRequestVersion++;state.aircraftAbort?.abort();state.aircraftAbort=null;state.aircraftLoading=false;
- state.aircraftNextAt=0;state.aircraftError=false;state.aircraftLoaded=false;
- if(airlabsKey){showToast('AirLabs-Key übernommen.');setLayer('aircraft',true);pollAircraft();}
- else{showToast('Bitte AirLabs-API-Key eingeben.',true);updateAircraftCounter();}
-};
-$('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();pollAircraft();};
+ $('refreshAircraftBtn').onclick=()=>{
+  if(!state.layers.aircraft)setLayer('aircraft',true);
+  else {state.aircraftNextAt=0;pollAircraft();}
+ };
+ $('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();pollAircraft();};
  $('timeRange').addEventListener('input',e=>{
   if(state.playing)setPlaying(false);
   state.offsetMs=Number(e.target.value)*3600000;updateTimeUI();pollAircraft();
@@ -57,16 +50,12 @@ $('nowBtn').onclick=()=>{setPlaying(false);state.offsetMs=0;updateTimeUI();pollA
  $('searchBtn').onclick=()=>{updateSearchResults();openModal('searchModal');$('searchInput').focus();};
  $('searchClose').onclick=()=>closeModal('searchModal');
  $('searchInput').addEventListener('input',updateSearchResults);
- $('locationTop').onclick=()=>openModal('settingsModal');
- $('settingsBtn').onclick=()=>openModal('settingsModal');
- $('settingsClose').onclick=()=>closeModal('settingsModal');
- $('saveLocation').onclick=()=>{
-  const lat=Number($('latInput').value),lon=Number($('lonInput').value);
-  if(setLocation(lat,lon)) {closeModal('settingsModal');showToast('Beobachtungsstandort aktualisiert.');}
- };
- $('gpsBtn').onclick=requestGPS;
- $('magInput').oninput=e=>{state.mag=Number(e.target.value);$('magLabel').textContent=formatNumber(state.mag,2)+' mag';};
- for(const id of ['searchModal','settingsModal'])$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});
+ connectLocationDialog();
+ $('layersBtn').onclick=()=>openModal('layersModal');
+ $('layersClose').onclick=()=>closeModal('layersModal');
+ $('pathsBtn').onclick=()=>openModal('pathsModal');
+ $('pathsClose').onclick=()=>closeModal('pathsModal');
+ for(const id of ['searchModal','layersModal','pathsModal','locationModal'])$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});
  cvs.addEventListener('pointerdown',onPointerDown);
  cvs.addEventListener('pointermove',onPointerMove);
  cvs.addEventListener('pointerup',onPointerUp);

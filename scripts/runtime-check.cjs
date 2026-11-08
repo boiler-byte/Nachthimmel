@@ -7,6 +7,22 @@ const root = path.resolve(__dirname,'..');
 const source = fs.readFileSync(path.join(root,'dist/Nachthimmel_v2.html'),'utf8');
 let code = source.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/)?.[1];
 assert(code && code.includes("__require('main.js')"),'Inline release script present');
+// The location controls must live in their own modal, not in general settings.
+const generalSettingsMarkup = source.split('id="layersModal"')[1].split('id="pathsModal"')[0];
+const pathMarkup = source.split('id="pathsModal"')[1].split('id="locationModal"')[0];
+assert(!generalSettingsMarkup.includes('id="planetPathsBtn"'), 'Path toggles were moved out of layer modal');
+assert(!pathMarkup.includes('id="aircraftBtn"'), 'Aircraft toggle remains in layer modal');
+for (const id of ['planetPathsBtn', 'sunPathBtn', 'moonPathBtn', 'pathArrowsBtn', 'selectedPathBtn']) {
+ assert(pathMarkup.includes(`id="${id}"`), `${id} belongs to trajectory modal`);
+}
+assert(generalSettingsMarkup.includes('id="aircraftBtn"'), 'Aircraft layer exists');
+assert(!source.includes('airlabsKey'), 'No AirLabs API key interface');
+const observerSettingsMarkup = source.split('id="locationModal"')[1].split('<script>')[0];
+for (const id of ['latInput','lonInput','gpsBtn','saveLocation','magInput','magLabel']) {
+ assert(observerSettingsMarkup.includes(`id="${id}"`),`${id} belongs to location modal`);
+ assert(!generalSettingsMarkup.includes(`id="${id}"`),`${id} removed from general settings`);
+}
+assert(observerSettingsMarkup.includes('Beobachtungsstandort') && observerSettingsMarkup.includes('Darstellung'),'Both requested sections exist');
 code = code.replace("__require('main.js');", "globalThis.__getModule = __require; __require('main.js');");
 const errors=[];
 let scheduled=[];
@@ -86,6 +102,48 @@ c.__getModule('ui/selection.js').focusObject('planet',jupiter);
 assert.ok(store.fov<=58,'Planet zoom applied');
 assert.equal(c.__getModule('sensors/geolocation.js').setLocation(48.137,11.576,'München'),true,'Observer location changed');
 assert.equal(store.place,'München');
+// The top-right location button must open its own dialog and retain data flow.
+el('locationTop').click();
+assert(el('locationModal').classList.contains('visible'),'Dedicated observer modal opened');
+assert(!el('layersModal').classList.contains('visible'),'Layer dialog not opened by location button');
+assert.equal(el('latInput').value,'48.1370','Latitude synchronized when opening');
+assert.equal(el('lonInput').value,'11.5760','Longitude synchronized when opening');
+el('latInput').value='40.4168';
+el('lonInput').value='-3.7038';
+el('saveLocation').click();
+assert.equal(store.lat,40.4168,'Latitude saved in location modal');
+assert.equal(store.lon,-3.7038,'Longitude saved in location modal');
+assert(!el('locationModal').classList.contains('visible'),'Saving closes location modal');
+// Unconfirmed coordinates must be discarded on reopening.
+el('locationTop').click();
+el('latInput').value='20';
+el('locationClose').click();
+el('locationTop').click();
+assert.equal(el('latInput').value,'40.4168','Unsaved values discarded');
+el('magInput').value='4.75';
+el('magInput').listeners.input.forEach(fn=>fn({target:el('magInput')}));
+assert.equal(store.mag,4.75,'Magnitude changes remain supported');
+assert(el('magLabel').textContent.includes('4,75'),'Magnitude label updated');
+el('locationClose').click();
+el('layersBtn').click();
+assert(el('layersModal').classList.contains('visible'),'Layer button opens layer dialog');
+assert(!el('pathsModal').classList.contains('visible'),'Paths dialog remains closed');
+assert(!el('locationModal').classList.contains('visible'),'Observer modal stays closed');
+el('pathsBtn').click();
+assert(el('pathsModal').classList.contains('visible'),'Paths button opens trajectory dialog');
+assert(!el('layersModal').classList.contains('visible'),'Opening paths closes layers dialog');
+el('pathsClose').click();
+assert(!el('pathsModal').classList.contains('visible'),'Paths close works');
+el('layersBtn').click();
+el('layersClose').click();
+assert(!el('layersModal').classList.contains('visible'),'Layer close works');
+// The GPS callback must close only the observer modal.
+c.navigator.geolocation={getCurrentPosition:success=>success({coords:{latitude:53.628,longitude:11.416}})};
+el('locationTop').click();
+el('gpsBtn').click();
+assert.equal(store.place,'Mein Standort','GPS updates observer');
+assert.equal(store.lat,53.628,'GPS coordinates applied');
+assert(!el('locationModal').classList.contains('visible'),'GPS closes observer modal');
 assert.ok(c.__getModule('ui/search.js').searchItems('Jupiter').some(x=>x.kind==='planet'&&x.items.length===1),'Search finds Jupiter');
 const ephem=c.__getModule('features/solar-system/celestial.ephemeris.js');
 assert(Number.isFinite(ephem.observeBody('moon').illum),'Moon ephemeris calculated');
@@ -100,10 +158,13 @@ el('nextHour').click();
 assert.ok(store.offsetMs>0,'Time control adds one hour');
 el('nowBtn').click();
 assert.equal(store.offsetMs,0,'Now returns to real time');
-const airlabs=c.__getModule('features/aircraft/airlabs.service.js');
-airlabs.setAirLabsKey(' sample-key ');
-assert.equal(airlabs.getAirLabsKey(),'sample-key','AirLabs key accessors');
-airlabs.setAirLabsKey('');
+const adsb=c.__getModule('features/aircraft/adsb.service.js');
+const example=adsb.parseAircraftStates({now:Date.now(),ac:[{
+ hex:'3c4b5a',lat:52.5,lon:13.4,alt_geom:30000,gs:200,track:91,seen_pos:2
+}]});
+assert(example.size===1,'ADSB.lol format normalized');
+assert(Math.abs(example.get('3c4b5a').altitude-9144)<1,'Feet converted to metres');
+assert(adsb.aircraftProxyURL('https://example.com/nachthimmel/').pathname==='/nachthimmel/api/aircraft','Relative same-origin ADSB proxy URL');
 // A second frame after interactive changes must still render correctly.
 frame=scheduled.shift();frame(400);
 assert(position.hitTargets.length>=0,'Second canvas frame completed');

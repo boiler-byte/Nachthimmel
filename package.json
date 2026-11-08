@@ -6,10 +6,15 @@
   "description": "Modulare interaktive Himmelskarte (Vanilla JavaScript / ES modules)",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build && node scripts/build-standalone.cjs",
+    "build": "npm run pwa:prepare && vite build --base=./ && npm run pwa:dist && node scripts/build-standalone.cjs",
     "standalone": "node scripts/build-standalone.cjs",
+    "preview": "vite preview --host 0.0.0.0",
+    "preview:proxy": "node scripts/serve-pwa.cjs",
+    "pwa:prepare": "node scripts/build-pwa.cjs source",
+    "pwa:dist": "node scripts/build-pwa.cjs dist",
     "test": "node --test tests/*.test.js",
-    "test:runtime": "node scripts/runtime-check.cjs"
+    "test:runtime": "node scripts/runtime-check.cjs",
+    "build:portable": "npm run pwa:prepare && npm run standalone && node scripts/build-portable.cjs && npm run pwa:dist"
   },
   "devDependencies": {
     "typescript": "^5.8.3",

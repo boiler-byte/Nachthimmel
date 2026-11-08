@@ -2,7 +2,7 @@
 import { $ } from '../core/dom.js';
 import { state } from '../core/store.js';
 import { emit } from '../core/events.js';
-import { pollAircraft } from '../features/aircraft/airlabs.service.js';
+import { pollAircraft } from '../features/aircraft/adsb.service.js';
 import { loadSatelliteCatalog, satlib } from '../features/satellites/catalog.service.js';
 import { updateSelection } from './dialogs.js';
 import { updateAircraftCounter } from './status.js';

@@ -1,3 +1,25 @@
+## Layer-/Bahnen-Dialoge und ADSB.lol (08.11.2026)
+
+- Bisherigen Einstellungsdialog in **Kartenebenen** und **Bewegungsbahnen** aufgeteilt. Zwei nebeneinanderliegende Werkzeugleistenbuttons mit Layer- und Orbit-Icon.
+- Standortdialog mit **Beobachtungsstandort** und **Darstellung** bleibt separat.
+- Flugzeug-Layer von AirLabs auf ADSB.lol umgestellt; Schlüssel-Eingabe und Session-Storage-Nutzung entfernt.
+- Neuer `adsb.service.js` mit Datenvalidierung, Einheitenumrechnung, 90-Sekunden-Polling und verständlicher Proxy-Fehlermeldung.
+- Same-Origin-Proxy als Cloudflare Pages Function und Node-Server für lokale PWA-Vorschau ergänzt. Diese serverseitige Komponente ist wegen fehlender Browser-CORS-Unterstützung bei ADSB.lol notwendig.
+- Service Worker um ausdrücklichen Bypass aller Same-Origin-API-Requests erweitert; keine Zwischenspeicherung der Flugzeugdaten.
+- Suche, Objekt-Details, Informationsquellen, Hilfetexte und Responsive-Dock aktualisiert; neue Unit- und Proxy-Tests.
+
+---
+
+## Standortdialog (08.11.2026)
+
+- Der Button „Standort festlegen“ öffnet einen eigenen Dialog (`locationModal`).
+- Die Abschnitte „Beobachtungsstandort“ und „Darstellung“ sind aus den allgemeinen Einstellungen in den neuen Dialog umgezogen.
+- Koordinaten übernehmen, GPS, Sternenhelligkeit, Schließen per Escape/Backdrop und Browser-Zurück sind mit dem neuen Dialog verbunden.
+- Nicht gespeicherte Koordinaten werden beim nächsten Öffnen auf den aktuellen Standort zurückgesetzt.
+- General-Settings enthält weiterhin Kartenebenen, Bahn-Overlays, AirLabs und Quellen.
+
+---
+
 ## Ergänzung vom 07.11.2026: Sonne, Mond und Bahn-Overlays
 
 - Sonne und Mond als eigene Himmelsobjekte mit Suche, Fokus, Details und stilisierten Symbolen hinzugefügt; bei Mond mit Phase und Beleuchtungsanteil.
@@ -24,3 +46,13 @@
 - Tests für Astromathematik, Planeten, Flugzeugkoordinaten, Layer-Reihenfolge und eine simulierte Initialisierung/Interaktion hinzugefügt.
 
 **Abgrenzung:** Der vorhandene flache State wurde aus Kompatibilitätsgründen behalten; Browser- und Live-API-Integration müssen in der Zielumgebung ergänzend geprüft werden.
+
+## PWA-Erweiterung (08.11.2026)
+
+- Web-App-Manifest, App-Icons (192/512 px), Maskable-Icon und Apple-Touch-Icon.
+- Service Worker mit versioniertem Offline-Cache für alle lokalen App-Dateien und Offline-Fallback bei Navigation.
+- Installation im Einstellungsdialog über einen neuen Abschnitt **App installieren**.
+- App funktioniert als installierbare PWA auf HTTPS sowie über `localhost`, nicht über `file://`.
+- Offline-Basiskatalog, Planeten, Sonne/Mond und ihre Bahnen ohne Internet nutzbar; externe Datenquellen bleiben onlineabhängig.
+- Keine Offline-Zwischenspeicherung von AirLabs, NASA-API, CelesTrak, Google Fonts oder externen CDN-Modulen.
+- `npm run build:portable` erstellt `dist/` als vollständig auslieferbares PWA-Verzeichnis ohne Vite-Bundling (TypeScript-Build-Abhängigkeit erforderlich); `npm run build` nutzt weiterhin Vite.

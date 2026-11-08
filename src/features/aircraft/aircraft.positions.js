@@ -2,7 +2,7 @@
 import { clamp, deg, rad, wrap } from '../../core/math.js';
 import { state } from '../../core/store.js';
 
-// AirLabs positions are WGS84 aircraft positions, not astronomical RA/Dec.
+// ADSB.lol positions are WGS84 aircraft positions (metres after normalization), not astronomical RA/Dec.
 // Convert to the observer's topocentric east/north/up frame (same azimuth
 // and elevation convention as the satellite and star projection).
 export function ecef(lat,lon,heightM){

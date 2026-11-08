@@ -1,100 +1,98 @@
-# Nachthimmel v2 — modularisierte Himmelskarte
+# Nachthimmel v2 – modulare Himmelskarte und PWA
 
-**Nachthimmel v2** ist die modulare Fassung der gelieferten Nachthimmel-v6-HTML-App. Oberfläche, Datenquellen, astronomische Näherungsberechnungen und vorhandene Bedienkonzepte wurden weitgehend unverändert übernommen. Die Änderungen betreffen vor allem Zuständigkeiten, Modulgrenzen, den Canvas-Layer-Renderer und die Entkopplung der Datenservices von der UI.
+Nachthimmel v2 ist eine modulare Vanilla-JavaScript-Himmelskarte mit Canvas-Layern, Sternen, Sternbildern, sieben Planeten, Sonne/Mond, Bewegungsbahnen, Deep Sky, Satelliten und einem optionalen Live-Flugzeug-Layer. Die PWA kann auf HTTPS oder localhost installiert werden; die Basiskarte funktioniert nach dem ersten Laden offline.
 
-## Ergänzung: Sonne, Mond und Bewegungsbahnen
+## Bedienung: drei getrennte Dialoge
 
-Unter **Einstellungen → Kartenebenen** lassen sich **Sonne & Mond** unabhängig von den sieben Planeten schalten (Standard **AN**). Die beiden Himmelsobjekte sind außerdem über die Suche erreichbar und zeigen eigene Details mit Mondphase bzw. Sonnenposition.
+- **Standort festlegen** (oben rechts): **Beobachtungsstandort** (Koordinaten/GPS) und **Darstellung** (Grenzhelligkeit).
+- **Kartenebenen** (unten, Symbol gestapelte Ebenen): Sterne, Planeten, Sonne/Mond, Sternbilder, Deep Sky, Satelliten und Flugzeuge. Hier befinden sich auch die Informationen zu ADSB.lol und die PWA-Installation.
+- **Bewegungsbahnen** (daneben, Orbit-Symbol): Planetenbahnen, Sonnenbahn, Mondbahn, Richtungspfeile und Auswahlbahn. Beide Dialoge können unabhängig mit Escape, Zurück-Geste oder Schließen-Button verlassen werden.
 
-Unter **Einstellungen → Bahnen & Bewegungsrichtung** gibt es fünf weitere Schalter:
+Die Bahn-Overlays sind standardmäßig AUS. Pfeile und die automatische Bahn beim Auswählen eines Planeten, der Sonne oder des Mondes sind standardmäßig AN. Planetenbahnen zeigen ±30 Tage gegen den Sternhimmel, die Mondbewegung ±7 Tage, die Tagesbögen dagegen den Verlauf über dem lokalen Horizont.
 
-| Schalter | Standard | Bedeutung |
-| --- | --- | --- |
-| Planetenbahnen | AUS | Scheinbare Bewegung relativ zu den Sternen über ±30 Tage |
-| Sonnenbahn | AUS | Tagesbogen am Beobachtungsstandort mit Auf-/Untergang |
-| Mondbahn | AUS | Tagesbogen sowie Bewegung relativ zu den Sternen über ±7 Tage |
-| Bewegungsrichtung | AN | Pfeile an aktiven Kurven (nur bei eingeschalteter Bahn sichtbar) |
-| Bahn bei Auswahl | AN | Bahn des ausgewählten Planeten oder von Sonne/Mond automatisch hervorheben |
+## Flugzeug-Layer – ADSB.lol statt AirLabs
 
-Vergangene Bahnsegmente sind transparenter als zukünftige. Auf der Objektkarte lässt sich die **Auswahlbahn** ebenfalls umschalten. Unterhalb des Horizonts sind Bahnen nur als virtuelle Ansicht sichtbar. Planetenpositionen werden mit JPL-Näherungsbahnen, die Sonne aus der Erdbahn und der Mond aus einer vereinfachten Störungstheorie inklusive Parallaxe berechnet. Die Ergebnisse dienen der Orientierung und sind **keine Präzisions-Ephemeriden**.
+Der Flugzeug-Layer verwendet nun das öffentliche **ADSB.lol-v2-Format**. Es wird **kein API-Key** benötigt. Über einen Radius von 200 nautischen Meilen rund um den Beobachtungsstandort werden Flugzeuge ungefähr alle 90 Sekunden abgefragt (nur bei **JETZT**, aktivem Layer und sichtbarer App). Daten mit ungültiger oder zu alter Position und Meldungen vom Boden werden herausgefiltert. Höhen in Fuß werden in Meter, Geschwindigkeit in Knoten in m/s und Steig-/Sinkraten von ft/min in m/s umgerechnet. In Suche und Details werden vorhandene Callsigns, Kennzeichen und Flugzeugtypen angezeigt.
 
-### Nur die geänderten Dateien einspielen
+**Für Flugzeuge ist ein kleiner Server-/Edge-Proxy erforderlich.** ADSB.lol liefert keine für allgemeine Webseiten geeigneten CORS-Freigaben. Der Browser ruft ausschließlich die gleichoriginige Route `/api/aircraft?lat=…&lon=…&radius=200` auf. Der Proxy leitet die validierten Werte an `https://api.adsb.lol/v2/lat/{lat}/lon/{lon}/dist/{radius}` weiter. Unbekannte URLs und API-Schlüssel werden nicht weitergeleitet. Der Service Worker speichert diese Antworten **nicht** zwischen.
 
-Das Update-Paket enthält **nur neue und gegenüber der bisherigen v2 geänderte Dateien**. Das ZIP im bestehenden Projektordner entpacken und die enthaltenen Dateien gleichen Namens ersetzen. Die getrennt bereitgestellte `Nachthimmel_v2.html` ist die neue, unmittelbar öffnungsfähige Einzeldatei.
+### Lokal starten – PWA + funktionierender Proxy
 
-## Schnellstart
-
-**Ohne Installation:** `dist/Nachthimmel_v2.html` im Browser öffnen. Dies ist eine einzelne HTML-Datei mit eingebettetem CSS und gebündeltem JavaScript. Sie eignet sich für das direkte Weitergeben. Sie benötigt weiterhin Internetzugriff für dynamische Kataloge, NASA-Bilder, CelesTrak-Satelliten und die externe `satellite.js`-Bibliothek. Der eingebaute Basis-Stern- und Sternbildkatalog und die Planetenberechnung funktionieren ohne diese Abfragen. Browser-Sicherheitsvorgaben können API-/Sensorfunktionen beim Öffnen als `file://` einschränken.
-
-**Modulare Entwicklungsfassung:** Aus dem Projektverzeichnis einen lokalen HTTP-Server starten (kein Build nötig):
-
-```bash
-python3 -m http.server 8000
-```
-
-Danach `http://localhost:8000` öffnen. Browser-ES-Module funktionieren im Gegensatz zu `file://` zuverlässig über einen lokalen HTTP-Server.
-
-**Mit Vite:**
+Voraussetzung: Node.js 18+ (empfohlen Node.js 22+).
 
 ```bash
 npm install
-npm run dev
+npm run build:portable
+npm run preview:proxy
 ```
 
-## Kommandos
+Dann **http://localhost:4173/** öffnen. Der mitgelieferte lokale Node-Server liefert `dist/` und stellt `/api/aircraft` bereit. Unter „Kartenebenen → Flugzeuge (ADSB.lol)“ aktivieren. Die Live-Abfrage benötigt Internet und eine erreichbare ADSB.lol-API. Die anderen Himmels-Layer bleiben auch bei einem Flugzeug-API-Fehler nutzbar.
 
-| Kommando | Zweck |
-| --- | --- |
-| `npm run dev` | Vite-Entwicklungsserver |
-| `npm run build` | Produktions-Build und eigenständige HTML-Version im Ordner `dist/` |
-| `npm run standalone` | Einzeldatei `dist/Nachthimmel_v2.html` neu erstellen |
-| `npm test` | Node-Unit-Tests für Mathematik, Ephemeriden, Flugzeugberechnung und Layer-API |
-| `npm run test:runtime` | Standalone-JavaScript mit simuliertem DOM/Canvas starten und Interaktionen prüfen |
+### Auf Cloudflare Pages bereitstellen
 
-Für `npm run standalone` wird TypeScript **nur als Build-Werkzeug** benötigt; die App selbst enthält kein TypeScript und benötigt keine UI-Bibliothek. `npm install` installiert die Build-Abhängigkeiten.
+Die Datei **`functions/api/aircraft.js`** ist eine Cloudflare Pages Function. Für ein produktives Deployment müssen **sowohl das `dist/`-Verzeichnis als auch die Funktion** bereitgestellt werden. Ein reines Hochladen des `dist`-Ordners auf einen statischen Webserver stellt **keinen Proxy** bereit.
 
-## Architektur
+Empfohlene Konfiguration bei einem Cloudflare-Pages-Projekt mit verbundenem Git-Repository:
+
+1. Git-Repository mit dem gesamten Nachthimmel-Projekt verbinden (einschließlich `functions/`).
+2. Build-Command: `npm run build:portable`; Output-Verzeichnis: `dist`.
+3. Die Pages Function wird aus dem Verzeichnis `functions/api/aircraft.js` als `/api/aircraft` veröffentlicht.
+4. Nach dem Deployment die PWA über HTTPS öffnen und den Flugzeug-Layer aktivieren.
+
+Das direkte **Dashboard-Upload-Verfahren von Cloudflare Pages** unterstützt Pages Functions nicht. Alternativ lässt sich ein eigener Same-Origin-Proxy bereitstellen oder der Node-Preview-Server als Grundlage für einen eigenen Node-Betrieb verwenden.
+
+**Hinweis zu Subpfaden:** Der Browser bildet den API-Pfad relativ zur App-Adresse. Bei einer Bereitstellung unter `/nachthimmel/` muss der Proxy entsprechend unter `/nachthimmel/api/aircraft` erreichbar sein. Die mitgelieferte Cloudflare-Pages-Route ist standardmäßig für eine Bereitstellung am Domain-Root ausgelegt.
+
+### Verfügbarkeit und Nutzungsbedingungen
+
+- ADSB.lol ist ein Community-Dienst. Die API kann vorübergehend nicht erreichbar sein, gedrosselt werden oder zukünftig einen Schlüssel verlangen.
+- Für produktive Nutzung bittet der Anbieter um Kontaktaufnahme. Die veröffentlichten Daten stehen unter der **Open Database License 1.0 (ODbL)** und erfordern entsprechende Attribution und Lizenzbeachtung. In der Oberfläche wird ADSB.lol verlinkt.
+- Der Standort wird bei eingeschaltetem Flugzeug-Layer an den eigenen Proxy und anschließend an ADSB.lol übertragen; sonst nicht für die Flugzeugabfrage verwendet.
+- Positionsdaten und Hochrechnungen dienen nur zur Orientierung, **nicht** zur Navigation oder Flugsicherung.
+- Bei bloßem `file://`-Öffnen der Einzeldatei, bei gewöhnlichen Static-Hosts ohne Proxy und im Offline-Modus ist der Live-Flugzeug-Layer nicht verfügbar; die App meldet dies statt eine AirLabs-Schlüsseleingabe zu verlangen.
+
+API-Dokumentation: https://api.adsb.lol/docs · Lizenz: https://opendatacommons.org/licenses/odbl/1-0/ · Cloudflare-Pages-Functions: https://developers.cloudflare.com/pages/functions/get-started/
+
+## Projektstruktur
 
 ```text
-index.html                      Einstieg für Browser-ES-Module
-src/main.js                    Startet die App
-src/app.js                     Initialisierung der Offline-Kataloge und der Dienste
-src/core/                     State, Event-Hub, Zeit, Astronomie und Hilfsfunktionen
-src/engine/                   Canvas, Projektion, Zeichenreihenfolge, Hit-Tests, Eingabe
-src/features/                 Sterne, Sternbilder, Planeten, Sonne/Mond, Bahnen, Deep Sky, Satelliten, Flugzeuge
-src/services/                 Katalog-Transport/API
-src/ui/                       Kompass, Suche, Details, Einstellungen, Zeit und Events
-src/sensors/                  Orientierungssensor und GPS
-src/styles/                   Designvariablen, Layout, Responsivität und Overrides
-src/engine/layer-registry.js   Reihenfolge und Ein-/Ausschalten der Zeichenebenen
-src/engine/sky-renderer.js     Einheitliche Layer-Schnittstelle
-src/core/events.js            Domain-Events ohne direkte DOM-Abhängigkeit
+index.html                            Modularer Einstieg mit ES-Module-Imports
+src/app.js, src/main.js              App-Initialisierung und PWA-Registrierung
+src/core/                            Zustand, Events, Astronomie, Uhr, Mathematik
+src/engine/                          Canvas, Projektion, Registrierung und Eingabe
+src/features/                        Sterne, Planeten, Sonne/Mond, Bahnen, Satelliten,
+                                     Flugzeuge, Deep Sky, Sternbilder
+src/features/aircraft/adsb.service.js  Polling, Normalisierung, API-Proxy-URL
+functions/api/aircraft.js            Same-Origin-Proxy (Cloudflare Pages Functions)
+scripts/serve-pwa.cjs                Lokaler Node-PWA-/Proxy-Server
+src/ui/                              Suche, Details, Layer-Dialog, Bahnen-Dialog,
+                                     Standortdialog, Kompass, Zeitsteuerung
+src/styles/                          CSS und Responsive-Layout
+sw.template.js                       Service Worker, generiert mit Asset-Hash
+dist/                                Produktions-PWA und Einzeldatei
 ```
 
-### Zeichenebenen
+## Build & Tests
 
-`src/engine/sky-renderer.js` verwaltet registrierte Layer mit `id`, optionalem `visible(frame)` und `update(frame)` sowie verpflichtendem `draw(frame)`. `src/engine/layer-registry.js` legt die Zeichenreihenfolge fest. Für eine neue Ebene ein Zeichenmodul anlegen und es dort registrieren. Der Render-Loop muss nicht geändert werden.
+```bash
+npm install
+npm test                  # Unit-/Proxy-/Service-Worker-Tests
+npm run build:portable    # Ohne Vite: PWA in dist/ + Einzeldatei
+npm run test:runtime      # Simulierter DOM-/Canvas-Integrationstest
+npm run preview:proxy     # Lokaler Host inklusive ADSB.lol-Proxy
+```
 
-Die Zeichenreihenfolge ist nun: Hintergrund, Himmelsgitter, Milchstraßenstaub, Sternbilder, Sterne, Deep Sky, **Bahn-Overlays**, Planeten, **Sonne/Mond**, Horizontdarstellung, Satelliten, Flugzeuge und Auswahlmarkierung. Bahn-Overlays liegen somit unter den Objektsymbolen.
+Alternativ: `npm run build` für den Vite-Produktions-Build und `npm run dev` für den Vite-Entwicklungsserver. **Hinweis:** `npm run dev` allein stellt keine `/api/aircraft`-Route bereit; für Live-Flugzeuge die Proxy-Vorschau oder ein eigenes serverseitiges Routing verwenden.
 
-### Daten und UI
+Die gebündelte `dist/Nachthimmel_v2.html` kann als Einzeldatei geöffnet werden; PWA-Installation und Flugzeugabfrage benötigen jedoch einen echten HTTP(S)-Host. Für die installierbare App das gesamte `dist/` bereitstellen (`index.html`, `sw.js`, `pwa-assets.json`, `manifest.webmanifest`, Icons).
 
-Die Katalog- und API-Services aktualisieren den vorhandenen kompatiblen zentralen State und senden Ereignisse über `src/core/events.js` (z. B. `data:changed`, `toast`, `detail:refresh`). `src/ui/service-events.js` setzt diese Ereignisse in Oberflächenaktualisierungen um. Datenservices importieren dadurch keine UI-Module mehr.
+## Astronomische Daten und Offline-Grenzen
 
-Für v2 wurde der **flache zentrale State bewusst kompatibel belassen**. Eine spätere Version kann ihn weiter in Observer-, Camera-, Time- und Feature-State unterteilen, ohne einen gleichzeitigen Komplettumbau aller Funktionen zu erzwingen.
+- Planeten: lokale NASA/JPL-Keplernäherungen (1800–2050); Sonne und Mond: lokale Näherungsmodelle, keine Teleskop-Ephemeriden.
+- Sternkatalog und Sternbilder: d3-celestial mit eingebettetem Basiskatalog als Fallback.
+- Deep-Sky-Bilder: NASA-Bildbibliothek, gegebenenfalls CDS/DSS.
+- Satelliten: CelesTrak GP-OMM und satellite.js/SGP4 (Netzverbindung nötig).
+- Live-Flugzeuge: ADSB.lol, nur mit aktivem Proxy und Internet.
+- Service Worker speichert lokale App-Assets und die Offline-Basiskarte. Externe APIs, Fonts, Satellitenmodule und die Live-Proxy-Route werden nicht vorgehalten.
 
-### Daten und Rechte
-
-- Planetendaten und Sonne: eingebettete JPL-Näherungselemente für 1800–2050, keine Teleskop-Ephemeriden. Mond: vereinfachtes geozentrisches Modell mit topozentrischer Parallaxe, offline.
-- Sterne/Sternbilder: öffentliche d3-celestial-Kataloge, mit einfachen eingebetteten Fallbacks.
-- Deep-Sky-Aufnahmen: NASA Image and Video Library, mit CDS/DSS-Fallback.
-- Satelliten: CelesTrak GP-OMM und `satellite.js`/SGP4.
-- Flugzeuge: AirLabs, nur zur aktuellen Zeit und nur mit einem selbst eingegebenen API-Key. Er bleibt wie in der ursprünglichen Version im Browser-Session-Storage; die Abfrage erfolgt direkt aus dem Browser.
-
-Nutzungsbedingungen, CORS-Vorgaben und Kontingente der jeweiligen externen Anbieter gelten weiterhin. In der HTML-Datei befindet sich kein fest eingebauter AirLabs-Schlüssel.
-
-## Tests und Grenzen
-
-Die automatisierten Tests prüfen JS-Syntax, astronomische Berechnungen, Layer-Reihenfolge, Laden des gebündelten Skripts mit simuliertem DOM/Canvas, Startdarstellung, Einstellungs-Layer, Suche, Details, Ortswechsel und Zeitsteuerung. Externe APIs sind in diesen Tests absichtlich nicht erreichbar; die Offline-Fallbacks werden geprüft.
-
-Die ergänzte Himmelsanzeige, Suche und Einstellungen wurden zudem in einem Headless-Chromium-Browser mit blockierten externen APIs geprüft. Ein vollständiger visueller Test in einem echten Smartphone-Browser und ein Integrationstest mit Live-APIs/Sensoren sind zusätzlich sinnvoll. Für eine produktive öffentliche Bereitstellung sollte besonders der API-Key-Umgang sowie die Zuverlässigkeit externer Datenquellen geprüft werden.
+Die automatisierten API-Tests verwenden simulierte Antworten. Ein erfolgreicher externer ADSB.lol-Liveaufruf ist dadurch nicht garantiert; Verfügbarkeit und Hosting-Konfiguration müssen nach dem Deployment überprüft werden.

@@ -6,11 +6,11 @@ import { state } from '../core/store.js';
 export function updateAircraftCounter() {
  const el=$('aircraftCount');
  if(!el)return;
- el.textContent=!state.layers.aircraft ? 'API-Key in Einstellungen hinterlegen'
+ el.textContent=!state.layers.aircraft ? 'Ohne API-Key · Proxy erforderlich'
   : !aircraftAtLiveTime() ? 'Nur zur Live-Zeit (JETZT)'
-  : state.aircraftError ? (state.aircraftErrorReason || 'AirLabs-API nicht erreichbar')
-  : state.aircraftLoaded ? `${state.aircraft.length} Flugzeuge in der Region`
-  : state.aircraftLoading ? 'AirLabs wird abgefragt ...' : 'Verbinde mit AirLabs ...';
+  : state.aircraftError ? (state.aircraftErrorReason || 'ADSB.lol-Proxy nicht erreichbar')
+  : state.aircraftLoaded ? `${state.aircraft.length} ${state.aircraft.length===1 ? 'Flugzeug' : 'Flugzeuge'} in der Region`
+  : state.aircraftLoading ? 'ADSB.lol wird abgefragt ...' : 'Verbinde mit ADSB.lol ...';
 }
 
 export function updateCounters() {

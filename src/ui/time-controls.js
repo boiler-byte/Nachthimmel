@@ -3,7 +3,7 @@ import { getDate } from '../core/clock.js';
 import { $, ico } from '../core/dom.js';
 import { clamp } from '../core/math.js';
 import { state } from '../core/store.js';
-import { pollAircraft } from '../features/aircraft/airlabs.service.js';
+import { pollAircraft } from '../features/aircraft/adsb.service.js';
 import { updateAircraftCounter } from './status.js';
 
 export function setPlaying(value) {

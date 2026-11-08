@@ -4,7 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#050915">
-<meta name="description" content="Nachthimmel v2: Interaktive Himmelskarte mit separat schaltbaren Sternen, Planeten, Sonne, Mond, Bahnen, Sternbildern, NASA-Deep-Sky-Aufnahmen, Satelliten und AirLabs-Flugzeugen.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nachthimmel">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<meta name="description" content="Nachthimmel v2: Interaktive Himmelskarte mit separat schaltbaren Sternen, Planeten, Sonne, Mond, Bahnen, Sternbildern, NASA-Deep-Sky-Aufnahmen, Satelliten und ADSB.lol-Flugzeugen.">
 <title>Nachthimmel v2 – Interaktive Himmelskarte</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -171,6 +177,18 @@
 .layer-toggle[data-layer="pathArrows"] .layer-icon {background:rgba(93,195,186,.12);color:#afe6df}
 .trajectory-explain {margin:13px 3px 0}
 
+/* Separate adjacent toolbar buttons for object layers and motion paths. */
+.dock .tool-btn[aria-controls="layersModal"],
+.dock .tool-btn[aria-controls="pathsModal"]{color:#bfdff5;border-color:rgba(130,190,238,.24)}
+.dock .tool-btn[aria-controls="layersModal"]:hover,
+.dock .tool-btn[aria-controls="pathsModal"]:hover{background:rgba(77,130,189,.22)}
+@media(max-width:390px){
+ .dock .tool-actions{gap:6px}
+ .dock .tool-btn{width:38px;height:40px;flex:0 0 38px}
+ .dock .motion-btn{width:38px;max-width:38px;min-width:38px;padding:0}
+ .dock .motion-btn span{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -193,6 +211,7 @@
 <symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
 <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9.5 5L12 12 2.5 7 12 2Z"/><path d="m2.5 12 9.5 5 9.5-5M2.5 17l9.5 5 9.5-5"/></g></symbol>
 <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.3" fill="#101c32"/><circle cx="16" cy="17" r="2.3" fill="#101c32"/></g></symbol>
 <symbol id="i-motion" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M10 18h4M3 7c-1 3-1 7 0 10M21 7c1 3 1 7 0 10"/></g></symbol>
 <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -209,20 +228,30 @@
  <div class="compass-pitch-meter" aria-hidden="true"><span class="compass-pitch-zero"></span><span class="compass-pitch-dot" id="compassPitchDot"></span></div>
  </div>
  <div class="below-horizon-flag" id="belowFlag" hidden><span class="below-flag-dot"></span>UNTER DEM HORIZONT <small>Virtuelle Durchsicht</small></div></div>
- <div class="top-actions"><div class="live-pill"><span class="pulse-dot" id="liveDot"></span><span id="liveStatus">HIMMELSKARTE</span></div><button class="place-pill" id="locationTop" title="Standort festlegen"><svg><use href="#i-location"/></svg><span id="placeLabel">Berlin, Deutschland</span></button><button class="icon-btn" id="searchBtn" title="Objekte suchen" aria-label="Suche oeffnen"><svg><use href="#i-search"/></svg></button></div>
+ <div class="top-actions"><div class="live-pill"><span class="pulse-dot" id="liveDot"></span><span id="liveStatus">HIMMELSKARTE</span></div><button class="place-pill" id="locationTop" title="Standort festlegen" aria-label="Standort festlegen"><svg><use href="#i-location"/></svg><span id="placeLabel">Berlin, Deutschland</span></button><button class="icon-btn" id="searchBtn" title="Objekte suchen" aria-label="Suche oeffnen"><svg><use href="#i-search"/></svg></button></div>
 </header>
 <div class="center-reticle" aria-hidden="true"><i></i></div>
 <div class="hint"><svg><use href="#i-crosshair"/></svg> Ziehen, um dich umzusehen &middot; Scrollen zum Zoomen &middot; Objekte antippen</div>
-<div class="sources"><span>NACHTHIMMEL v2</span><span class="sep"></span><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener noreferrer">Sternkatalog / IAU</a><span class="sep"></span><a href="https://airlabs.co/" target="_blank" rel="noopener noreferrer">AirLabs</a><span class="sep"></span><a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Images</a><span class="sep"></span><a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer">CelesTrak</a></div>
+<div class="sources"><span>NACHTHIMMEL v2</span><span class="sep"></span><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener noreferrer">Sternkatalog / IAU</a><span class="sep"></span><a href="https://www.adsb.lol/docs/open-data/api" target="_blank" rel="noopener noreferrer">ADSB.lol</a><span class="sep"></span><a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Images</a><span class="sep"></span><a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer">CelesTrak</a></div>
 <div class="bottom-status"><span class="status-dot" id="sourceDot"></span><span id="sourceStatus">Kataloge werden geladen ...</span></div>
 <div class="bottom-ui">
  <div class="timebar"><div class="time-label"><div class="time-top" id="timeMode">BEOBACHTUNGSZEIT</div><div class="time-value"><span id="clockValue">21:30</span><small id="dateValue">HEUTE</small></div></div><input class="time-range" id="timeRange" type="range" min="-12" max="12" step="0.25" value="0" aria-label="Zeit um bis zu 12 Stunden verschieben"><div class="time-control"><button class="small-action" id="prevHour" title="Eine Stunde zurueck" aria-label="Eine Stunde zurueck"><svg><use href="#i-minus"/></svg></button><button class="small-action" id="playBtn" title="Zeitablauf starten" aria-label="Zeitablauf starten"><svg><use href="#i-play"/></svg></button><button class="small-action" id="nextHour" title="Eine Stunde vor" aria-label="Eine Stunde vor"><svg><use href="#i-plus"/></svg></button></div><button class="now-btn" id="nowBtn" title="Zur aktuellen Zeit">JETZT</button></div>
- <nav class="dock" aria-label="Kartenwerkzeuge"><div class="tool-actions"><button class="motion-btn" id="motionBtn" aria-pressed="false" title="Smartphone-Bewegungssensor ein- oder ausschalten"><svg><use href="#i-motion"/></svg><span id="motionText">SENSOR AUS</span></button><button class="tool-btn" id="zoomOutBtn" title="Herauszoomen" aria-label="Herauszoomen"><svg><use href="#i-minus"/></svg></button><button class="tool-btn" id="zoomInBtn" title="Hineinzoomen" aria-label="Hineinzoomen"><svg><use href="#i-plus"/></svg></button><button class="tool-btn" id="settingsBtn" title="Einstellungen" aria-label="Einstellungen oeffnen"><svg><use href="#i-settings"/></svg></button></div></nav>
+ <nav class="dock" aria-label="Kartenwerkzeuge"><div class="tool-actions"><button class="motion-btn" id="motionBtn" aria-pressed="false" title="Smartphone-Bewegungssensor ein- oder ausschalten"><svg><use href="#i-motion"/></svg><span id="motionText">SENSOR AUS</span></button><button class="tool-btn" id="zoomOutBtn" title="Herauszoomen" aria-label="Herauszoomen"><svg><use href="#i-minus"/></svg></button><button class="tool-btn" id="zoomInBtn" title="Hineinzoomen" aria-label="Hineinzoomen"><svg><use href="#i-plus"/></svg></button><button class="tool-btn" id="layersBtn" title="Kartenebenen" aria-label="Kartenebenen öffnen" aria-haspopup="dialog" aria-controls="layersModal"><svg><use href="#i-layers"/></svg></button><button class="tool-btn" id="pathsBtn" title="Bewegungsbahnen" aria-label="Bewegungsbahnen öffnen" aria-haspopup="dialog" aria-controls="pathsModal"><svg><use href="#i-orbit"/></svg></button></div></nav>
 </div>
 <div class="toast-stack" id="toasts" role="status" aria-live="polite"></div>
 <aside class="details" id="detailPanel" role="dialog" aria-label="Objektdetails" aria-hidden="true"></aside>
 <div class="modal-shade" id="searchModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-label="Himmelsobjekte suchen"><div class="modal-head"><div><h2>Das Universum entdecken</h2><p>Suche nach Sonne, Mond, Planeten, Sternen, Sternbildern, Deep-Sky-Objekten, Satelliten und Flugzeugen.</p></div><button id="searchClose" aria-label="Suche schliessen"><svg><use href="#i-close"/></svg></button></div><div class="search-field"><svg><use href="#i-search"/></svg><input id="searchInput" autocomplete="off" type="search" placeholder="z. B. Jupiter, Sirius, Orion, ISS ..." aria-label="Suchbegriff"></div><div class="search-results" id="searchResults"></div></div></div>
-<div class="modal-shade" id="settingsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="modal-head"><div><h2 id="settingsTitle">Einstellungen</h2><p>Kartenebenen, Standort und Darstellung.</p></div><button id="settingsClose" aria-label="Einstellungen schliessen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><section class="settings-section" aria-labelledby="layersTitle"><div class="setting-section-heading"><h3 id="layersTitle">Kartenebenen</h3><span>Ein- und ausblenden</span></div><div class="settings-layers"><button class="layer-toggle active" id="starsBtn" data-layer="stars" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-stars"/></svg></span><span><div class="layer-name">Sterne</div><div class="layer-description" id="starsCount">Sternkatalog &amp; Milchstra&szlig;e</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="planetsBtn" data-layer="planets" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-planet"/></svg></span><span><div class="layer-name">Planeten</div><div class="layer-description" id="planetCount">7 Planeten · berechnete Positionen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="sunMoonBtn" data-layer="sunMoon" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-sun"/></svg></span><span><div class="layer-name">Sonne &amp; Mond</div><div class="layer-description">Positionen &amp; Mondphasen · lokal berechnet</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="constBtn" data-layer="constellations" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-const"/></svg></span><span><div class="layer-name">Sternbilder</div><div class="layer-description" id="constCount">IAU-Konstellationen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="deepBtn" data-layer="deepSky" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-nebula"/></svg></span><span><div class="layer-name">Deep Sky</div><div class="layer-description">NASA-Aufnahmen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="satBtn" data-layer="satellites" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-satellite"/></svg></span><span><div class="layer-name">Satelliten</div><div class="layer-description" id="satCount">Lade Positionen ...</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="aircraftBtn" data-layer="aircraft" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-aircraft"/></svg></span><span><div class="layer-name">Flugzeuge (AirLabs)</div><div class="layer-description" id="aircraftCount">API-Key in Einstellungen hinterlegen</div></span><span class="layer-state"></span></button></div><div class="planet-quicklinks enabled" id="planetQuicklinks"><div class="planet-quick-title">Planeten direkt auf der Karte anzeigen</div><div class="planet-quick-buttons"><button data-planet-jump="mercury" type="button">Merkur</button><button data-planet-jump="venus" type="button">Venus</button><button data-planet-jump="mars" type="button">Mars</button><button data-planet-jump="jupiter" type="button">Jupiter</button><button data-planet-jump="saturn" type="button">Saturn</button><button data-planet-jump="uranus" type="button">Uranus</button><button data-planet-jump="neptune" type="button">Neptun</button></div></div><p class="setting-helper" style="margin:11px 2px 0">Planeten: Positionen und Entfernungen werden lokal mit den JPL-Näherungsbahnen für 1800–2050 berechnet (keine Live-API). Für präzise Teleskopausrichtung JPL Horizons verwenden. Sonne und Mond werden ebenfalls näherungsweise lokal berechnet.</p><p class="setting-helper" style="margin:11px 2px 0">Flugzeuge: AirLabs-Livepositionen, nur bei <strong>JETZT</strong> sichtbar. Ein kostenloser AirLabs-API-Key ist erforderlich, aber kein Proxy oder lokaler Server. Die Abfrage erfolgt direkt aus dem Browser.</p></section><section class="settings-section" aria-labelledby="trajectoriesTitle"><div class="setting-section-heading"><h3 id="trajectoriesTitle">Bahnen &amp; Bewegungsrichtung</h3><span>Separat schaltbare Overlays</span></div><div class="settings-layers"><button class="layer-toggle" id="planetPathsBtn" data-layer="planetPaths" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-orbit"/></svg></span><span><div class="layer-name">Planetenbahnen</div><div class="layer-description">Scheinbare Bewegung ±30 Tage gegen den Sternhimmel</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="sunPathBtn" data-layer="sunPath" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-sun"/></svg></span><span><div class="layer-name">Sonnenbahn</div><div class="layer-description">Tagesbogen mit Auf- und Untergang</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="moonPathBtn" data-layer="moonPath" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-moon"/></svg></span><span><div class="layer-name">Mondbahn</div><div class="layer-description">Tagesbogen + Bewegung ±7 Tage</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="pathArrowsBtn" data-layer="pathArrows" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-direction"/></svg></span><span><div class="layer-name">Bewegungsrichtung</div><div class="layer-description">Pfeile auf eingeblendeten Bahnen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="selectedPathBtn" data-layer="selectedPath" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-orbit"/></svg></span><span><div class="layer-name">Bahn bei Auswahl</div><div class="layer-description">Nur die Bahn des angetippten Objekts</div></span><span class="layer-state"></span></button></div><p class="setting-helper trajectory-explain">Bahnen sind standardmäßig ausgeblendet. Beim Auswählen eines Planeten, der Sonne oder des Mondes wird dessen Bahn hervorgehoben. Vergangene Abschnitte sind schwächer, Pfeile zeigen in die Zukunft. Planeten- und Mehrtages-Mondbahnen sind relativ zum Sternhimmel; die Tagesbögen zeigen den Verlauf über dem Standort. Werte sind Näherungen, keine Präzisions-Ephemeriden.</p></section><section class="settings-section" aria-label="AirLabs API"><div class="setting-section-heading"><h3>Flugzeugdaten (AirLabs)</h3><span>Direkt ohne Proxy</span></div><label class="form-label" for="airlabsKey">AirLabs-API-Key</label><input id="airlabsKey" class="setting-field" type="password" autocomplete="off" spellcheck="false" placeholder="Kostenlosen API-Key eingeben"><p class="setting-helper">Registrierung: <a href="https://airlabs.co/" target="_blank" rel="noopener noreferrer">airlabs.co</a>. Der Schlüssel wird nur für diese Browser-Sitzung gespeichert und direkt an AirLabs übertragen. Bei Veröffentlichung dieser HTML-Datei keinen Schlüssel fest einbauen. Abfrage ungefähr alle 10 Minuten, um das Gratiskontingent zu schonen.</p><button class="secondary-btn" id="airlabsSaveKey" type="button">API-Key übernehmen und Flugzeuge aktualisieren</button></section><section class="settings-section location-section" aria-labelledby="locationTitle"><div class="setting-section-heading"><h3 id="locationTitle">Beobachtungsstandort</h3><span>Standort &amp; Sichtbarkeit</span></div><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt. Bei aktivierter Flugzeug-Ebene wird ein Kartenausschnitt rund um den Standort direkt bei AirLabs abgefragt. Sonst bleiben die Koordinaten im Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div></section><section class="settings-section display-section" aria-labelledby="displayTitle"><div class="setting-section-heading"><h3 id="displayTitle">Darstellung</h3></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Die Projektion reicht bis zum Nadir (−90&deg;). Objekte unter dem Horizont sind nur virtuell sichtbar. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p></section><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">NASA/JPL – Näherungspositionen der Planeten (1800–2050)</a><br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/phys_par.html">NASA/JPL – Physikalische Planetendaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://airlabs.co/docs/flights">AirLabs / aktuelle Flugzeugpositionen</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich. Flugzeuge werden nicht f&uuml;r simulierte Beobachtungszeiten r&uuml;ckgerechnet. AirLabs bietet einen begrenzten kostenlosen Monatsumfang (Nutzungsbedingungen beachten).</span></div></div></div></div>
+<div class="modal-shade" id="layersModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="layersDialogTitle"><div class="modal-head"><div><h2 id="layersDialogTitle">Kartenebenen</h2><p>Himmelsobjekte, Live-Flugzeuge und Installation.</p></div><button id="layersClose" aria-label="Kartenebenen schließen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><section class="settings-section" aria-labelledby="layersTitle"><div class="setting-section-heading"><h3 id="layersTitle">Kartenebenen</h3><span>Ein- und ausblenden</span></div><div class="settings-layers"><button class="layer-toggle active" id="starsBtn" data-layer="stars" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-stars"/></svg></span><span><div class="layer-name">Sterne</div><div class="layer-description" id="starsCount">Sternkatalog &amp; Milchstra&szlig;e</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="planetsBtn" data-layer="planets" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-planet"/></svg></span><span><div class="layer-name">Planeten</div><div class="layer-description" id="planetCount">7 Planeten · berechnete Positionen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="sunMoonBtn" data-layer="sunMoon" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-sun"/></svg></span><span><div class="layer-name">Sonne &amp; Mond</div><div class="layer-description">Positionen &amp; Mondphasen · lokal berechnet</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="constBtn" data-layer="constellations" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-const"/></svg></span><span><div class="layer-name">Sternbilder</div><div class="layer-description" id="constCount">IAU-Konstellationen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="deepBtn" data-layer="deepSky" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-nebula"/></svg></span><span><div class="layer-name">Deep Sky</div><div class="layer-description">NASA-Aufnahmen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="satBtn" data-layer="satellites" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-satellite"/></svg></span><span><div class="layer-name">Satelliten</div><div class="layer-description" id="satCount">Lade Positionen ...</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="aircraftBtn" data-layer="aircraft" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-aircraft"/></svg></span><span><div class="layer-name">Flugzeuge (ADSB.lol)</div><div class="layer-description" id="aircraftCount">Live-Daten via API-Proxy</div></span><span class="layer-state"></span></button></div><div class="planet-quicklinks enabled" id="planetQuicklinks"><div class="planet-quick-title">Planeten direkt auf der Karte anzeigen</div><div class="planet-quick-buttons"><button data-planet-jump="mercury" type="button">Merkur</button><button data-planet-jump="venus" type="button">Venus</button><button data-planet-jump="mars" type="button">Mars</button><button data-planet-jump="jupiter" type="button">Jupiter</button><button data-planet-jump="saturn" type="button">Saturn</button><button data-planet-jump="uranus" type="button">Uranus</button><button data-planet-jump="neptune" type="button">Neptun</button></div></div><p class="setting-helper" style="margin:11px 2px 0">Planeten: Positionen und Entfernungen werden lokal mit den JPL-Näherungsbahnen für 1800–2050 berechnet (keine Live-API). Für präzise Teleskopausrichtung JPL Horizons verwenden. Sonne und Mond werden ebenfalls näherungsweise lokal berechnet.</p><p class="setting-helper" style="margin:11px 2px 0">Flugzeuge: ADSB.lol-Livepositionen nur bei <strong>JETZT</strong> und über einen lokalen oder serverseitigen Proxy. Kein API-Key nötig; Verbindung und Netzabdeckung können variieren.</p></section><section class="settings-section" aria-labelledby="aircraftSourceTitle"><div class="setting-section-heading"><h3 id="aircraftSourceTitle">Flugzeugdaten (ADSB.lol)</h3><span>Ohne API-Schlüssel</span></div><p class="setting-helper">Livepositionen aus dem ADSB.lol-Netzwerk. Die Abfrage läuft nur bei <strong>JETZT</strong> und eingeschalteter Flugzeug-Ebene, etwa alle 90 Sekunden. Für den Browserzugriff ist der mitgelieferte <strong>API-Proxy</strong> erforderlich (Cloudflare Pages Function oder lokaler Node-Server). Ohne Proxy ist der Flugzeug-Layer nicht verfügbar.</p><button class="secondary-btn" id="refreshAircraftBtn" type="button">Flugzeuge jetzt aktualisieren</button><p class="setting-helper" style="margin-bottom:0">Daten: <a href="https://www.adsb.lol/docs/open-data/api" target="_blank" rel="noopener noreferrer">ADSB.lol</a>, Lizenz <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener noreferrer">ODbL 1.0</a>. Angaben können unvollständig oder verzögert sein.</p></section><section class="settings-section" aria-labelledby="pwaInstallTitle"><div class="setting-section-heading"><h3 id="pwaInstallTitle">App installieren</h3><span>Offline-Basiskarte</span></div><p class="setting-helper" id="pwaStatus" role="status">Installierbar über HTTPS oder localhost. Sterne, Planeten, Sonne und Mond sind offline mit dem Basiskatalog nutzbar; Live-Daten benötigen Internet.</p><button class="secondary-btn" id="installPwaBtn" type="button">App installieren</button></section><div class="setting-source">DATENQUELLEN<br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">NASA/JPL – Näherungspositionen der Planeten (1800–2050)</a><br><a target="_blank" rel="noopener noreferrer" href="https://ssd.jpl.nasa.gov/planets/phys_par.html">NASA/JPL – Physikalische Planetendaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/ofrohn/d3-celestial">d3-celestial / Sternkatalog &amp; IAU-Sternbilder (BSD-3)</a><br><a target="_blank" rel="noopener noreferrer" href="https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf">NASA Image and Video Library API</a><br><a target="_blank" rel="noopener noreferrer" href="https://celestrak.org/NORAD/documentation/gp-data-formats.php">CelesTrak / GP-OMM Orbitaldaten</a><br><a target="_blank" rel="noopener noreferrer" href="https://github.com/shashwatak/satellite-js">satellite.js / SGP4</a><br><a target="_blank" rel="noopener noreferrer" href="https://www.adsb.lol/docs/open-data/api">ADSB.lol / aktuelle Flugzeugpositionen (ODbL 1.0)</a><br><a target="_blank" rel="noopener noreferrer" href="https://alasky.u-strasbg.fr/hips-image-services/hips2fits">CDS / DSS-Himmelsaufnahmen (Fallback)</a><br><span>Satellitenpositionen sind SGP4-Prognosen; Position &uuml;ber dem Horizont bedeutet nicht zwingend optische Sichtbarkeit. Internet ist f&uuml;r aktuelle Daten erforderlich. Flugzeuge werden nicht f&uuml;r simulierte Beobachtungszeiten r&uuml;ckgerechnet. ADSB.lol verwendet die ODbL-1.0-Lizenz und kann künftige API-Limits oder Schlüsselanforderungen einführen.</span></div></div></div></div>
+<div class="modal-shade" id="pathsModal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pathsDialogTitle"><div class="modal-head"><div><h2 id="pathsDialogTitle">Bewegungsbahnen</h2><p>Himmelsbahnen, Tagesbögen und Richtungsanzeige.</p></div><button id="pathsClose" type="button" aria-label="Bewegungsbahnen schließen"><svg><use href="#i-close"/></svg></button></div><div class="settings-body"><section class="settings-section" aria-labelledby="trajectoriesTitle"><div class="setting-section-heading"><h3 id="trajectoriesTitle">Bahnen &amp; Bewegungsrichtung</h3><span>Separat schaltbare Overlays</span></div><div class="settings-layers"><button class="layer-toggle" id="planetPathsBtn" data-layer="planetPaths" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-orbit"/></svg></span><span><div class="layer-name">Planetenbahnen</div><div class="layer-description">Scheinbare Bewegung ±30 Tage gegen den Sternhimmel</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="sunPathBtn" data-layer="sunPath" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-sun"/></svg></span><span><div class="layer-name">Sonnenbahn</div><div class="layer-description">Tagesbogen mit Auf- und Untergang</div></span><span class="layer-state"></span></button><button class="layer-toggle" id="moonPathBtn" data-layer="moonPath" aria-pressed="false"><span class="layer-icon"><svg><use href="#i-moon"/></svg></span><span><div class="layer-name">Mondbahn</div><div class="layer-description">Tagesbogen + Bewegung ±7 Tage</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="pathArrowsBtn" data-layer="pathArrows" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-direction"/></svg></span><span><div class="layer-name">Bewegungsrichtung</div><div class="layer-description">Pfeile auf eingeblendeten Bahnen</div></span><span class="layer-state"></span></button><button class="layer-toggle active" id="selectedPathBtn" data-layer="selectedPath" aria-pressed="true"><span class="layer-icon"><svg><use href="#i-orbit"/></svg></span><span><div class="layer-name">Bahn bei Auswahl</div><div class="layer-description">Nur die Bahn des angetippten Objekts</div></span><span class="layer-state"></span></button></div><p class="setting-helper trajectory-explain">Bahnen sind standardmäßig ausgeblendet. Beim Auswählen eines Planeten, der Sonne oder des Mondes wird dessen Bahn hervorgehoben. Vergangene Abschnitte sind schwächer, Pfeile zeigen in die Zukunft. Planeten- und Mehrtages-Mondbahnen sind relativ zum Sternhimmel; die Tagesbögen zeigen den Verlauf über dem Standort. Werte sind Näherungen, keine Präzisions-Ephemeriden.</p></section></div></div></div>
+<div class="modal-shade" id="locationModal" aria-hidden="true">
+ <div class="modal-card location-modal" role="dialog" aria-modal="true" aria-labelledby="locationDialogTitle" aria-describedby="locationDialogDescription">
+  <div class="modal-head"><div><h2 id="locationDialogTitle">Standort festlegen</h2><p id="locationDialogDescription">Beobachtungsstandort und Darstellung</p></div><button id="locationClose" type="button" aria-label="Standortdialog schließen"><svg><use href="#i-close"/></svg></button></div>
+  <div class="settings-body">
+<section class="settings-section location-section" aria-labelledby="locationTitle"><div class="setting-section-heading"><h3 id="locationTitle">Beobachtungsstandort</h3><span>Standort &amp; Sichtbarkeit</span></div><div class="setting-row"><div><label for="latInput" class="form-label">Breitengrad (&deg;)</label><input id="latInput" class="setting-field" type="number" min="-90" max="90" step="0.0001" value="52.5200"></div><div><label for="lonInput" class="form-label">L&auml;ngengrad (&deg;)</label><input id="lonInput" class="setting-field" type="number" min="-180" max="180" step="0.0001" value="13.4050"></div></div><p class="setting-helper">Standardm&auml;&szlig;ig wird Berlin verwendet. GPS wird nur nach deiner Freigabe genutzt. Bei aktivierter Flugzeug-Ebene werden die Koordinaten über deinen API-Proxy an ADSB.lol übertragen. Sonst bleiben sie im Browser.</p><div class="settings-buttons"><button class="primary-btn" id="saveLocation">Koordinaten &uuml;bernehmen</button><button class="secondary-btn" id="gpsBtn"><svg><use href="#i-location"/></svg> GPS nutzen</button></div></section>
+<section class="settings-section display-section" aria-labelledby="displayTitle"><div class="setting-section-heading"><h3 id="displayTitle">Darstellung</h3></div><label for="magInput" class="form-label" style="margin-top:23px">Sternenhelligkeit: <span id="magLabel">6.0 mag</span></label><input id="magInput" style="width:100%;accent-color:#8bd4ff" type="range" min="2" max="6" step=".25" value="6"><p class="setting-helper">Mehr Sterne erscheinen mit h&ouml;herer Grenzhelligkeit. Die Projektion reicht bis zum Nadir (−90&deg;). Objekte unter dem Horizont sind nur virtuell sichtbar. Deep-Sky-Fotos sind Vorschauen am korrekten Ort, keine astrometrisch ausgerichteten Kartenkacheln.</p></section>
+  </div>
+ </div>
+</div>
 </div>
 <script>
 (function () {
@@ -416,7 +445,7 @@ exports.state = {
     catalogError: false, satError: false,
     // Satellite prediction cache
     satRender: [], lastSatCompute: 0, lastSatDate: 0, lastSatLabel: 0,
-    // AirLabs request lifecycle (no API key is stored in this object)
+    // ADSB.lol proxy polling lifecycle (no API key required)
     aircraftError: false, aircraftLoading: false,
     aircraftFetchedAt: 0, aircraftDataTime: 0, aircraftNextAt: 0,
     aircraftRequestVersion: 0, aircraftAbort: null, aircraftErrorReason: '',
@@ -838,6 +867,161 @@ class SkyRenderer {
 exports.SkyRenderer = SkyRenderer;
 
 },
+"features/aircraft/adsb.service.js": function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AIRCRAFT_RADIUS_NM = exports.AIRCRAFT_POLL_MS = void 0;
+exports.aircraftProxyURL = aircraftProxyURL;
+exports.parseAircraftStates = parseAircraftStates;
+exports.pollAircraft = pollAircraft;
+/** Live ADSB.lol aircraft data through this app's same-origin API bridge. */
+const events_js_1 = require("../../core/events.js");
+const clock_js_1 = require("../../core/clock.js");
+const math_js_1 = require("../../core/math.js");
+const store_js_1 = require("../../core/store.js");
+// ADSB.lol does not enable cross-origin browser requests. See functions/api/aircraft.js.
+// The public service has dynamic rate limits, so use conservative polling.
+exports.AIRCRAFT_POLL_MS = 90_000;
+exports.AIRCRAFT_RADIUS_NM = 200;
+const MAX_POSITION_AGE_MS = 125_000;
+const FEET_TO_METRES = 0.3048;
+const KNOTS_TO_MS = 0.514444;
+function numeric(value) {
+    if (value === null || value === undefined || value === '')
+        return null;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+}
+function aircraftProxyURL(baseURI = document.baseURI, lat = store_js_1.state.lat, lon = store_js_1.state.lon) {
+    const url = new URL('./api/aircraft', baseURI);
+    if (!['http:', 'https:'].includes(url.protocol)) {
+        throw new Error('Live-Flugzeuge benötigen HTTPS oder localhost mit ADSB.lol-Proxy.');
+    }
+    url.searchParams.set('lat', lat.toFixed(4));
+    url.searchParams.set('lon', lon.toFixed(4));
+    url.searchParams.set('radius', String(exports.AIRCRAFT_RADIUS_NM));
+    return url;
+}
+/** Convert ADSBExchange-v2/readsb fields to the renderer's SI-based record model. */
+function parseAircraftStates(data, currentTime = Date.now()) {
+    if (!data || !Array.isArray(data.ac))
+        throw new Error('Ungültige ADSB.lol-Antwort');
+    const result = new Map();
+    let responseTime = numeric(data.now);
+    if (responseTime && responseTime < 1e11)
+        responseTime *= 1000;
+    if (!responseTime || responseTime > currentTime + 30_000)
+        responseTime = currentTime;
+    for (const entry of data.ac) {
+        if (!entry || typeof entry !== 'object')
+            continue;
+        const id = String(entry.hex || '').trim().toLowerCase();
+        const lat = numeric(entry.lat), lon = numeric(entry.lon);
+        const posAge = numeric(entry.seen_pos) ?? numeric(entry.seen);
+        const altitudeFeet = numeric(entry.alt_geom) ?? numeric(entry.alt_baro);
+        if (!/^[0-9a-f]{6}$/.test(id) || lat === null || lon === null
+            || Math.abs(lat) > 90 || Math.abs(lon) > 180
+            || entry.alt_baro === 'ground' || altitudeFeet === null
+            || altitudeFeet < -1500 || altitudeFeet > 70000 || posAge === null
+            || posAge < 0 || posAge * 1000 > MAX_POSITION_AGE_MS)
+            continue;
+        const positionTime = Math.min(currentTime, responseTime - posAge * 1000);
+        if (currentTime - positionTime > MAX_POSITION_AGE_MS)
+            continue;
+        const gs = numeric(entry.gs);
+        const track = numeric(entry.track);
+        const verticalFeetMin = numeric(entry.geom_rate) ?? numeric(entry.baro_rate);
+        result.set(id, {
+            id,
+            callsign: String(entry.flight || '').trim().slice(0, 16),
+            registration: String(entry.r || '').trim().slice(0, 20),
+            type: String(entry.t || '').trim().slice(0, 16),
+            lat, lon,
+            altitude: altitudeFeet * FEET_TO_METRES,
+            positionTime,
+            speed: gs === null ? null : Math.max(0, gs) * KNOTS_TO_MS,
+            track: track === null ? null : (0, math_js_1.wrap)(track),
+            verticalRate: verticalFeetMin === null ? null : verticalFeetMin * FEET_TO_METRES / 60,
+            squawk: String(entry.squawk || '').trim().slice(0, 5),
+            source: 'ADSB.lol'
+        });
+    }
+    return result;
+}
+async function pollAircraft() {
+    if (!store_js_1.state.layers.aircraft || !(0, clock_js_1.aircraftAtLiveTime)() || document.hidden
+        || store_js_1.state.aircraftLoading || Date.now() < store_js_1.state.aircraftNextAt)
+        return;
+    store_js_1.state.aircraftLoading = true;
+    store_js_1.state.aircraftError = false;
+    store_js_1.state.aircraftErrorReason = '';
+    (0, events_js_1.emit)('data:changed');
+    const seq = ++store_js_1.state.aircraftRequestVersion;
+    const controller = new AbortController();
+    store_js_1.state.aircraftAbort = controller;
+    const timeout = setTimeout(() => controller.abort(), 14_000);
+    try {
+        const response = await fetch(aircraftProxyURL(), {
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { Accept: 'application/json' }
+        });
+        if (seq !== store_js_1.state.aircraftRequestVersion)
+            return;
+        if (!response.ok) {
+            let detail;
+            try {
+                detail = (await response.json())?.error;
+            }
+            catch { /* Non-JSON status. */ }
+            if (response.status === 404 || response.status === 405) {
+                throw new Error('ADSB.lol-Proxy fehlt – siehe README (Cloudflare Pages oder Node-Server).');
+            }
+            throw new Error(detail || `ADSB.lol-Proxy HTTP ${response.status}`);
+        }
+        if (!(response.headers.get('content-type') || '').includes('application/json')) {
+            throw new Error('ADSB.lol-Proxy fehlt oder liefert keine JSON-Daten.');
+        }
+        const parsed = parseAircraftStates(await response.json());
+        if (seq !== store_js_1.state.aircraftRequestVersion)
+            return;
+        store_js_1.state.aircraft = [...parsed.values()];
+        store_js_1.state.aircraftDataTime = Date.now();
+        store_js_1.state.aircraftFetchedAt = Date.now();
+        store_js_1.state.aircraftLoaded = true;
+        store_js_1.state.aircraftError = false;
+        store_js_1.state.aircraftErrorReason = '';
+        store_js_1.state.aircraftNextAt = Date.now() + exports.AIRCRAFT_POLL_MS;
+        if (store_js_1.state.selected?.kind === 'aircraft') {
+            const updated = parsed.get(store_js_1.state.selected.item.id);
+            if (updated) {
+                store_js_1.state.selected.item = updated;
+                (0, events_js_1.emit)('detail:refresh');
+            }
+        }
+        (0, events_js_1.emit)('data:changed');
+    }
+    catch (error) {
+        if (seq !== store_js_1.state.aircraftRequestVersion)
+            return;
+        store_js_1.state.aircraftError = true;
+        store_js_1.state.aircraftErrorReason = String(error?.message || 'ADSB.lol nicht erreichbar').slice(0, 120);
+        store_js_1.state.aircraftNextAt = Date.now() + (store_js_1.state.aircraftErrorReason.includes('429') ? 180_000 : exports.AIRCRAFT_POLL_MS);
+        if (!store_js_1.state.aircraftFetchedAt) {
+            (0, events_js_1.emit)('toast', { message: 'Flugzeug-Layer: ' + store_js_1.state.aircraftErrorReason, warn: true });
+        }
+    }
+    finally {
+        clearTimeout(timeout);
+        if (seq === store_js_1.state.aircraftRequestVersion) {
+            store_js_1.state.aircraftLoading = false;
+            store_js_1.state.aircraftAbort = null;
+            (0, events_js_1.emit)('data:changed');
+        }
+    }
+}
+
+},
 "features/aircraft/aircraft.layer.js": function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -930,7 +1114,7 @@ exports.predictAircraft = predictAircraft;
 /** Nachthimmel v2 - features/aircraft/aircraft.positions.js. Extracted from the original v6 app. */
 const math_js_1 = require("../../core/math.js");
 const store_js_1 = require("../../core/store.js");
-// AirLabs positions are WGS84 aircraft positions, not astronomical RA/Dec.
+// ADSB.lol positions are WGS84 aircraft positions (metres after normalization), not astronomical RA/Dec.
 // Convert to the observer's topocentric east/north/up frame (same azimuth
 // and elevation convention as the satellite and star projection).
 function ecef(lat, lon, heightM) {
@@ -967,122 +1151,6 @@ function predictAircraft(record, at = Date.now()) {
     return { ...aircraftHorizontal(lat, lon, height), lat, lon, altitude: height,
         ageSeconds: Math.max(0, (Date.now() - sample) / 1000), predictedSeconds: dt };
 }
-
-},
-"features/aircraft/airlabs.service.js": function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.airlabsKey = exports.AIRCRAFT_POLL_MS = void 0;
-exports.aircraftBoundingBox = aircraftBoundingBox;
-exports.parseAircraftStates = parseAircraftStates;
-exports.pollAircraft = pollAircraft;
-exports.getAirLabsKey = getAirLabsKey;
-exports.setAirLabsKey = setAirLabsKey;
-const events_js_1 = require("../../core/events.js");
-/** Nachthimmel v2 - features/aircraft/airlabs.service.js. Extracted from the original v6 app. */
-const clock_js_1 = require("../../core/clock.js");
-const math_js_1 = require("../../core/math.js");
-const store_js_1 = require("../../core/store.js");
-// AirLabs allows browser-side CORS requests; a user-supplied key is required.
-// No proxy, server-side bridge or embedded shared credential is used.
-exports.AIRCRAFT_POLL_MS = 10 * 60 * 1000;
-exports.airlabsKey = '';
-try {
-    exports.airlabsKey = sessionStorage.getItem('nachthimmel_airlabs_key') || '';
-}
-catch { }
-function aircraftBoundingBox() {
-    const d = 2.35;
-    return [(0, math_js_1.clamp)(store_js_1.state.lat - d, -90, 90), (0, math_js_1.clamp)(store_js_1.state.lon - d, -180, 180), (0, math_js_1.clamp)(store_js_1.state.lat + d, -90, 90), (0, math_js_1.clamp)(store_js_1.state.lon + d, -180, 180)].map(x => x.toFixed(4)).join(',');
-}
-function parseAircraftStates(data) {
-    if (!data || !Array.isArray(data.response))
-        throw Error('Ungültige AirLabs-Antwort');
-    const result = new Map(), now = Date.now();
-    for (const v of data.response) {
-        if (!v || typeof v !== 'object')
-            continue;
-        const id = String(v.hex || '').trim().toLowerCase();
-        const lat = Number(v.lat), lon = Number(v.lng), altitude = Number(v.alt);
-        const positionTime = Number.isFinite(Number(v.updated)) && Number(v.updated) > 0 ? Number(v.updated) * 1000 : now;
-        if (!/^[0-9a-f]{6}$/.test(id) || !Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(altitude) ||
-            Math.abs(lat) > 90 || Math.abs(lon) > 180 || altitude < -500 || altitude > 22000 || now - positionTime > 175000 || v.status === 'landed')
-            continue;
-        result.set(id, { id, callsign: String(v.flight_icao || v.flight_iata || v.flight_number || '').trim().slice(0, 16),
-            country: String(v.flag || '').slice(0, 65), lat, lon, altitude, positionTime,
-            speed: Number.isFinite(Number(v.speed)) ? Number(v.speed) / 3.6 : null,
-            track: Number.isFinite(Number(v.dir)) ? (0, math_js_1.wrap)(Number(v.dir)) : null,
-            verticalRate: Number.isFinite(Number(v.v_speed)) ? Number(v.v_speed) : null,
-            squawk: String(v.squawk || '').slice(0, 5), source: null });
-    }
-    return result;
-}
-async function pollAircraft() {
-    if (!store_js_1.state.layers.aircraft || !(0, clock_js_1.aircraftAtLiveTime)() || document.hidden || store_js_1.state.aircraftLoading || Date.now() < store_js_1.state.aircraftNextAt)
-        return;
-    if (!exports.airlabsKey) {
-        store_js_1.state.aircraftError = true;
-        store_js_1.state.aircraftErrorReason = 'AirLabs-Key in Einstellungen eingeben';
-        (0, events_js_1.emit)('data:changed');
-        return;
-    }
-    store_js_1.state.aircraftLoading = true;
-    store_js_1.state.aircraftError = false;
-    store_js_1.state.aircraftErrorReason = '';
-    (0, events_js_1.emit)('data:changed');
-    const seq = ++store_js_1.state.aircraftRequestVersion;
-    const controller = new AbortController();
-    store_js_1.state.aircraftAbort = controller;
-    const timer = setTimeout(() => controller.abort(), 16000);
-    try {
-        const params = new URLSearchParams({ api_key: exports.airlabsKey, bbox: aircraftBoundingBox(),
-            _fields: 'hex,flight_icao,flight_iata,flight_number,flag,lat,lng,alt,dir,speed,v_speed,squawk,updated,status' });
-        const response = await fetch('https://airlabs.co/api/v9/flights?' + params, { signal: controller.signal, cache: 'no-store' });
-        if (!response.ok)
-            throw Error('AirLabs HTTP ' + response.status);
-        const data = await response.json();
-        if (seq !== store_js_1.state.aircraftRequestVersion)
-            return;
-        if (data.error)
-            throw Error('AirLabs: ' + String(data.error.message || data.error.code || 'API-Fehler').slice(0, 120));
-        const aircraft = parseAircraftStates(data);
-        store_js_1.state.aircraft = [...aircraft.values()];
-        store_js_1.state.aircraftDataTime = Date.now();
-        store_js_1.state.aircraftFetchedAt = Date.now();
-        store_js_1.state.aircraftLoaded = true;
-        store_js_1.state.aircraftError = false;
-        store_js_1.state.aircraftErrorReason = '';
-        store_js_1.state.aircraftNextAt = Date.now() + exports.AIRCRAFT_POLL_MS;
-        if (store_js_1.state.selected?.kind === 'aircraft') {
-            const updated = aircraft.get(store_js_1.state.selected.item.id);
-            if (updated) {
-                store_js_1.state.selected.item = updated;
-                (0, events_js_1.emit)('detail:refresh');
-            }
-        }
-        (0, events_js_1.emit)('data:changed');
-    }
-    catch (err) {
-        if (seq !== store_js_1.state.aircraftRequestVersion)
-            return;
-        store_js_1.state.aircraftError = true;
-        store_js_1.state.aircraftErrorReason = String(err.message || 'AirLabs nicht erreichbar').slice(0, 90);
-        store_js_1.state.aircraftNextAt = Date.now() + exports.AIRCRAFT_POLL_MS;
-        if (!store_js_1.state.aircraftFetchedAt)
-            (0, events_js_1.emit)('toast', { message: 'Flugzeug-Layer: ' + store_js_1.state.aircraftErrorReason, warn: true });
-    }
-    finally {
-        clearTimeout(timer);
-        if (seq === store_js_1.state.aircraftRequestVersion) {
-            store_js_1.state.aircraftLoading = false;
-            store_js_1.state.aircraftAbort = null;
-            (0, events_js_1.emit)('data:changed');
-        }
-    }
-}
-/** Keep the user-supplied API key private to this session. */
-function getAirLabsKey() { return exports.airlabsKey; }
-function setAirLabsKey(key) { exports.airlabsKey = String(key || '').trim(); }
 
 },
 "features/constellations/catalog.data.js": function(require,module,exports) {
@@ -2586,7 +2654,89 @@ function dailyTrack(id, date) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_js_1 = require("./app.js");
+const pwa_register_js_1 = require("./pwa-register.js");
 (0, app_js_1.initialize)();
+(0, pwa_register_js_1.registerPwa)();
+
+},
+"pwa-register.js": function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerPwa = registerPwa;
+/** Install prompt and service-worker integration; never stores external API responses. */
+let deferredPrompt = null;
+let installed = false;
+let ready = false;
+function isInstalled() {
+    return installed || (typeof window !== 'undefined'
+        && window.matchMedia?.('(display-mode: standalone)').matches)
+        || (typeof navigator !== 'undefined' && navigator.standalone === true);
+}
+function updateInstallUI(message) {
+    const button = document.getElementById('installPwaBtn');
+    const status = document.getElementById('pwaStatus');
+    if (!button || !status)
+        return;
+    button.textContent = isInstalled() ? 'App ist installiert' : 'App installieren';
+    button.disabled = Boolean(isInstalled());
+    status.textContent = message || (isInstalled()
+        ? 'Nachthimmel läuft als installierte App.'
+        : ready ? 'Die Himmelskarte ist für die Offline-Nutzung vorbereitet.'
+            : 'Für die Installation HTTPS oder localhost verwenden.');
+}
+function registerPwa() {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined')
+        return;
+    const supported = 'serviceWorker' in navigator;
+    const secure = (typeof location !== 'undefined' && (location.protocol === 'https:'
+        || (location.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname))));
+    window.addEventListener('beforeinstallprompt', event => {
+        event.preventDefault();
+        deferredPrompt = event;
+        updateInstallUI('Die App kann auf diesem Gerät installiert werden.');
+    });
+    window.addEventListener('appinstalled', () => {
+        installed = true;
+        deferredPrompt = null;
+        updateInstallUI();
+    });
+    const button = document.getElementById('installPwaBtn');
+    button?.addEventListener('click', async () => {
+        if (isInstalled())
+            return;
+        if (deferredPrompt) {
+            const prompt = deferredPrompt;
+            deferredPrompt = null;
+            await prompt.prompt();
+            const choice = await prompt.userChoice;
+            updateInstallUI(choice?.outcome === 'accepted'
+                ? 'Die Installation wurde im Browser bestätigt.'
+                : 'Installation nicht ausgeführt. Im Browsermenü erneut versuchen.');
+        }
+        else if (!secure || !supported) {
+            updateInstallUI('Nur über HTTPS oder localhost als PWA installierbar.');
+        }
+        else {
+            updateInstallUI('Im Browsermenü „Installieren“ oder „Zum Home-Bildschirm“ wählen.');
+        }
+    });
+    if (!supported || !secure) {
+        updateInstallUI('Für Installation und Offline-Modus die App über HTTPS oder localhost öffnen.');
+        return;
+    }
+    // Vite's hot-reload client and virtual modules are development-only. Do not
+    // cache them as an offline installation. Test the PWA using the dist build.
+    if (document.querySelector?.('script[src="/@vite/client"]')) {
+        updateInstallUI('PWA im Produktions-Build testen (npm run preview).');
+        return;
+    }
+    // Register relative to the current app directory; works under subpaths too.
+    navigator.serviceWorker.register(new URL('./sw.js', document.baseURI), { scope: './' })
+        .then(() => navigator.serviceWorker.ready)
+        .then(() => { ready = true; updateInstallUI(); })
+        .catch(() => updateInstallUI('Offline-Modus konnte nicht eingerichtet werden.'));
+    updateInstallUI();
+}
 
 },
 "sensors/geolocation.js": function(require,module,exports) {
@@ -2597,7 +2747,7 @@ exports.requestGPS = requestGPS;
 /** Nachthimmel v2 - sensors/geolocation.js. Extracted from the original v6 app. */
 const dom_js_1 = require("../core/dom.js");
 const store_js_1 = require("../core/store.js");
-const airlabs_service_js_1 = require("../features/aircraft/airlabs.service.js");
+const adsb_service_js_1 = require("../features/aircraft/adsb.service.js");
 const planets_orbits_js_1 = require("../features/planets/planets.orbits.js");
 const paths_service_js_1 = require("../features/trajectories/paths.service.js");
 const details_js_1 = require("../ui/details.js");
@@ -2627,7 +2777,7 @@ function setLocation(lat, lon, place) {
     store_js_1.state.aircraftErrorReason = '';
     store_js_1.state.aircraftNextAt = 0;
     if (store_js_1.state.layers.aircraft)
-        (0, airlabs_service_js_1.pollAircraft)();
+        (0, adsb_service_js_1.pollAircraft)();
     if (store_js_1.state.selected)
         (0, details_js_1.renderDetail)();
     return true;
@@ -2640,7 +2790,7 @@ function requestGPS() {
     (0, notifications_js_1.showToast)('GPS-Freigabe wird angefragt. Der Standort wird nicht gespeichert.');
     navigator.geolocation.getCurrentPosition(p => {
         setLocation(p.coords.latitude, p.coords.longitude, 'Mein Standort');
-        (0, dialogs_js_1.closeModal)('settingsModal');
+        (0, dialogs_js_1.closeModal)('locationModal');
         (0, notifications_js_1.showToast)('Standort \u00fcbernommen. Die Himmelsansicht wurde aktualisiert.');
     }, err => (0, notifications_js_1.showToast)('Standort nicht verf\u00fcgbar (' + err.message + '). Bei Bedarf HTTPS verwenden.', true), { enableHighAccuracy: false, timeout: 14000, maximumAge: 60000 });
 }
@@ -2945,13 +3095,13 @@ function renderDetail() {
         links = `<a class="secondary-btn" href="https://celestrak.org/NORAD/elements/gp.php?CATNR=${encodeURIComponent(item.id)}&amp;FORMAT=JSON" target="_blank" rel="noopener noreferrer">CelesTrak-Daten ${(0, dom_js_1.ico)('chevron')}</a>`;
     }
     else if (kind === 'aircraft') {
-        top = 'FLUGZEUG / AIRLABS LIVE';
+        top = 'FLUGZEUG / ADSB.LOL LIVE';
         display = item.callsign || item.id.toUpperCase();
-        subtitle = 'ICAO24 ' + item.id.toUpperCase() + ' · ' + (item.country || 'Herkunft unbekannt');
-        image = `<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,#383329,#151c2c 70%)"><svg viewBox="0 0 200 140" aria-hidden="true" style="height:100%;width:100%;color:#ffdb9f"><g transform="translate(100 70) scale(3.8)"><path d="M0 -11 2 -3 10 1.8 10 4 2.1 2.8 1.8 8.1 4.8 10 4.8 11.5 0 10.5 -4.8 11.5 -4.8 10 -1.8 8.1 -2.1 2.8 -10 4 -10 1.8 -2 -3Z" fill="currentColor" stroke="#fff1d7" stroke-width=".5"/></g></svg><span class="detail-photo-credit">AIRLABS / ADS-B</span></div>`;
+        subtitle = 'ICAO24 ' + item.id.toUpperCase() + (item.registration ? ' · ' + item.registration : '') + (item.type ? ' · ' + item.type : '');
+        image = `<div class="detail-image no-image" style="background:radial-gradient(ellipse at center,#383329,#151c2c 70%)"><svg viewBox="0 0 200 140" aria-hidden="true" style="height:100%;width:100%;color:#ffdb9f"><g transform="translate(100 70) scale(3.8)"><path d="M0 -11 2 -3 10 1.8 10 4 2.1 2.8 1.8 8.1 4.8 10 4.8 11.5 0 10.5 -4.8 11.5 -4.8 10 -1.8 8.1 -2.1 2.8 -10 4 -10 1.8 -2 -3Z" fill="currentColor" stroke="#fff1d7" stroke-width=".5"/></g></svg><span class="detail-photo-credit">ADSB.LOL / ADS-B</span></div>`;
         const pos = h, latest = item.positionTime || store_js_1.state.aircraftDataTime || store_js_1.state.aircraftFetchedAt;
         const age = Math.max(0, Math.round((Date.now() - latest) / 1000));
-        about = 'Aktuelle Flugzeugposition aus AirLabs. Die Darstellung berechnet den lokalen Sichtwinkel aus geografischer Position und Höhe. Zwischen Messpunkten erfolgt eine begrenzte Kursfortschreibung (maximal 90 Sekunden). Flugroute und Ziel sind nicht Teil dieser Live-Daten.';
+        about = 'Aktuelle Position aus dem ADSB.lol-Empfängernetz. Die Darstellung berechnet den lokalen Sichtwinkel aus Position und Höhe; zwischen Messpunkten wird der Kurs begrenzt fortgeschrieben (maximal 90 Sekunden). Die Abdeckung und Aktualität variieren je nach Region.';
         metrics = [['Sichtwinkel', pos ? (0, dom_js_1.niceAngle)(pos.alt) : '--'],
             ['Entfernung', pos ? (0, dom_js_1.formatNumber)(pos.range, 1) + ' km' : '--'],
             ['Höhe (Geo/Baro)', pos ? (0, dom_js_1.formatNumber)(pos.altitude, 0) + ' m' : '--'],
@@ -2959,9 +3109,11 @@ function renderDetail() {
             ['Kurs', Number.isFinite(item.track) ? (0, dom_js_1.niceAngle)(item.track) : '--'],
             ['Azimut', pos ? (0, dom_js_1.niceAngle)(pos.az) : '--'],
             ['Letzte Position', (0, dom_js_1.formatNumber)(age, 0) + ' s zuvor'],
-            ['Transpondercode', item.squawk || '--']];
-        footer = `AirLabs-Messzeit: ${latest ? new Date(latest).toLocaleTimeString('de-DE') : 'unbekannt'}; keine historische Rückrechnung bei Nutzung der Zeitleiste. Nicht für Navigation oder Flugsicherung geeignet.`;
-        links = `<a class="secondary-btn" href="https://airlabs.co/" target="_blank" rel="noopener noreferrer">AirLabs ${(0, dom_js_1.ico)('chevron')}</a>`;
+            ['Transpondercode', item.squawk || '--'],
+            ['Kennzeichen', item.registration || '--'],
+            ['Flugzeugtyp', item.type || '--']];
+        footer = `ADSB.lol-Positionszeit: ${latest ? new Date(latest).toLocaleTimeString('de-DE') : 'unbekannt'}; keine historische Rückrechnung bei Nutzung der Zeitleiste. Nicht für Navigation oder Flugsicherung geeignet.`;
+        links = `<a class="secondary-btn" href="https://www.adsb.lol/docs/open-data/api" target="_blank" rel="noopener noreferrer">ADSB.lol (ODbL 1.0) ${(0, dom_js_1.ico)('chevron')}</a>`;
     }
     else if (kind === 'star') {
         top = 'STERN / HELLIGKEIT';
@@ -3022,7 +3174,7 @@ const store_js_1 = require("../core/store.js");
 const details_js_1 = require("./details.js");
 // Keep dialogs on a separate history entry (same URL) for system Back gestures.
 exports.HISTORY_OVERLAY_KEY = '__nachthimmel_v2_overlay';
-exports.MODAL_IDS = ['searchModal', 'settingsModal'];
+exports.MODAL_IDS = ['searchModal', 'layersModal', 'pathsModal', 'locationModal'];
 function visibleModal() { return exports.MODAL_IDS.find(id => (0, dom_js_1.$)(id).classList.contains('visible')) || null; }
 function setModalVisible(id, visible) {
     (0, dom_js_1.$)(id).classList.toggle('visible', visible);
@@ -3077,7 +3229,7 @@ function restoreOverlayFromHistory(e) {
     if (target === 'detailPanel' && store_js_1.state.selected) {
         (0, details_js_1.renderDetail)();
     }
-    else if (target !== 'detailPanel' && target !== 'settingsModal' && target !== 'searchModal' && store_js_1.state.selected) {
+    else if (target !== 'detailPanel' && !exports.MODAL_IDS.includes(target) && store_js_1.state.selected) {
         updateSelection(null, null, true);
     }
 }
@@ -3094,16 +3246,15 @@ const store_js_1 = require("../core/store.js");
 const canvas_input_js_1 = require("../engine/canvas-input.js");
 const canvas_js_1 = require("../engine/canvas.js");
 const projection_js_1 = require("../engine/projection.js");
-const airlabs_service_js_1 = require("../features/aircraft/airlabs.service.js");
+const adsb_service_js_1 = require("../features/aircraft/adsb.service.js");
 const planets_data_js_1 = require("../features/planets/planets.data.js");
-const geolocation_js_1 = require("../sensors/geolocation.js");
 const orientation_js_1 = require("../sensors/orientation.js");
 const dialogs_js_1 = require("./dialogs.js");
 const layers_js_1 = require("./layers.js");
+const location_dialog_js_1 = require("./location-dialog.js");
 const notifications_js_1 = require("./notifications.js");
 const search_js_1 = require("./search.js");
 const selection_js_1 = require("./selection.js");
-const status_js_1 = require("./status.js");
 const time_controls_js_1 = require("./time-controls.js");
 function connectUI() {
     document.querySelectorAll('[data-planet-jump]').forEach(button => {
@@ -3129,58 +3280,31 @@ function connectUI() {
     (0, dom_js_1.$)('playBtn').onclick = () => (0, time_controls_js_1.setPlaying)(!store_js_1.state.playing);
     (0, dom_js_1.$)('prevHour').onclick = () => (0, time_controls_js_1.addHours)(-1);
     (0, dom_js_1.$)('nextHour').onclick = () => (0, time_controls_js_1.addHours)(1);
-    (0, dom_js_1.$)('airlabsKey').value = (0, airlabs_service_js_1.getAirLabsKey)();
-    (0, dom_js_1.$)('airlabsSaveKey').onclick = () => {
-        const airlabsKey = (0, dom_js_1.$)('airlabsKey').value.trim();
-        (0, airlabs_service_js_1.setAirLabsKey)(airlabsKey);
-        try {
-            if (airlabsKey)
-                sessionStorage.setItem('nachthimmel_airlabs_key', airlabsKey);
-            else
-                sessionStorage.removeItem('nachthimmel_airlabs_key');
-        }
-        catch { }
-        store_js_1.state.aircraftRequestVersion++;
-        store_js_1.state.aircraftAbort?.abort();
-        store_js_1.state.aircraftAbort = null;
-        store_js_1.state.aircraftLoading = false;
-        store_js_1.state.aircraftNextAt = 0;
-        store_js_1.state.aircraftError = false;
-        store_js_1.state.aircraftLoaded = false;
-        if (airlabsKey) {
-            (0, notifications_js_1.showToast)('AirLabs-Key übernommen.');
+    (0, dom_js_1.$)('refreshAircraftBtn').onclick = () => {
+        if (!store_js_1.state.layers.aircraft)
             (0, layers_js_1.setLayer)('aircraft', true);
-            (0, airlabs_service_js_1.pollAircraft)();
-        }
         else {
-            (0, notifications_js_1.showToast)('Bitte AirLabs-API-Key eingeben.', true);
-            (0, status_js_1.updateAircraftCounter)();
+            store_js_1.state.aircraftNextAt = 0;
+            (0, adsb_service_js_1.pollAircraft)();
         }
     };
-    (0, dom_js_1.$)('nowBtn').onclick = () => { (0, time_controls_js_1.setPlaying)(false); store_js_1.state.offsetMs = 0; (0, time_controls_js_1.updateTimeUI)(); (0, airlabs_service_js_1.pollAircraft)(); };
+    (0, dom_js_1.$)('nowBtn').onclick = () => { (0, time_controls_js_1.setPlaying)(false); store_js_1.state.offsetMs = 0; (0, time_controls_js_1.updateTimeUI)(); (0, adsb_service_js_1.pollAircraft)(); };
     (0, dom_js_1.$)('timeRange').addEventListener('input', e => {
         if (store_js_1.state.playing)
             (0, time_controls_js_1.setPlaying)(false);
         store_js_1.state.offsetMs = Number(e.target.value) * 3600000;
         (0, time_controls_js_1.updateTimeUI)();
-        (0, airlabs_service_js_1.pollAircraft)();
+        (0, adsb_service_js_1.pollAircraft)();
     });
     (0, dom_js_1.$)('searchBtn').onclick = () => { (0, search_js_1.updateSearchResults)(); (0, dialogs_js_1.openModal)('searchModal'); (0, dom_js_1.$)('searchInput').focus(); };
     (0, dom_js_1.$)('searchClose').onclick = () => (0, dialogs_js_1.closeModal)('searchModal');
     (0, dom_js_1.$)('searchInput').addEventListener('input', search_js_1.updateSearchResults);
-    (0, dom_js_1.$)('locationTop').onclick = () => (0, dialogs_js_1.openModal)('settingsModal');
-    (0, dom_js_1.$)('settingsBtn').onclick = () => (0, dialogs_js_1.openModal)('settingsModal');
-    (0, dom_js_1.$)('settingsClose').onclick = () => (0, dialogs_js_1.closeModal)('settingsModal');
-    (0, dom_js_1.$)('saveLocation').onclick = () => {
-        const lat = Number((0, dom_js_1.$)('latInput').value), lon = Number((0, dom_js_1.$)('lonInput').value);
-        if ((0, geolocation_js_1.setLocation)(lat, lon)) {
-            (0, dialogs_js_1.closeModal)('settingsModal');
-            (0, notifications_js_1.showToast)('Beobachtungsstandort aktualisiert.');
-        }
-    };
-    (0, dom_js_1.$)('gpsBtn').onclick = geolocation_js_1.requestGPS;
-    (0, dom_js_1.$)('magInput').oninput = e => { store_js_1.state.mag = Number(e.target.value); (0, dom_js_1.$)('magLabel').textContent = (0, dom_js_1.formatNumber)(store_js_1.state.mag, 2) + ' mag'; };
-    for (const id of ['searchModal', 'settingsModal'])
+    (0, location_dialog_js_1.connectLocationDialog)();
+    (0, dom_js_1.$)('layersBtn').onclick = () => (0, dialogs_js_1.openModal)('layersModal');
+    (0, dom_js_1.$)('layersClose').onclick = () => (0, dialogs_js_1.closeModal)('layersModal');
+    (0, dom_js_1.$)('pathsBtn').onclick = () => (0, dialogs_js_1.openModal)('pathsModal');
+    (0, dom_js_1.$)('pathsClose').onclick = () => (0, dialogs_js_1.closeModal)('pathsModal');
+    for (const id of ['searchModal', 'layersModal', 'pathsModal', 'locationModal'])
         (0, dom_js_1.$)(id).addEventListener('click', e => { if (e.target === (0, dom_js_1.$)(id))
             (0, dialogs_js_1.closeModal)(id); });
     canvas_js_1.cvs.addEventListener('pointerdown', canvas_input_js_1.onPointerDown);
@@ -3191,8 +3315,8 @@ function connectUI() {
     canvas_js_1.cvs.addEventListener('dblclick', e => { e.preventDefault(); (0, canvas_input_js_1.setZoom)(store_js_1.state.fov * .74); });
     window.addEventListener('resize', projection_js_1.resize);
     document.addEventListener('visibilitychange', () => { if (!document.hidden)
-        (0, airlabs_service_js_1.pollAircraft)(); });
-    window.setInterval(airlabs_service_js_1.pollAircraft, 7000);
+        (0, adsb_service_js_1.pollAircraft)(); });
+    window.setInterval(adsb_service_js_1.pollAircraft, 7000);
     window.addEventListener('popstate', dialogs_js_1.restoreOverlayFromHistory);
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
@@ -3256,7 +3380,7 @@ exports.setLayer = setLayer;
 const dom_js_1 = require("../core/dom.js");
 const store_js_1 = require("../core/store.js");
 const events_js_1 = require("../core/events.js");
-const airlabs_service_js_1 = require("../features/aircraft/airlabs.service.js");
+const adsb_service_js_1 = require("../features/aircraft/adsb.service.js");
 const catalog_service_js_1 = require("../features/satellites/catalog.service.js");
 const dialogs_js_1 = require("./dialogs.js");
 const status_js_1 = require("./status.js");
@@ -3279,7 +3403,7 @@ function setLayer(layer, enabled) {
     if (layer === 'aircraft') {
         if (enabled) {
             store_js_1.state.aircraftNextAt = 0;
-            (0, airlabs_service_js_1.pollAircraft)();
+            (0, adsb_service_js_1.pollAircraft)();
         }
         else {
             store_js_1.state.aircraftRequestVersion++;
@@ -3293,6 +3417,51 @@ function setLayer(layer, enabled) {
         store_js_1.state.satError = false;
         (0, catalog_service_js_1.loadSatelliteCatalog)();
     }
+}
+
+},
+"ui/location-dialog.js": function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.connectLocationDialog = connectLocationDialog;
+/** The observer location and visual magnitude controls live in their own modal. */
+const dom_js_1 = require("../core/dom.js");
+const store_js_1 = require("../core/store.js");
+const geolocation_js_1 = require("../sensors/geolocation.js");
+const dialogs_js_1 = require("./dialogs.js");
+const notifications_js_1 = require("./notifications.js");
+function syncLocationFields() {
+    // Reopening must discard coordinates edited but not confirmed.
+    (0, dom_js_1.$)('latInput').value = store_js_1.state.lat.toFixed(4);
+    (0, dom_js_1.$)('lonInput').value = store_js_1.state.lon.toFixed(4);
+    (0, dom_js_1.$)('magInput').value = String(store_js_1.state.mag);
+    (0, dom_js_1.$)('magLabel').textContent = (0, dom_js_1.formatNumber)(store_js_1.state.mag, 2) + ' mag';
+}
+function saveObserverLocation() {
+    const latText = (0, dom_js_1.$)('latInput').value.trim();
+    const lonText = (0, dom_js_1.$)('lonInput').value.trim();
+    if (!latText || !lonText) {
+        (0, notifications_js_1.showToast)('Bitte Breiten- und Längengrad eingeben.', true);
+        return;
+    }
+    if ((0, geolocation_js_1.setLocation)(Number(latText), Number(lonText))) {
+        (0, dialogs_js_1.closeModal)('locationModal');
+        (0, notifications_js_1.showToast)('Beobachtungsstandort aktualisiert.');
+    }
+}
+function connectLocationDialog() {
+    (0, dom_js_1.$)('locationTop').addEventListener('click', () => {
+        syncLocationFields();
+        (0, dialogs_js_1.openModal)('locationModal');
+        (0, dom_js_1.$)('latInput').focus();
+    });
+    (0, dom_js_1.$)('locationClose').addEventListener('click', () => (0, dialogs_js_1.closeModal)('locationModal'));
+    (0, dom_js_1.$)('saveLocation').addEventListener('click', saveObserverLocation);
+    (0, dom_js_1.$)('gpsBtn').addEventListener('click', geolocation_js_1.requestGPS);
+    (0, dom_js_1.$)('magInput').addEventListener('input', event => {
+        store_js_1.state.mag = Number(event.target.value);
+        (0, dom_js_1.$)('magLabel').textContent = (0, dom_js_1.formatNumber)(store_js_1.state.mag, 2) + ' mag';
+    });
 }
 
 },
@@ -3339,7 +3508,7 @@ function searchItems(q) {
         { section: 'STERNBILDER', kind: 'constellation', items: store_js_1.state.constellations.filter(c => match(c.de, c.name, c.id)), sub: c => (c.name || c.id) + ' \u00b7 IAU', name: c => c.de || c.name },
         { section: 'DEEP SKY', kind: 'dso', items: catalog_data_js_1.DEEP.filter(d => match(d.name, d.id, d.type)), sub: d => d.id + ' \u00b7 ' + d.type, name: d => d.name },
         { section: 'SATELLITEN', kind: 'satellite', items: store_js_1.state.satellites.filter(s => match(s.name, s.id)), sub: s => 'NORAD ' + s.id, name: s => s.name },
-        { section: 'FLUGZEUGE / AIRLABS', kind: 'aircraft', items: store_js_1.state.aircraft.filter(a => (0, clock_js_1.aircraftAtLiveTime)() && (0, aircraft_positions_js_1.predictAircraft)(a)?.alt > 0 && match(a.callsign, a.id, a.country)), sub: a => a.id.toUpperCase() + ' · ' + a.country, name: a => a.callsign || a.id.toUpperCase() },
+        { section: 'FLUGZEUGE / ADSB.LOL', kind: 'aircraft', items: store_js_1.state.aircraft.filter(a => (0, clock_js_1.aircraftAtLiveTime)() && (0, aircraft_positions_js_1.predictAircraft)(a)?.alt > 0 && match(a.callsign, a.id, a.registration, a.type)), sub: a => a.id.toUpperCase() + (a.registration ? ' · ' + a.registration : ''), name: a => a.callsign || a.id.toUpperCase() },
         { section: 'HELLE STERNE', kind: 'star', items: store_js_1.state.stars.filter(s => s.name && match(s.name)).slice(0, 15), sub: s => (0, dom_js_1.formatNumber)(s.mag, 2) + ' mag', name: s => s.name }
     ];
     return list;
@@ -3464,11 +3633,11 @@ function updateAircraftCounter() {
     const el = (0, dom_js_1.$)('aircraftCount');
     if (!el)
         return;
-    el.textContent = !store_js_1.state.layers.aircraft ? 'API-Key in Einstellungen hinterlegen'
+    el.textContent = !store_js_1.state.layers.aircraft ? 'Ohne API-Key · Proxy erforderlich'
         : !(0, clock_js_1.aircraftAtLiveTime)() ? 'Nur zur Live-Zeit (JETZT)'
-            : store_js_1.state.aircraftError ? (store_js_1.state.aircraftErrorReason || 'AirLabs-API nicht erreichbar')
-                : store_js_1.state.aircraftLoaded ? `${store_js_1.state.aircraft.length} Flugzeuge in der Region`
-                    : store_js_1.state.aircraftLoading ? 'AirLabs wird abgefragt ...' : 'Verbinde mit AirLabs ...';
+            : store_js_1.state.aircraftError ? (store_js_1.state.aircraftErrorReason || 'ADSB.lol-Proxy nicht erreichbar')
+                : store_js_1.state.aircraftLoaded ? `${store_js_1.state.aircraft.length} ${store_js_1.state.aircraft.length === 1 ? 'Flugzeug' : 'Flugzeuge'} in der Region`
+                    : store_js_1.state.aircraftLoading ? 'ADSB.lol wird abgefragt ...' : 'Verbinde mit ADSB.lol ...';
 }
 function updateCounters() {
     (0, dom_js_1.$)('starsCount').textContent = store_js_1.state.starsLoaded ? `${store_js_1.state.stars.length.toLocaleString('de-DE')} Katalogsterne & Milchstraße` : 'Basissterne & Milchstraße';
@@ -3493,7 +3662,7 @@ const clock_js_1 = require("../core/clock.js");
 const dom_js_1 = require("../core/dom.js");
 const math_js_1 = require("../core/math.js");
 const store_js_1 = require("../core/store.js");
-const airlabs_service_js_1 = require("../features/aircraft/airlabs.service.js");
+const adsb_service_js_1 = require("../features/aircraft/adsb.service.js");
 const status_js_1 = require("./status.js");
 function setPlaying(value) {
     if (store_js_1.state.playing && !value)
@@ -3502,13 +3671,13 @@ function setPlaying(value) {
     if (value)
         store_js_1.state.playStart = Date.now();
     if (!value && store_js_1.state.layers.aircraft)
-        (0, airlabs_service_js_1.pollAircraft)();
+        (0, adsb_service_js_1.pollAircraft)();
     (0, dom_js_1.$)('playBtn').innerHTML = (0, dom_js_1.ico)(value ? 'pause' : 'play');
     (0, dom_js_1.$)('playBtn').title = value ? 'Zeitablauf anhalten' : 'Zeitablauf starten';
     updateTimeUI();
 }
 function addHours(h) { if (store_js_1.state.playing)
-    setPlaying(false); store_js_1.state.offsetMs += h * 3600000; updateTimeUI(); (0, airlabs_service_js_1.pollAircraft)(); }
+    setPlaying(false); store_js_1.state.offsetMs += h * 3600000; updateTimeUI(); (0, adsb_service_js_1.pollAircraft)(); }
 function updateTimeUI() {
     const d = (0, clock_js_1.getDate)();
     (0, dom_js_1.$)('clockValue').textContent = d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });

@@ -22,7 +22,7 @@ export const state = {
   // Satellite prediction cache
   satRender: [], lastSatCompute: 0, lastSatDate: 0, lastSatLabel: 0,
 
-  // AirLabs request lifecycle (no API key is stored in this object)
+  // ADSB.lol proxy polling lifecycle (no API key required)
   aircraftError: false, aircraftLoading: false,
   aircraftFetchedAt: 0, aircraftDataTime: 0, aircraftNextAt: 0,
   aircraftRequestVersion: 0, aircraftAbort: null, aircraftErrorReason: '',

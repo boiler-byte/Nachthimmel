@@ -136,3 +136,15 @@
 .layer-toggle[data-layer="selectedPath"] .layer-icon {background:rgba(155,139,229,.12);color:#c9bcff}
 .layer-toggle[data-layer="pathArrows"] .layer-icon {background:rgba(93,195,186,.12);color:#afe6df}
 .trajectory-explain {margin:13px 3px 0}
+
+/* Separate adjacent toolbar buttons for object layers and motion paths. */
+.dock .tool-btn[aria-controls="layersModal"],
+.dock .tool-btn[aria-controls="pathsModal"]{color:#bfdff5;border-color:rgba(130,190,238,.24)}
+.dock .tool-btn[aria-controls="layersModal"]:hover,
+.dock .tool-btn[aria-controls="pathsModal"]:hover{background:rgba(77,130,189,.22)}
+@media(max-width:390px){
+ .dock .tool-actions{gap:6px}
+ .dock .tool-btn{width:38px;height:40px;flex:0 0 38px}
+ .dock .motion-btn{width:38px;max-width:38px;min-width:38px;padding:0}
+ .dock .motion-btn span{display:none}
+}
