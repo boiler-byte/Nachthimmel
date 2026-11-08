@@ -10,6 +10,14 @@ Nachthimmel v2 ist eine modulare Vanilla-JavaScript-Himmelskarte mit Canvas-Laye
 
 Die Bahn-Overlays sind standardmäßig AUS. Pfeile und die automatische Bahn beim Auswählen eines Planeten, der Sonne oder des Mondes sind standardmäßig AN. Planetenbahnen zeigen ±30 Tage gegen den Sternhimmel, die Mondbewegung ±7 Tage, die Tagesbögen dagegen den Verlauf über dem lokalen Horizont.
 
+## Einstellungen speichern und Ortsnamen ermitteln
+
+- Die PWA speichert **Layer, Bahn-Schalter, letzten Beobachtungsstandort (Koordinaten und Ort), Sternhelligkeit und Flugzeug-Entfernungsfilter** als JSON unter `localStorage.nachthimmelApp`. Die Werte werden beim nächsten Start **vor** Initialisierung der Oberfläche wiederhergestellt; es werden **keine** API-Antworten, Flugzeugpositionen oder Laufzeit-Caches persistiert.
+- Bei **Koordinaten übernehmen** oder **GPS nutzen** wird der Ortsname nur bei Bedarf aus den OpenStreetMap-Daten über die **Nominatim-Reverse-API** ermittelt. Ein erfolgreich aufgelöster Name wird lokal samt Koordinaten gespeichert und bei Änderungen unter **1 km** wiederverwendet. Die Abfragen werden entprellt und in einer Browser-Sitzung auf **höchstens eine pro Minute** begrenzt; bei raschem Standortwechsel wird nur die neueste Anfrage verwendet.
+- Der Name wird erst **nach** Antwort der API angezeigt. Währenddessen bzw. bei Offline- oder API-Fehlern bleibt die Koordinatenanzeige erhalten. Ein App-Neustart löst **keine automatische Geocoding-Anfrage** aus.
+- Datenschutz: Bei manuell bestätigten Koordinaten oder GPS-Nutzung werden die Koordinaten für die Namenssuche an `nominatim.openstreetmap.org` übertragen. Die Datengrundlage ist **© OpenStreetMap-Mitwirkende** (Link im Standortdialog). Die bestehenden ADSB.lol-Requests erfolgen weiterhin nur bei eingeschaltetem Flugzeug-Layer. Nominatim ist ein öffentlicher, begrenzter Dienst; für eine stark verbreitete Anwendung sollte ein dedizierter Geocoding-Anbieter verwendet werden.
+- GPS wird weiterhin **nur auf Knopfdruck** abgefragt (kein kontinuierliches GPS-Tracking). Die Ortsnamenssuche arbeitet unabhängig vom Cloudflare-Worker für Flugzeuge.
+
 ## Erweiterung: Flugzeug-Entfernungsfilter und Objektdetails
 
 - Unter **Kartenebenen → Flugzeugdaten (ADSB.lol)** lässt sich die **maximale horizontale Entfernung** zwischen 25 und 370 km einstellen (Standard: **100 km**). Berechnet wird die Großkreisentfernung zum eingestellten Beobachtungsstandort, ohne Flugzeughöhe.

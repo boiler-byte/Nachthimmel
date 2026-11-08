@@ -4,6 +4,7 @@ export const state = {
   lat: 52.52, lon: 13.405, place: 'Berlin, Deutschland',
   az: 206, alt: 46, fov: 94, mag: 6,
   aircraftMaxDistanceKm: 100, // Horizontal distance filter in kilometres (25..370).
+  placeLookup: null, // Last resolved place name, coordinates and lookup timestamp.
 
   // View and simulation
   layers: {

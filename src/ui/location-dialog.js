@@ -1,6 +1,7 @@
 /** The observer location and visual magnitude controls live in their own modal. */
 import { $, formatNumber } from '../core/dom.js';
 import { state } from '../core/store.js';
+import { savePreferences } from '../core/preferences.js';
 import { requestGPS, setLocation } from '../sensors/geolocation.js';
 import { closeModal, openModal } from './dialogs.js';
 import { showToast } from './notifications.js';
@@ -37,6 +38,7 @@ export function connectLocationDialog() {
   $('gpsBtn').addEventListener('click', requestGPS);
   $('magInput').addEventListener('input', event => {
     state.mag = Number(event.target.value);
+    savePreferences(state);
     $('magLabel').textContent = formatNumber(state.mag, 2) + ' mag';
   });
 }

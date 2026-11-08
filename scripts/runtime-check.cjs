@@ -59,7 +59,9 @@ const doc={hidden:false,activeElement:null,body:el('body'),getElementById:el,cre
  querySelectorAll:q=>q==='[data-planet-jump]'?planetButtons:q==='.layer-toggle'?layerButtons:[],
  querySelector:q=>{const m=q.match(/data-layer="([^"]+)"/);return m?layerButtons.find(e=>e.dataset.layer===m[1]):null;}};
 const win={innerWidth:1240,innerHeight:760,devicePixelRatio:1,addEventListener:noop,removeEventListener:noop,setInterval:noop};
-const c={document:doc,window:win,console,Image:class {set src(v){this._src=v;}},URL,URLSearchParams,Intl,Date,Math,Map,Set,Number,String,Array,Boolean,Object,RegExp,Error,Promise,AbortController,encodeURIComponent,decodeURIComponent,
+const savedLocal = new Map();
+const localStorage = {getItem:key=>savedLocal.get(key)??null,setItem:(key,val)=>{savedLocal.set(key,String(val));},removeItem:key=>savedLocal.delete(key)};
+const c={document:doc,window:win,localStorage,console,Image:class {set src(v){this._src=v;}},URL,URLSearchParams,Intl,Date,Math,Map,Set,Number,String,Array,Boolean,Object,RegExp,Error,Promise,AbortController,encodeURIComponent,decodeURIComponent,
  navigator:{},history:{state:null,pushState:noop,replaceState:noop,back:noop},performance:{now:()=>1000},
  requestAnimationFrame:fn=>{scheduled.push(fn);return scheduled.length;},setTimeout:()=>0,clearTimeout:noop,
  setInterval:noop,clearInterval:noop,
@@ -90,6 +92,7 @@ layerButtons.find(x=>x.dataset.layer==='planets').click();
 assert.equal(store.layers.planets,false,'Planets disabled from settings toggle');
 layerButtons.find(x=>x.dataset.layer==='planets').click();
 assert.equal(store.layers.planets,true,'Planets reenabled from settings toggle');
+assert.equal(JSON.parse(localStorage.getItem('nachthimmelApp')).layers.planets, true, 'Layer toggle persisted under localStorage.nachthimmelApp');
 const jupiter=c.__getModule('features/planets/planets.data.js').PLANETS.find(p=>p.id==='jupiter');
 c.__getModule('ui/dialogs.js').updateSelection('planet',jupiter);
 assert.equal(store.selected.item.id,'jupiter','Details selection stored');
@@ -125,6 +128,7 @@ assert.equal(el('latInput').value,'40.4168','Unsaved values discarded');
 el('magInput').value='4.75';
 el('magInput').listeners.input.forEach(fn=>fn({target:el('magInput')}));
 assert.equal(store.mag,4.75,'Magnitude changes remain supported');
+assert.equal(JSON.parse(localStorage.getItem('nachthimmelApp')).mag, 4.75, 'Magnitude stored locally');
 assert(el('magLabel').textContent.includes('4,75'),'Magnitude label updated');
 el('locationClose').click();
 el('layersBtn').click();
@@ -144,6 +148,7 @@ assert.equal(el('aircraftDistanceValue').textContent,'100 km','Range label initi
 el('aircraftDistanceRange').value='50';
 el('aircraftDistanceRange').listeners.input.forEach(fn=>fn());
 assert.equal(store.aircraftMaxDistanceKm,50,'Range slider updates active aircraft filter');
+assert.equal(JSON.parse(localStorage.getItem('nachthimmelApp')).aircraftMaxDistanceKm, 50, 'Aircraft radius stored locally');
 assert.equal(el('aircraftDistanceValue').textContent,'50 km','Range label updates on input');
 el('aircraftDistanceRange').value='100';
 el('aircraftDistanceRange').listeners.input.forEach(fn=>fn());
@@ -151,8 +156,16 @@ el('aircraftDistanceRange').listeners.input.forEach(fn=>fn());
 c.navigator.geolocation={getCurrentPosition:success=>success({coords:{latitude:53.628,longitude:11.416}})};
 el('locationTop').click();
 el('gpsBtn').click();
-assert.equal(store.place,'Mein Standort','GPS updates observer');
+assert.equal(store.place,'53,628°, 11,416°','GPS displays coordinates until the place name arrives');
 assert.equal(store.lat,53.628,'GPS coordinates applied');
+const locationPreferences=JSON.parse(localStorage.getItem('nachthimmelApp'));
+assert.equal(locationPreferences.location.lat,53.628,'GPS latitude saved for next launch');
+assert.equal(locationPreferences.location.lon,11.416,'GPS longitude saved for next launch');
+const fakeRestored={lat:0,lon:0,place:'',mag:6,aircraftMaxDistanceKm:25,layers:{...store.layers}};
+assert(c.__getModule('core/preferences.js').restorePreferences(fakeRestored,localStorage),'Persisted settings can be reloaded');
+assert.equal(fakeRestored.lat,53.628,'Restoring uses last GPS location');
+assert.equal(fakeRestored.mag,4.75,'Restoring uses saved magnitude');
+assert.equal(fakeRestored.aircraftMaxDistanceKm,100,'Restoring uses saved aircraft range');
 assert(!el('locationModal').classList.contains('visible'),'GPS closes observer modal');
 assert.ok(c.__getModule('ui/search.js').searchItems('Jupiter').some(x=>x.kind==='planet'&&x.items.length===1),'Search finds Jupiter');
 const ephem=c.__getModule('features/solar-system/celestial.ephemeris.js');

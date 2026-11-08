@@ -2,6 +2,7 @@
 import { $ } from '../core/dom.js';
 import { MAX_ALT, MIN_ALT, clamp, wrap } from '../core/math.js';
 import { state } from '../core/store.js';
+import { savePreferences } from '../core/preferences.js';
 import { onPointerDown, onPointerMove, onPointerUp, setZoom } from '../engine/canvas-input.js';
 import { cvs } from '../engine/canvas.js';
 import { resize } from '../engine/projection.js';
@@ -53,6 +54,7 @@ export function connectUI(){
    const distance=Number(aircraftRange.value);
    if(!Number.isFinite(distance))return;
    state.aircraftMaxDistanceKm=Math.max(AIRCRAFT_MIN_DISTANCE_KM,Math.min(AIRCRAFT_MAX_DISTANCE_KM,distance));
+   savePreferences(state);
    $('aircraftDistanceValue').textContent=state.aircraftMaxDistanceKm+' km';
    updateAircraftCounter();
    if(state.selected?.kind==='aircraft'){

@@ -1,6 +1,8 @@
 import { connectServiceEvents } from './ui/service-events.js';
 /** Nachthimmel v2 - app.js. Extracted from the original v6 app. */
 import { state } from './core/store.js';
+import { restorePreferences } from './core/preferences.js';
+import { pollAircraft } from './features/aircraft/adsb.service.js';
 import { resize } from './engine/projection.js';
 import { renderFrame } from './engine/render-loop.js';
 import { buildFallbackConstellations } from './features/constellations/catalog.data.js';
@@ -14,13 +16,17 @@ import { showToast } from './ui/notifications.js';
 import { updateSearchResults } from './ui/search.js';
 import { updateCounters } from './ui/status.js';
 import { updateTimeUI } from './ui/time-controls.js';
+import { syncPreferencesUI } from './ui/preferences-ui.js';
 
 state.constellations = buildFallbackConstellations();
 
 state.stars = FALLBACK_STARS;
 
 export function initialize(){
+ restorePreferences(state);
+ syncPreferencesUI();
  connectServiceEvents();resize();connectUI();updateCounters();updateViewUI();updateTimeUI();updateSearchResults();
+ if(state.layers.aircraft)pollAircraft();
  requestAnimationFrame(renderFrame);
  // These calls are independent; neither an API outage nor a failed CDN stalls the UI.
  loadStarCatalog();loadConstellationCatalog();

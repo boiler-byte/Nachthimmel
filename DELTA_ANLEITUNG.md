@@ -1,21 +1,23 @@
-# Nachthimmel v2 – Delta: Flugzeug-Entfernung + Details
+# Nachthimmel v2 – Delta: Einstellungen speichern und Ortsnamen finden
 
-## Einspielen
+## Übernehmen
 
-**Dieses ZIP enthält nur neue und geänderte Quell- und PWA-Dateien** gegenüber `Nachthimmel_v2_Layer_Bahnen_ADSB_Delta.zip`. Es ersetzt nicht dein vollständiges Projekt. Es enthält bewusst **keine vorbereiteten `dist/`-Dateien**: Diese könnten eine bereits individuell konfigurierte Cloudflare-Worker-Adresse überschreiben.
+Dieses Archiv enthält **nur neue und geänderte Quelldateien** gegenüber dem zuletzt gelieferten Delta `Nachthimmel_v2_Flugzeuge_Entfernung_Details_Delta.zip`. Es ersetzt **kein** vollständiges Projekt.
 
-1. Entpacke `nachthimmel-v2/` über das **bestehende Nachthimmel-Projekt**. Dateien mit identischem Pfad ersetzen, andere Dateien unverändert lassen.
-2. **`src/features/aircraft/adsb.service.js` nicht verändern.** Diese Datei ist im Delta nicht enthalten. Eine darin hinterlegte Cloudflare-Worker-URL bleibt so erhalten.
-3. Falls GitHub Pages deine Quellversion (`index.html` im Projekt-Root) direkt bereitstellt: Dateien committen und deployen. `sw.js` und `pwa-assets.json` im Delta aktualisieren den PWA-Cache.
-4. Falls GitHub Pages die gebaute PWA aus `dist/` bereitstellt: **im aktualisierten Projekt** `npm run build:portable` ausführen und anschließend den neu erzeugten `dist/`-Inhalt wie gewohnt auf GitHub Pages hochladen. Der vorhandene Worker-Endpunkt aus deiner Service-Datei wird dabei übernommen.
-5. Falls du die Worker-Adresse **ausschließlich in einer fertigen `dist/index.html`** eingetragen hast, muss dieselbe URL vor dem Build einmal in `src/features/aircraft/adsb.service.js` stehen; sonst kann kein Build sie übernehmen. Weitere Cloudflare-Worker-Änderungen sind nicht erforderlich.
+1. Das Archiv entpacken und die Ordnerinhalte unter `nachthimmel-v2/` **über dein bestehendes Quellprojekt** kopieren. Identische Pfade ersetzen, andere Dateien unverändert lassen.
+2. Deine bereits konfigurierte Cloudflare-Worker-Adresse erhalten: **`src/features/aircraft/adsb.service.js` ist nicht in diesem Delta**. Den Cloudflare Worker selbst musst du nicht anpassen.
+3. Wenn GitHub Pages die **Quellversion** direkt bereitstellt: Alle geänderten Dateien hochladen, einschließlich `index.html`, `sw.js` und `pwa-assets.json`.
+4. Wenn GitHub Pages den **gebauten Inhalt von `dist/`** bereitstellt: Nach dem Kopieren in deinem **bestehenden Projekt** `npm run build:portable` ausführen und anschließend `dist/` veröffentlichen. Das Delta enthält absichtlich keine fertigen `dist/`-Dateien, damit eine individuell hinterlegte Worker-Adresse nicht verloren geht.
+5. Bei bereits installierter PWA gegebenenfalls neu laden: Die Service-Worker-Revision wird durch den Build aktualisiert.
 
-## Änderungen
+## Neues Verhalten
 
-- **Kartenebenen → Flugzeugdaten (ADSB.lol):** Slider 25–370 km, Default 100 km.
-- Filter für sichtbare Flugzeuge, Treffer der Suche und angezeigte Anzahl. Die ADSB-Abfrage bleibt unverändert (200 nautische Meilen). Es entstehen keine zusätzlichen ADSB-Requests.
-- Detailansicht: horizontale Entfernung vs. direkte Sichtlinienentfernung, Geschwindigkeit, Flughöhe, Kurs, Steig-/Sinkrate, letzte Meldung, Kennzeichen, Flugzeugtyp, Rufzeichen, Transpondercode.
-- Foto über HexDB *nur beim Öffnen der Flugzeugdetails*. Bei nicht verfügbarem Bild wird das vorhandene Flugzeugsymbol gezeigt. HexDB ist ein externer Bilddienst.
-- **Keine Flugbahn.** Satelliten, Planeten, Sonne/Mond und PWA bleiben ansonsten unverändert.
+- `localStorage.nachthimmelApp` enthält ein JSON-Objekt als String (`JSON.stringify`). Gespeichert: `version`, `layers` (Layer und Bahnen), `location` (`lat`, `lon`, `place`, optional `resolved` mit Koordinaten/Name), `mag` und `aircraftMaxDistanceKm`.
+- Gespeicherte Einstellungen werden beim App-Start wiederhergestellt. Beschädigte oder nicht verfügbare Storage-Daten führen zu Standardwerten, nicht zu einem Startfehler.
+- Bei neuer manueller oder GPS-Position sucht die App per Nominatim einen Siedlungsnamen. Innerhalb von 1 km des letzten erfolgreichen Orts-Lookups wird der vorhandene Name übernommen. Sonst ist die Anfrage entprellt und läuft höchstens einmal pro 60 Sekunden pro Browser-Sitzung. Die letzte Standortänderung gewinnt.
+- Die Ortsnamen-Suche übermittelt bei bestätigter Standortänderung die Koordinaten an OpenStreetMap/Nominatim (siehe Hinweis im Standortdialog). Ohne Internet bleiben die Koordinaten sichtbar. GPS wird weiterhin nur auf Knopfdruck verwendet.
+- Die Flugzeug-Abfragen und ihre Cloudflare-Worker-Anbindung bleiben unverändert. Es gibt keine neue Flugbahn-Funktion.
 
-Tests: `npm test`, `npm run build:portable`, `npm run test:runtime`.
+## Überprüfen
+
+`npm test` – automatische Unit-Tests. `npm run build:portable` – Quell- und PWA-Build. `npm run test:runtime` – simulierter App-Laufzeittest. Nach dem Deployment Layer/Ort/Sternhelligkeit/Flugzeugradius ändern, neu laden und die Wiederherstellung prüfen.

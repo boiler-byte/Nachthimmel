@@ -1,3 +1,11 @@
+## Nachthimmel v2 – Benutzereinstellungen und Ortsnamen (08.11.2026)
+
+- `localStorage.nachthimmelApp`: versionierte, validierte Speicherung von Layern, Bahnen, Beobachtungsort (Koordinaten + Ortsname), Sternhelligkeit und Flugzeug-Maximaldistanz; automatische Wiederherstellung beim Start.
+- Eigene Koordinaten und GPS: ressourcenschonende Ortsnamenauflösung über Nominatim/OpenStreetMap mit 1-km-Schwelle, wiederverwendetem Ortsnamen, Entprellung und mindestens 60 Sekunden Abstand zwischen API-Anfragen pro Browser-Sitzung. Bei Offline/API-Fehlern bleiben Koordinaten sichtbar.
+- Hinweis auf die externe Geocoding-Abfrage sowie OpenStreetMap-Attribution im Standortdialog ergänzt.
+- Kein Wechsel des Flugzeug-Proxys, keine Änderung der Flugbahnen; Cache-Version der PWA neu generiert.
+- Tests für Persistenz, fehlerhafte Werte, Geodistanz, Geocoding, Abfragebegrenzung sowie die Standalone-Laufzeit ergänzt.
+
 ## Nachthimmel v2 – Flugzeug-Entfernungsfilter und Details (November 2026)
 
 - Kartenebenen: Slider für den lokalen Flugzeug-Entfernungsfilter (25–370 km, Standard 100 km).

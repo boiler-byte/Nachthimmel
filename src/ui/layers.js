@@ -1,6 +1,7 @@
 /** Nachthimmel v2 - ui/layers.js. Extracted from the original v6 app. */
 import { $ } from '../core/dom.js';
 import { state } from '../core/store.js';
+import { savePreferences } from '../core/preferences.js';
 import { emit } from '../core/events.js';
 import { pollAircraft } from '../features/aircraft/adsb.service.js';
 import { loadSatelliteCatalog, satlib } from '../features/satellites/catalog.service.js';
@@ -10,6 +11,7 @@ import { updateAircraftCounter } from './status.js';
 export function setLayer(layer,enabled){
  if(!(layer in state.layers))return;
  state.layers[layer]=enabled;
+ savePreferences(state);
  const button=document.querySelector(`.layer-toggle[data-layer="${layer}"]`);
  if(button){button.classList.toggle('active',enabled);button.setAttribute('aria-pressed',String(enabled));}
  if(!enabled && state.selected?.kind===({stars:'star',planets:'planet',constellations:'constellation',deepSky:'dso',satellites:'satellite',aircraft:'aircraft',sunMoon:'body'})[layer]){
