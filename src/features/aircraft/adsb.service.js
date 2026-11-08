@@ -19,7 +19,7 @@ function numeric(value) {
 }
 
 export function aircraftProxyURL(baseURI = document.baseURI, lat = state.lat, lon = state.lon) {
-  const url = new URL('./api/aircraft', baseURI);
+  const url = new URL('https://nachthimmel-adsb.der-boiler.workers.dev/api/aircraft', baseURI);
   if (!['http:', 'https:'].includes(url.protocol)) {
     throw new Error('Live-Flugzeuge benötigen HTTPS oder localhost mit ADSB.lol-Proxy.');
   }
